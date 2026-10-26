@@ -1,16 +1,16 @@
-# 🦅 Zesium Cloud Theme for Proxmox VE
+# 🦅 Zesium - Proxmox Manager
 
-> A modern, luxury, enterprise dark theme and full UI overhaul for **Proxmox Virtual Environment (PVE 7.x, 8.x & 9.x)**, designed to 1:1 replicate the **Convoy / Advin Servers Cloud Management Panel**.
+> A modern, luxury, enterprise dark theme and full UI overhaul for **Proxmox Virtual Environment (PVE 7.x, 8.x & 9.x)**, designed for server administrators. © Zesium. All rights reserved.
 
-![Affordable Cloud Login](theme/images/datacenter-bg.png)
+![Zesium Login](theme/images/datacenter-bg.png)
 
 ---
 
 ## ✨ Features
 
-- 🔐 **Split-Screen Modern Login (1:1 with Advin / Convoy)**
-  - Left column: Sleek dark obsidian login with eagle vector logo, amber alert notice, Cloudflare Turnstile badge, and clean inputs.
-  - Right column: High-resolution black & white enterprise server room corridor with dramatic lighting and *Affordable Cloud* overlay.
+- 🔐 **Split-Screen Modern Login**
+  - Left column: Sleek dark obsidian login with eagle vector logo, amber alert notice, and clean inputs.
+  - Right column: High-resolution black & white enterprise server room corridor with dramatic lighting.
 - ⚡ **Ultra-Slim Left Rail & Modern Sidebar**
   - Slim 58px icon rail (`Cloud`, `Network`, `Storage`, `Teams`, `Account`) with vector eagle branding.
   - Modern sidebar navigation with **Resources** (`Virtual Servers`, `Custom ISOs`, `Snapshots`, `Floating IPs`, `Bandwidth`), **Networking** (`Firewall Groups`, `Private Networks`), and **Setup** (`SSH Keys`, `Scripts`).

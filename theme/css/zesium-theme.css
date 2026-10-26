@@ -1,7 +1,7 @@
 /* ==============================================================================
    Zesium - Proxmox Manager
-   Luxury Dark Theme & Complete UI Overhaul for Proxmox VE 7.x, 8.x & 9.x
-   Aesthetic 1:1 identical to Convoy / Advin Servers Cloud Panel
+   Luxury Dark UI Overhaul for Proxmox VE Administration
+   © Zesium. All rights reserved.
    ============================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -861,6 +861,15 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 @media (max-width: 960px) {
   .zes-login-right { display: none; }
   .zes-login-left { width: 100%; padding: 30px 24px; }
+}
+
+/* Hide default ExtJS login window so only Zesium split login is visible */
+.pve-login-window,
+div[id^="loginwindow-"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* ==========================================================================

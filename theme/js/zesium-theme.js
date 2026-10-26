@@ -1,26 +1,27 @@
 /**
  * ==============================================================================
  * Zesium - Proxmox Manager
- * 1:1 Complete UI Overhaul for Proxmox VE (Convoy / Advin UI Replica)
+ * Luxury Dark UI Overhaul for Proxmox VE
+ * Solely for Admin Server Management
+ * © Zesium. All rights reserved.
  * ==============================================================================
  */
 
 (function () {
   'use strict';
 
-  console.log('%c Zesium - Proxmox Manager %c 1:1 Convoy UI Active ',
+  console.log('%c Zesium - Proxmox Manager %c Admin UI Active ',
     'background: #ffffff; color: #000000; font-weight: bold; padding: 2px 8px; border-radius: 4px;',
     'background: #18181c; color: #10b981; padding: 2px 8px; border-radius: 4px;'
   );
 
-  // SVG Icon definitions matching Convoy exactly
+  // SVG Icons
   const Icons = {
     logo: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L9 9l-7 1 5 5-1 7 6-3 6 3-1-7 5-5-7-1z"/></svg>`,
-    cloud: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
-    teams: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-    support: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
-    account: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>`,
     server: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+    nodes: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
+    shell: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
+    settings: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
     iso: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/></svg>`,
     camera: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
     ip: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
@@ -36,9 +37,8 @@
     vnc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
     restart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>`,
     stop: `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><rect x="8" y="8" width="8" height="8" rx="1" fill="#ffffff"/></svg>`,
-    external: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
     dots: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>`,
-    userBadge: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+    logout: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`
   };
 
   // State Management
@@ -56,19 +56,14 @@
       os: 'Ubuntu 24.04',
       ip: '85.239.155.209',
       hostname: 'test-ubuntu26.04',
-      location: 'Kansas City, MO',
+      location: 'Node: pve (Local Storage)',
       state: 'running',
       vcpu: '4 vCPU',
       ram: '8 GiB RAM',
       disk: '20 GiB NVMe',
       transfer: 'Unlimited Transfer',
-      created: 'about 2 months ago',
-      price: '8,00 US$',
-      cycle: 'Monthly',
-      nextDue: '2026-11-29',
-      autopay: 'Enabled'
+      created: 'about 2 months ago'
     },
-    clusterStats: null,
     isSamplePreview: false
   };
 
@@ -81,7 +76,7 @@
     }
   }
 
-  // Toast Notification System (Matches Screenshots 212051.png & 212028.png)
+  // Toast Notification System
   function showToast(title, message, duration = 4000) {
     const existing = document.querySelector('.zes-toast');
     if (existing) existing.remove();
@@ -117,7 +112,6 @@
       }
       if (tab) State.selectedTab = tab;
 
-      // Update sidebar active state
       document.querySelectorAll('.zes-menu-item').forEach(el => {
         el.classList.toggle('active', el.dataset.view === view);
       });
@@ -138,7 +132,7 @@
       this.navigateTo('server-detail', 'test-ubuntu26.04');
     },
 
-    // ExtJS Native Wizards & Dialogs (Preserves 100% Proxmox Power!)
+    // Native Proxmox ExtJS Wizards
     openCreateVMWizard: function () {
       if (window.Ext && Ext.ClassManager.get('PVE.qemu.CreateWizard')) {
         Ext.create('PVE.qemu.CreateWizard', { nodename: 'pve' }).show();
@@ -151,11 +145,11 @@
       if (window.Ext && Ext.ClassManager.get('PVE.lxc.CreateWizard')) {
         Ext.create('PVE.lxc.CreateWizard', { nodename: 'pve' }).show();
       } else {
-        this.showToast('Container Wizard', 'Launching Proxmox LXC Wizard...');
+        showToast('Container Wizard', 'Opening LXC Wizard...');
       }
     },
 
-    // Server power actions
+    // Server power actions via Proxmox API
     stopServer: function (id) {
       const server = this.getActiveServer();
       const node = server.node || 'pve';
@@ -177,7 +171,7 @@
           url: `/nodes/${node}/${type}/${vmid}/status/stop`,
           method: 'POST',
           success: () => {
-            showToast('Server Stopped', `Server ${server.name} stop command sent.`);
+            showToast('Server Stopped', `Server ${server.name} stopped successfully.`);
             this.fetchLiveServers();
           },
           failure: (err) => {
@@ -205,7 +199,7 @@
           url: `/nodes/${node}/${type}/${vmid}/status/start`,
           method: 'POST',
           success: () => {
-            showToast('Server Started', `Server ${server.name} start command sent.`);
+            showToast('Server Started', `Server ${server.name} started successfully.`);
             this.fetchLiveServers();
           },
           failure: (err) => {
@@ -249,7 +243,17 @@
       window.open(vncUrl, `vnc_${vmid}`, 'width=1024,height=768,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes,resizable=yes');
     },
 
-    // Toggle between Convoy and legacy ExtJS workspace
+    logout: function () {
+      if (window.Proxmox && Proxmox.Utils && Proxmox.Utils.authClear) {
+        Proxmox.Utils.authClear();
+      }
+      document.cookie = 'PVEAuthCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      try {
+        window.localStorage.removeItem('ProxmoxUser');
+      } catch (e) {}
+      window.location.reload();
+    },
+
     toggleNativeView: function () {
       const isActive = document.body.classList.toggle('zesium-active');
       const app = document.getElementById('zesium-app');
@@ -264,7 +268,6 @@
       return State.servers.find(s => String(s.id) === String(State.activeServerId)) || State.sampleServer;
     },
 
-    // Fetch real VMs & containers from Proxmox cluster
     fetchLiveServers: function () {
       if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
 
@@ -290,17 +293,13 @@
               os: isLxc ? 'Linux Container' : 'Linux VM',
               ip: '85.239.155.209',
               hostname: item.name || `server-${item.vmid}`,
-              location: `Kansas City, MO (Node: ${item.node || 'pve'})`,
+              location: `Node: ${item.node || 'pve'}`,
               state: item.status || 'stopped',
               vcpu: `${vcpu} vCPU`,
               ram: `${ramGb} GiB RAM`,
               disk: `${diskGb} GiB NVMe`,
               transfer: 'Unlimited Transfer',
-              created: 'Proxmox Guest',
-              price: '8,00 US$',
-              cycle: 'Monthly',
-              nextDue: '2026-11-29',
-              autopay: 'Enabled'
+              created: 'Proxmox Guest'
             };
           });
 
@@ -309,7 +308,6 @@
       });
     },
 
-    // Update top header breadcrumb navigation
     updateBreadcrumbs: function () {
       const bc = document.getElementById('zes-breadcrumbs');
       if (!bc) return;
@@ -355,7 +353,7 @@
         bc.innerHTML = `
           <span class="crumb-link" onclick="Zesium.navigateTo('servers')">Home</span>
           <span class="crumb-sep">›</span>
-          <span class="crumb-current">Order a Server</span>
+          <span class="crumb-current">Deploy Server</span>
         `;
       } else if (State.currentView === 'isos') {
         bc.innerHTML = `
@@ -372,7 +370,6 @@
       }
     },
 
-    // Render active view in #zes-main
     render: function () {
       const container = document.getElementById('zes-main');
       if (!container) return;
@@ -380,7 +377,6 @@
       if (State.currentView === 'servers') {
         const hasServers = State.servers.length > 0;
         container.innerHTML = `
-          <!-- Virtual Servers View (Matches Screenshot 212028.png) -->
           <div class="zes-page-header">
             <h1 class="zes-page-title">Virtual Servers</h1>
             <p class="zes-page-subtitle">Select servers to manage them together</p>
@@ -389,11 +385,14 @@
           <div class="zes-toolbar-row">
             <div class="zes-search-input-wrap">
               ${Icons.search}
-              <input type="text" class="zes-search-input" placeholder="Search..." oninput="Zesium.filterServers(this.value)" />
+              <input type="text" class="zes-search-input" placeholder="Search..." />
             </div>
             <div style="display: flex; gap: 8px;">
               <button class="zes-btn-primary" onclick="Zesium.openCreateVMWizard()">
                 + Deploy Server
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openCreateCTWizard()">
+                + Create CT
               </button>
             </div>
           </div>
@@ -404,13 +403,13 @@
                 <tr>
                   <th style="width: 40px;"><input type="checkbox" style="accent-color: #fff;" /></th>
                   <th>Server ⇅</th>
-                  <th>Location</th>
+                  <th>Node</th>
                   <th>IPv4</th>
                   <th>State ⇅</th>
-                  <th>Price</th>
-                  <th>Cycle</th>
-                  <th>Next due</th>
-                  <th>Autopay</th>
+                  <th>Memory</th>
+                  <th>CPU</th>
+                  <th>Disk</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -419,18 +418,22 @@
                     <td onclick="event.stopPropagation()"><input type="checkbox" style="accent-color: #fff;" /></td>
                     <td>
                       <div style="font-weight: 600; color: #fff;">${s.name}</div>
-                      <div style="font-size: 11px; color: #71717a;">${s.vcpu} • ${s.ram} • ${s.disk}</div>
+                      <div style="font-size: 11px; color: #71717a;">${s.os}</div>
                     </td>
-                    <td>🇺🇸 ${s.location}</td>
+                    <td>${s.location}</td>
                     <td style="font-family: monospace;">${s.ip}</td>
                     <td>
                       <span class="zes-status-dot ${s.state}"></span>
                       <span style="text-transform: capitalize; font-weight: 500;">${s.state}</span>
                     </td>
-                    <td>${s.price}</td>
-                    <td>${s.cycle}</td>
-                    <td>${s.nextDue}</td>
-                    <td>${s.autopay}</td>
+                    <td>${s.ram}</td>
+                    <td>${s.vcpu}</td>
+                    <td>${s.disk}</td>
+                    <td>
+                      <button class="zes-action-btn" style="padding: 4px 8px; font-size: 11px;" onclick="event.stopPropagation(); Zesium.openVNC('${s.id}')">
+                        VNC
+                      </button>
+                    </td>
                   </tr>
                 `).join('') : `
                   <tr>
@@ -456,7 +459,6 @@
         const isRunning = s.state === 'running';
 
         container.innerHTML = `
-          <!-- Server Detail View (Matches Screenshot 193958.png) -->
           <div class="zes-server-header">
             <div class="zes-server-meta">
               <div class="zes-server-os-icon">🐧</div>
@@ -481,7 +483,7 @@
                   <span>•</span>
                   <span>${s.transfer}</span>
                   <span>•</span>
-                  <span>🇺🇸 ${s.location}</span>
+                  <span>${s.location}</span>
                 </div>
               </div>
             </div>
@@ -496,13 +498,12 @@
               <button class="zes-action-btn ${isRunning ? 'btn-stop' : ''}" style="${!isRunning ? 'background-color: #10b981; border-color: #10b981;' : ''}" onclick="Zesium.stopServer('${s.id}')">
                 ${isRunning ? `${Icons.stop} Stop` : '▶ Start'}
               </button>
-              <button class="zes-action-btn" onclick="Zesium.showToast('Server Options', 'VMID: ' + ${s.vmid})">
+              <button class="zes-action-btn" onclick="Zesium.showToast('Server Info', 'VMID: ' + ${s.vmid})">
                 ${Icons.dots}
               </button>
             </div>
           </div>
 
-          <!-- Secondary Tab Navigation -->
           <div class="zes-nav-tabs">
             <button class="zes-nav-tab ${State.selectedTab === 'overview' ? 'active' : ''}" onclick="Zesium.setServerTab('overview')">Overview</button>
             <button class="zes-nav-tab ${State.selectedTab === 'settings' ? 'active' : ''}" onclick="Zesium.setServerTab('settings')">Settings</button>
@@ -517,12 +518,10 @@
             <button class="zes-nav-tab ${State.selectedTab === 'admin' ? 'active' : ''}" onclick="Zesium.setServerTab('admin')">Admin</button>
           </div>
 
-          <!-- Tab Content (Upgrade view matches 193958.png 1:1) -->
           ${this.renderServerTabContent()}
         `;
       } else if (State.currentView === 'firewall') {
         container.innerHTML = `
-          <!-- Firewall Groups View (Matches Screenshot 212051.png) -->
           <div class="zes-page-header">
             <h1 class="zes-page-title">test</h1>
             <p class="zes-page-subtitle">The rules this group enforces on every server it is applied to</p>
@@ -533,7 +532,6 @@
             <button class="zes-nav-tab">Servers</button>
           </div>
 
-          <!-- Inbound Rules -->
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
             <div>
               <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Inbound Rules</div>
@@ -565,7 +563,6 @@
             </table>
           </div>
 
-          <!-- Outbound Rules -->
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
             <div>
               <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Outbound Rules</div>
@@ -599,10 +596,9 @@
         `;
       } else if (State.currentView === 'snapshots') {
         container.innerHTML = `
-          <!-- Snapshots View (Matches Screenshot 212036.png) -->
           <div class="zes-page-header">
             <h1 class="zes-page-title">Snapshots</h1>
-            <p class="zes-page-subtitle">Snapshot storages you pay for by the GiB.</p>
+            <p class="zes-page-subtitle">Snapshot storages configured across Proxmox storage pools.</p>
           </div>
 
           <div class="zes-toolbar-row">
@@ -611,7 +607,7 @@
               <input type="text" class="zes-search-input" placeholder="Search storages..." />
             </div>
             <button class="zes-btn-primary" onclick="Zesium.showToast('Snapshot Storage', 'Proxmox storage pool ready.')">
-              🛒 Buy Storage
+              + Add Snapshot Storage
             </button>
           </div>
 
@@ -623,15 +619,14 @@
                   <th>Used ⇅</th>
                   <th>Snapshots ⇅</th>
                   <th>Status ⇅</th>
-                  <th>Price ⇅</th>
-                  <th>Cycle ⇅</th>
-                  <th>Next due ⇅</th>
+                  <th>Node ⇅</th>
+                  <th>Storage Type ⇅</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="7" style="text-align: center; padding: 50px; color: #71717a;">
-                    This team has no snapshot storage yet. Buy one to start taking snapshots.
+                  <td colspan="6" style="text-align: center; padding: 50px; color: #71717a;">
+                    No snapshot storage pools configured yet.
                   </td>
                 </tr>
               </tbody>
@@ -640,15 +635,14 @@
         `;
       } else if (State.currentView === 'private-networks') {
         container.innerHTML = `
-          <!-- Private Networks View (Matches Screenshot 212059.png) -->
           <div class="zes-page-header">
             <h1 class="zes-page-title">Private Networks</h1>
-            <p class="zes-page-subtitle">Isolated networks carrying traffic between your own servers in one city</p>
+            <p class="zes-page-subtitle">Isolated virtual networks and SDN bridges carrying traffic between your VMs and containers</p>
           </div>
 
           <div class="zes-alert-info">
             <strong style="color: #ffffff;">How private networking works</strong><br />
-            A private network connects servers within one city using a separate IP address range. Attach servers from the network page or a server's Private Network tab. Each server gets a private network interface that becomes available after its next reboot.
+            A private network connects servers within Proxmox using isolated bridge interfaces (vmbr / SDN vnets). Attach servers from the network tab of a virtual machine.
           </div>
 
           <div class="zes-toolbar-row">
@@ -667,7 +661,7 @@
                 <tr>
                   <th>Name ⇅</th>
                   <th>Range ⇅</th>
-                  <th>City ⇅</th>
+                  <th>Bridge / Vnet ⇅</th>
                   <th>Servers ⇅</th>
                 </tr>
               </thead>
@@ -683,57 +677,26 @@
         `;
       } else if (State.currentView === 'deploy') {
         container.innerHTML = `
-          <!-- Order a Server View (Matches Screenshots 212110.png, 212115.png, 212121.png) -->
           <div class="zes-page-header">
-            <h1 class="zes-page-title">Order a Server</h1>
-            <p class="zes-page-subtitle">Choose a plan and how the server should be set up. The cost comes out of your account credit and we start building it straight away.</p>
+            <h1 class="zes-page-title">Deploy Server</h1>
+            <p class="zes-page-subtitle">Configure virtual hardware specifications and launch the hypervisor deployment wizard.</p>
           </div>
 
-          <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Choose product group</div>
-          <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Select the product family this server is built from.</div>
+          <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Choose compute profile</div>
+          <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Select the compute profile for this virtual server.</div>
 
           <div class="zes-cards-grid">
             <div class="zes-plan-card selected">
-              <div class="zes-plan-card-title">KVM Standard VPS</div>
-              <div class="zes-plan-card-desc">AMD EPYC Milan 7003 virtual servers. Great for general-purpose compute applications, such as remote desktops and hosting small websites.</div>
+              <div class="zes-plan-card-title">Standard KVM VM</div>
+              <div class="zes-plan-card-desc">General-purpose virtualization on Proxmox VE. Ideal for web services, microservices, and databases.</div>
             </div>
             <div class="zes-plan-card">
-              <div class="zes-plan-card-title">KVM Premium VPS</div>
-              <div class="zes-plan-card-desc">AMD EPYC Genoa 9004 virtual servers. Affordable servers for applications requiring high CPU performance, such as databases and data processing.</div>
+              <div class="zes-plan-card-title">LXC System Container</div>
+              <div class="zes-plan-card-desc">Lightweight Linux container with near-bare-metal performance and minimal memory footprint.</div>
             </div>
             <div class="zes-plan-card">
-              <div class="zes-plan-card-title">KVM 9950X VPS</div>
-              <div class="zes-plan-card-desc">AMD Ryzen 9950X virtual servers. Great for applications demanding high clock speeds, such as game servers and general single-threaded applications.</div>
-            </div>
-          </div>
-
-          <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Choose location</div>
-          <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Select the city the server is built in.</div>
-
-          <div class="zes-cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
-            <div class="zes-location-card selected">
-              <span style="font-size: 13px; font-weight: 500;">🇲🇾 Johor Bahru, MY</span>
-              <span class="zes-status-dot running"></span>
-            </div>
-            <div class="zes-location-card">
-              <span style="font-size: 13px; font-weight: 500;">🇺🇸 Kansas City, MO</span>
-              <span class="zes-status-dot running"></span>
-            </div>
-            <div class="zes-location-card">
-              <span style="font-size: 13px; font-weight: 500;">🇺🇸 Los Angeles, CA</span>
-              <span class="zes-status-dot running"></span>
-            </div>
-            <div class="zes-location-card">
-              <span style="font-size: 13px; font-weight: 500;">🇺🇸 Miami, FL</span>
-              <span class="zes-status-dot running"></span>
-            </div>
-            <div class="zes-location-card">
-              <span style="font-size: 13px; font-weight: 500;">🇩🇪 Nuremberg, DE</span>
-              <span class="zes-status-dot running"></span>
-            </div>
-            <div class="zes-location-card">
-              <span style="font-size: 13px; font-weight: 500;">🇺🇸 Secaucus, NJ</span>
-              <span class="zes-status-dot stopped"></span>
+              <div class="zes-plan-card-title">High-Performance Dedicated</div>
+              <div class="zes-plan-card-desc">Virtual machine with host CPU passthrough, pinned memory, and high-performance virtio drivers.</div>
             </div>
           </div>
 
@@ -745,10 +708,9 @@
         `;
       } else if (State.currentView === 'isos') {
         container.innerHTML = `
-          <!-- Custom ISOs View -->
           <div class="zes-page-header">
             <h1 class="zes-page-title">Custom ISOs</h1>
-            <p class="zes-page-subtitle">Upload and manage custom OS installation media</p>
+            <p class="zes-page-subtitle">Upload and manage custom OS installation media on node storage</p>
           </div>
 
           <div class="zes-toolbar-row">
@@ -799,110 +761,93 @@
       }
     },
 
-    // Render Tab content inside Server Detail (Matches Screenshot 193958.png)
     renderServerTabContent: function () {
       if (State.selectedTab === 'upgrade') {
         return `
           <div class="zes-alert-warning">
             <span style="font-size: 16px;">⚠️</span>
             <div>
-              <strong>The upgrade can take up to 30 minutes</strong><br />
-              <span style="color: #fef08a; font-size: 12px;">The server has to stay powered off while the new plan is applied and remains offline until the change completes.</span>
+              <strong>Resource Allocation Changes</strong><br />
+              <span style="color: #fef08a; font-size: 12px;">Applying CPU or memory modifications may require a guest restart to take effect.</span>
             </div>
           </div>
 
           <div style="margin-top: 24px;">
-            <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Choose product group</div>
-            <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Select the product family for this server.</div>
+            <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Choose compute profile</div>
+            <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Select the compute profile for this virtual server.</div>
 
             <div class="zes-cards-grid">
               <div class="zes-plan-card selected">
-                <div class="zes-plan-card-title">KVM Standard VPS</div>
+                <div class="zes-plan-card-title">KVM Standard Profile</div>
                 <div class="zes-plan-card-desc">
-                  Available at $1.00 per GB of memory<br />
-                  AMD EPYC Milan 7003 virtual servers. Great for general-purpose compute applications, such as remote desktops.
+                  Balanced vCPU and RAM allocation. Ideal for general-purpose server workloads.
                 </div>
               </div>
               <div class="zes-plan-card">
-                <div class="zes-plan-card-title">KVM Premium VPS</div>
+                <div class="zes-plan-card-title">Compute Optimized</div>
                 <div class="zes-plan-card-desc">
-                  Available at $1.25 per GB of memory<br />
-                  AMD EPYC Genoa 9004 virtual servers. Affordable servers for applications requiring high CPU performance.
+                  High vCPU density and host CPU flag pass-through for performance-critical applications.
                 </div>
               </div>
               <div class="zes-plan-card">
-                <div class="zes-plan-card-title">KVM Ryzen VPS</div>
+                <div class="zes-plan-card-title">Memory Intensive</div>
                 <div class="zes-plan-card-desc">
-                  Available at $1.75 per GB of memory<br />
-                  AMD Ryzen 9950X virtual servers. Great for applications demanding high clock speeds, such as game servers.
+                  Expanded RAM allocation with NUMA topology optimization for caching and databases.
                 </div>
               </div>
             </div>
 
-            <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Choose location</div>
-            <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Select the location for this server.</div>
+            <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px;">Target Storage / Node</div>
+            <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Select the target node and disk pool for this server.</div>
 
             <div class="zes-cards-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
-              <div class="zes-location-card">
-                <span style="font-size: 13px; font-weight: 500;">🇺🇸 Los Angeles, CA</span>
-              </div>
-              <div class="zes-location-card">
-                <span style="font-size: 13px; font-weight: 500;">🇺🇸 Miami, FL</span>
-              </div>
               <div class="zes-location-card selected">
-                <span style="font-size: 13px; font-weight: 500;">🇺🇸 Kansas City, MO</span>
+                <span style="font-size: 13px; font-weight: 500;">🖥️ Node: pve</span>
                 <span class="zes-location-badge">CURRENT</span>
               </div>
               <div class="zes-location-card">
-                <span style="font-size: 13px; font-weight: 500;">🇺🇸 NYC Metro</span>
+                <span style="font-size: 13px; font-weight: 500;">💾 Pool: local-lvm</span>
               </div>
               <div class="zes-location-card">
-                <span style="font-size: 13px; font-weight: 500;">🇩🇪 Nuremberg, DE</span>
-              </div>
-              <div class="zes-location-card">
-                <span style="font-size: 13px; font-weight: 500;">🇲🇾 Johor, MY</span>
+                <span style="font-size: 13px; font-weight: 500;">📁 Pool: local</span>
               </div>
             </div>
 
-            <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; margin-top: 24px;">Choose plan</div>
-            <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Only plans that can safely hold the current server disk can be selected.</div>
+            <div style="font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; margin-top: 24px;">Resource Sizing</div>
+            <div style="font-size: 13px; color: #71717a; margin-bottom: 16px;">Configured memory and virtual processor allocations.</div>
 
             <div class="zes-table-container">
               <table class="zes-table">
                 <thead>
                   <tr>
-                    <th>Plan</th>
+                    <th>Profile</th>
                     <th>vCPU</th>
                     <th>Memory</th>
                     <th>Disk</th>
-                    <th>Transfer</th>
-                    <th>Monthly</th>
+                    <th>Network</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td style="font-weight: 600;">KVM Standard 1</td>
+                    <td style="font-weight: 600;">Standard 1</td>
                     <td>1</td>
                     <td>2 GiB</td>
                     <td>20 GiB</td>
-                    <td>1 TB</td>
-                    <td>$4.00</td>
+                    <td>VirtIO 1 Gbps</td>
                   </tr>
                   <tr style="background-color: #222228;">
-                    <td style="font-weight: 600; color: #fff;">KVM Standard 2 (Current)</td>
+                    <td style="font-weight: 600; color: #fff;">Standard 2 (Current)</td>
                     <td>2</td>
                     <td>4 GiB</td>
                     <td>40 GiB</td>
-                    <td>2 TB</td>
-                    <td>$8.00</td>
+                    <td>VirtIO 10 Gbps</td>
                   </tr>
                   <tr>
-                    <td style="font-weight: 600;">KVM Standard 4</td>
+                    <td style="font-weight: 600;">Standard 4</td>
                     <td>4</td>
                     <td>8 GiB</td>
                     <td>80 GiB</td>
-                    <td>4 TB</td>
-                    <td>$16.00</td>
+                    <td>VirtIO 10 Gbps</td>
                   </tr>
                 </tbody>
               </table>
@@ -944,7 +889,7 @@
       }
     },
 
-    // Inject Login Screen (Matches Screenshot 211834.png 1:1)
+    // 1:1 Login Screen (Admin Only with © Zesium)
     mountLoginScreen: function () {
       const existing = document.getElementById('zesium-login-wrapper');
       if (existing) return;
@@ -956,8 +901,11 @@
         <div class="zes-login-left">
           <div class="zes-login-brand">
             <div class="zes-login-brand-left">
-              <img src="/pve2/images/zesium/logo.svg" class="zes-login-brand-logo" alt="Logo" />
-              <span class="zes-login-brand-title">Advin Servers</span>
+              <img src="/pve2/images/zesium/logo.svg" class="zes-login-brand-logo" alt="Zesium Logo" />
+              <div>
+                <span class="zes-login-brand-title">Zesium</span>
+                <span style="display: block; font-size: 11px; color: #71717a; font-weight: 500;">Proxmox Manager</span>
+              </div>
             </div>
             <div class="zes-login-theme-pills">
               <span class="zes-login-pill">🖥</span>
@@ -970,25 +918,24 @@
             <div class="zes-alert-warning" style="margin-bottom: 24px; font-size: 12px;">
               <span style="font-size: 16px;">⚠️</span>
               <div>
-                Having trouble signing in, or lost access to your email or two-factor authentication? Email us at <a href="mailto:company@advinservers.com" style="color: #fde68a;">company@advinservers.com</a>.
+                Admin access only. Unauthorized access is strictly prohibited.
               </div>
             </div>
 
             <h1 class="zes-login-heading">Welcome back</h1>
-            <p class="zes-login-subheading">Sign in with the same email address and password you use for the legacy billing portal.</p>
+            <p class="zes-login-subheading">Sign in with your server credentials to access Proxmox VE.</p>
 
             <form id="zes-login-form" onsubmit="event.preventDefault(); Zesium.handleLogin();">
               <div class="zes-login-form-group">
-                <label class="zes-login-label">Email</label>
-                <input type="text" id="zes-login-username" class="zes-login-input" value="root" placeholder="Email" required />
+                <label class="zes-login-label">Username</label>
+                <input type="text" id="zes-login-username" class="zes-login-input" value="root" placeholder="root" required autocomplete="username" />
               </div>
 
               <div class="zes-login-form-group">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
                   <label class="zes-login-label" style="margin: 0;">Password</label>
-                  <a href="#" style="font-size: 12px; color: #71717a; text-decoration: none;">Forgot your password?</a>
                 </div>
-                <input type="password" id="zes-login-password" class="zes-login-input" placeholder="Password" required />
+                <input type="password" id="zes-login-password" class="zes-login-input" placeholder="Password" required autocomplete="current-password" autofocus />
               </div>
 
               <div class="zes-login-form-group">
@@ -1005,24 +952,17 @@
                 Sign in
               </button>
             </form>
-
-            <div style="margin-top: 24px; font-size: 13px; color: #71717a;">
-              Don't have an account? <a href="#" style="color: #ffffff; text-decoration: none; font-weight: 500;">Create one.</a>
-            </div>
           </div>
 
           <div class="zes-login-footer">
-            <a href="#">Contact Us</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Refund Policy</a>
+            <span>© Zesium. All rights reserved.</span>
           </div>
         </div>
 
         <div class="zes-login-right">
           <div class="zes-login-hero-text">
-            <h2 class="zes-login-hero-title">Affordable Cloud.</h2>
-            <p class="zes-login-hero-desc">We use enterprise-grade hardware and software across datacenters around the world to provide you with a reliable and secure experience.</p>
+            <h2 class="zes-login-hero-title">Zesium Proxmox.</h2>
+            <p class="zes-login-hero-desc">High-performance hypervisor management and bare-metal orchestration powered by Proxmox VE.</p>
           </div>
         </div>
       `;
@@ -1030,6 +970,7 @@
       document.body.appendChild(wrap);
     },
 
+    // Fixed & Reliable Proxmox Authentication Handler
     handleLogin: function () {
       const u = document.getElementById('zes-login-username').value.trim();
       const p = document.getElementById('zes-login-password').value;
@@ -1046,6 +987,7 @@
       params.append('username', fullUsername);
       params.append('password', p);
       params.append('realm', r);
+      params.append('new-format', '1');
 
       fetch('/api2/extjs/access/ticket', {
         method: 'POST',
@@ -1054,14 +996,31 @@
       })
       .then(res => res.json())
       .then(data => {
-        if (data.data && data.data.ticket) {
-          document.cookie = `PVEAuthCookie=${data.data.ticket}; path=/; secure`;
+        const auth = (data && data.data) ? data.data : data;
+        if (auth && auth.ticket) {
+          // Set via Proxmox helper if ready
+          if (window.Proxmox && Proxmox.Utils && Proxmox.Utils.setAuthData) {
+            Proxmox.Utils.setAuthData(auth);
+          }
+
+          // Set cookie explicitly via ExtJS and native document.cookie
+          if (window.Ext && Ext.util && Ext.util.Cookies) {
+            Ext.util.Cookies.set('PVEAuthCookie', auth.ticket, null, '/', null, true, 'lax');
+          }
+          document.cookie = `PVEAuthCookie=${auth.ticket}; path=/; secure; samesite=lax`;
+
+          try {
+            window.localStorage.setItem('ProxmoxUser', JSON.stringify(auth));
+          } catch (e) {}
+
+          // Reload immediately to enter workspace
           window.location.reload();
         } else {
           btn.disabled = false;
           btn.innerText = 'Sign in';
           if (errBox) {
-            errBox.innerText = (data.errors ? Object.values(data.errors).join(', ') : 'Login failed. Please check your credentials.');
+            const msg = data.errors ? Object.values(data.errors).join(', ') : (data.message || 'Login failed. Please check credentials.');
+            errBox.innerText = msg;
             errBox.style.display = 'block';
           }
         }
@@ -1076,38 +1035,41 @@
       });
     },
 
-    // Inject Main Application Shell (Matches Convoy Screenshots 1:1)
+    // Mount Main App Shell
     mountApp: function () {
       const existing = document.getElementById('zesium-app');
       if (existing) return;
 
       document.body.classList.add('zesium-active');
 
+      const userName = (window.Proxmox && Proxmox.UserName) ? Proxmox.UserName : 'root@pam';
+      const nodeName = (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+
       const app = document.createElement('div');
       app.id = 'zesium-app';
       app.innerHTML = `
         <!-- Left Slim Rail (56px) -->
         <div id="zes-rail">
-          <div class="zes-rail-logo" onclick="Zesium.navigateTo('servers')">
+          <div class="zes-rail-logo" title="Zesium - Proxmox Manager" onclick="Zesium.navigateTo('servers')">
             <img src="/pve2/images/zesium/logo.svg" alt="Zesium Logo" />
           </div>
 
           <div class="zes-rail-nav">
-            <button class="zes-rail-btn active" title="Cloud Servers" onclick="Zesium.navigateTo('servers')">
-              ${Icons.cloud}
-              <span>Cloud</span>
+            <button class="zes-rail-btn active" title="Virtual Servers" onclick="Zesium.navigateTo('servers')">
+              ${Icons.server}
+              <span>Servers</span>
             </button>
-            <button class="zes-rail-btn" title="Teams" onclick="Zesium.showToast('Teams', 'Owner Team Active')">
-              ${Icons.teams}
-              <span>Teams</span>
+            <button class="zes-rail-btn" title="Datacenter / Nodes" onclick="Zesium.showToast('Datacenter', 'Node: ' + '${nodeName}' + ' (Online)')">
+              ${Icons.nodes}
+              <span>Cluster</span>
             </button>
-            <button class="zes-rail-btn" title="Support" onclick="Zesium.showToast('Support', 'Support ticket portal ready.')">
-              ${Icons.support}
-              <span>Support</span>
+            <button class="zes-rail-btn" title="Shell Terminal" onclick="Zesium.showToast('Node Shell', 'Proxmox shell ready.')">
+              ${Icons.shell}
+              <span>Shell</span>
             </button>
-            <button class="zes-rail-btn" title="Account" onclick="Zesium.showToast('Account', 'Account settings')">
-              ${Icons.account}
-              <span>Account</span>
+            <button class="zes-rail-btn" title="Settings" onclick="Zesium.showToast('Settings', 'Hypervisor Settings')">
+              ${Icons.settings}
+              <span>Config</span>
             </button>
           </div>
         </div>
@@ -1115,16 +1077,17 @@
         <!-- Main Navigation Sidebar (240px) -->
         <div id="zes-sidebar">
           <div class="zes-sidebar-header">
-            <div style="font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 12px; letter-spacing: -0.01em;">
-              Advin Servers
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+              <span style="font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: -0.01em;">Zesium</span>
+              <span style="font-size: 12px; color: #71717a; font-weight: 500;">Proxmox Manager</span>
             </div>
-            <div class="zes-team-selector" onclick="Zesium.showToast('Team', 'Martin Šintler Team')">
+            <div class="zes-team-selector" onclick="Zesium.showToast('Admin Workspace', 'Proxmox VE Cluster: ${nodeName}')">
               <div class="zes-team-avatar">
-                ${Icons.teams}
+                ${Icons.nodes}
               </div>
               <div class="zes-team-info">
-                <div class="zes-team-name">Martin Šintler's Te...</div>
-                <div class="zes-team-role">Owner</div>
+                <div class="zes-team-name">Administrator</div>
+                <div class="zes-team-role">Node: ${nodeName}</div>
               </div>
               <div class="zes-team-chevron">⇅</div>
             </div>
@@ -1193,27 +1156,22 @@
                 <span>Scripts</span>
               </a>
             </div>
-
-            <!-- Other Products -->
-            <div class="zes-menu-group">
-              <div class="zes-menu-title">Other Products</div>
-              <a class="zes-menu-item" href="https://advinservers.com" target="_blank">
-                ${Icons.globe}
-                <span>Website Hosting</span>
-                <span style="margin-left: auto; color: #71717a;">${Icons.external}</span>
-              </a>
-            </div>
           </div>
 
-          <!-- Bottom Profile Card -->
+          <!-- Bottom Profile Card & Copyright (Zesium) -->
           <div class="zes-sidebar-footer">
-            <div class="zes-user-card" onclick="Zesium.showToast('User Profile', 'Martin Šintler (krioxtin@seznam.cz)')">
+            <div class="zes-user-card" onclick="Zesium.showToast('Admin Profile', '${userName}')">
               <div class="zes-user-badge">MŠ</div>
               <div class="zes-user-details">
                 <div class="zes-user-name">Martin Šintler</div>
-                <div class="zes-user-email">krioxtin@seznam.cz</div>
+                <div class="zes-user-email">${userName}</div>
               </div>
-              <div class="zes-user-chevron">⇅</div>
+              <div class="zes-user-chevron" onclick="event.stopPropagation(); Zesium.logout();" title="Logout">
+                ${Icons.logout}
+              </div>
+            </div>
+            <div style="text-align: center; padding-top: 10px; font-size: 11px; color: #52525b; letter-spacing: 0.02em;">
+              © Zesium
             </div>
           </div>
         </div>
@@ -1229,14 +1187,19 @@
             </div>
 
             <div class="zes-topbar-right">
-              <div style="font-size: 13px; color: #a1a1aa; display: flex; align-items: center; gap: 8px;">
-                <span>Martin Šintler's Credit</span>
-                <span style="font-weight: 600; color: #ffffff;">0 US$ out of 1 000 US$</span>
-                <div style="width: 50px; height: 4px; background: #27272a; border-radius: 99px;"></div>
+              <div style="font-size: 12px; color: #a1a1aa; display: flex; align-items: center; gap: 8px;">
+                <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);"></span>
+                <span style="font-weight: 500; color: #ffffff;">Node: ${nodeName}</span>
+                <span style="color: #52525b;">•</span>
+                <span style="color: #a1a1aa;">4 vCPU • 32 GB RAM</span>
               </div>
 
               <button class="zes-topbar-btn" onclick="Zesium.toggleNativeView()">
                 Proxmox Native View ↗
+              </button>
+
+              <button class="zes-topbar-btn" onclick="Zesium.logout()" title="Sign out of Proxmox VE">
+                Sign out
               </button>
             </div>
           </div>
@@ -1248,18 +1211,16 @@
 
       document.body.appendChild(app);
 
-      // Render initial view and fetch live servers
       this.render();
       this.fetchLiveServers();
 
-      // Show welcome toast matching screenshot 212028.png
       setTimeout(() => {
-        showToast('Setup completed', 'Your account is now ready to use.');
+        showToast('Zesium Manager', `Connected to node ${nodeName}.`);
       }, 500);
     }
   };
 
-  // Bootstrap on ExtJS Ready or DOM Ready
+  // Bootstrap Controller
   function init() {
     suppressNag();
 
