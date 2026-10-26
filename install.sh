@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zesium Proxmox Theme - Installer
+# Zesium - Proxmox Manager Theme Installer
 # Compatible with Proxmox VE 7.x, 8.x, and 9.x
-# Inspired by Convoy & Advin Cloud Management Panel
 # ==============================================================================
 
 set -e
@@ -22,7 +21,7 @@ cat << "EOF"
    / /  |  __|\___ \  | | | |  | | |\/| |
   / /__ | |___|___) |_| |_| |__| | |  | |
  /_____|_____|_____/|_____|\____/|_|  |_|
-     PROXMOX VE CONVOY CLOUD THEME
+       ZESIUM - PROXMOX MANAGER
 EOF
 echo -e "${NC}"
 
@@ -48,7 +47,7 @@ if [ ! -f "$TPL_FILE" ]; then
   exit 1
 fi
 
-echo -e "${BLUE}==>${NC} Installing Zesium Proxmox Theme..."
+echo -e "${BLUE}==>${NC} Installing Zesium - Proxmox Manager Theme..."
 
 # 1. Create clean backup if not already present
 if [ ! -f "$BACKUP_FILE" ]; then
@@ -64,6 +63,9 @@ mkdir -p "$IMAGES_DIR"
 mkdir -p "$CSS_DIR"
 mkdir -p "$JS_DIR"
 
+# Clean up any old overlay files
+rm -f "${CSS_DIR}/zesium-app.css" "${JS_DIR}/zesium-app.js"
+
 # 3. Copy theme files
 echo -e "${GREEN}[3/5]${NC} Copying assets & stylesheets..."
 if [ -d "${SCRIPT_DIR}/theme" ]; then
@@ -71,14 +73,11 @@ if [ -d "${SCRIPT_DIR}/theme" ]; then
   cp -r "${SCRIPT_DIR}/theme/js/"* "$JS_DIR/"
   cp -r "${SCRIPT_DIR}/theme/images/"* "$IMAGES_DIR/"
 else
-  # Running from remote curl pipe, download files from GitHub
   REPO_RAW="https://raw.githubusercontent.com/krioxtindev/zesium-s-proxmox/main"
   echo -e "${BLUE}Downloading assets from GitHub...${NC}"
   curl -sSL "${REPO_RAW}/theme/css/fonts.css" -o "${CSS_DIR}/fonts.css"
   curl -sSL "${REPO_RAW}/theme/css/zesium-theme.css" -o "${CSS_DIR}/zesium-theme.css"
-  curl -sSL "${REPO_RAW}/theme/css/zesium-app.css" -o "${CSS_DIR}/zesium-app.css"
   curl -sSL "${REPO_RAW}/theme/js/zesium-theme.js" -o "${JS_DIR}/zesium-theme.js"
-  curl -sSL "${REPO_RAW}/theme/js/zesium-app.js" -o "${JS_DIR}/zesium-app.js"
   curl -sSL "${REPO_RAW}/theme/images/logo.svg" -o "${IMAGES_DIR}/logo.svg"
   curl -sSL "${REPO_RAW}/theme/images/datacenter-bg.png" -o "${IMAGES_DIR}/datacenter-bg.png"
 fi
@@ -97,9 +96,7 @@ THEME_INJECTION=$(cat << 'EOF'
     <!-- ZESIUM-THEME-START -->
     <link rel="stylesheet" type="text/css" href="/pve2/css/fonts.css" />
     <link rel="stylesheet" type="text/css" href="/pve2/css/zesium-theme.css" />
-    <link rel="stylesheet" type="text/css" href="/pve2/css/zesium-app.css" />
     <script type="text/javascript" src="/pve2/js/zesium-theme.js"></script>
-    <script type="text/javascript" src="/pve2/js/zesium-app.js"></script>
     <!-- ZESIUM-THEME-END -->
 EOF
 )
@@ -114,8 +111,8 @@ systemctl reload pveproxy
 
 echo ""
 echo -e "${GREEN}======================================================${NC}"
-echo -e "${GREEN}  Zesium Proxmox Theme successfully installed!        ${NC}"
+echo -e "${GREEN}  Zesium - Proxmox Manager successfully installed!    ${NC}"
 echo -e "${GREEN}======================================================${NC}"
 echo -e "Open your Proxmox VE web interface in your browser."
-echo -e "Tip: Press ${CYAN}Ctrl + F5${NC} (or Cmd + Shift + R) to bypass browser cache."
+echo -e "Tip: Press ${CYAN}Ctrl + F5${NC} in your browser to clear cache."
 echo ""

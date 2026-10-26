@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Zesium Proxmox Theme - Uninstaller
+# Zesium - Proxmox Manager Uninstaller
 # Completely restores stock Proxmox VE web interface
 # ==============================================================================
 
@@ -21,7 +21,7 @@ cat << "EOF"
    / /  |  __|\___ \  | | | |  | | |\/| |
   / /__ | |___|___) |_| |_| |__| | |  | |
  /_____|_____|_____/|_____|\____/|_|  |_|
-     PROXMOX VE THEME UNINSTALLER
+       PROXMOX VE THEME UNINSTALLER
 EOF
 echo -e "${NC}"
 

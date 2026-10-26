@@ -6,7 +6,7 @@ const sshExe = 'C:\\Users\\marti\\AppData\\Local\\Programs\\Git\\usr\\bin\\ssh.e
 const host = 'root@85.239.155.209';
 
 console.log('--- [1/4] Preparing directories on Proxmox server ---');
-spawnSync(sshExe, [host, 'mkdir -p /usr/share/pve-manager/css /usr/share/pve-manager/js /usr/share/pve-manager/images/zesium'], { stdio: 'inherit' });
+spawnSync(sshExe, [host, 'mkdir -p /usr/share/pve-manager/css /usr/share/pve-manager/js /usr/share/pve-manager/images/zesium && rm -f /usr/share/pve-manager/css/zesium-app.css /usr/share/pve-manager/js/zesium-app.js'], { stdio: 'inherit' });
 
 console.log('--- [2/4] Packaging and uploading theme files ---');
 const archivePath = path.join(__dirname, 'theme_dist.tar.gz');
@@ -31,7 +31,7 @@ if (uploadRes.status !== 0) {
   process.exit(1);
 }
 
-console.log('--- [3/4] Injecting theme tags into index.html.tpl ---');
+console.log('--- [3/4] Injecting clean theme tags into index.html.tpl ---');
 const injectScript = `
 TPL="/usr/share/pve-manager/index.html.tpl"
 BACKUP="/usr/share/pve-manager/index.html.tpl.zesium-backup"
@@ -45,7 +45,7 @@ fi
 sed -i '/<!-- ZESIUM-THEME-START -->/,/<!-- ZESIUM-THEME-END -->/d' "$TPL"
 
 # Inject before </head>
-INJECT="    <!-- ZESIUM-THEME-START -->\\n    <link rel=\\\"stylesheet\\\" type=\\\"text/css\\\" href=\\\"/pve2/css/fonts.css\\\" />\\n    <link rel=\\\"stylesheet\\\" type=\\\"text/css\\\" href=\\\"/pve2/css/zesium-theme.css\\\" />\\n    <link rel=\\\"stylesheet\\\" type=\\\"text/css\\\" href=\\\"/pve2/css/zesium-app.css\\\" />\\n    <script type=\\\"text/javascript\\\" src=\\\"/pve2/js/zesium-theme.js\\\"></script>\\n    <script type=\\\"text/javascript\\\" src=\\\"/pve2/js/zesium-app.js\\\"></script>\\n    <!-- ZESIUM-THEME-END -->"
+INJECT="    <!-- ZESIUM-THEME-START -->\\n    <link rel=\\\"stylesheet\\\" type=\\\"text/css\\\" href=\\\"/pve2/css/fonts.css\\\" />\\n    <link rel=\\\"stylesheet\\\" type=\\\"text/css\\\" href=\\\"/pve2/css/zesium-theme.css\\\" />\\n    <script type=\\\"text/javascript\\\" src=\\\"/pve2/js/zesium-theme.js\\\"></script>\\n    <!-- ZESIUM-THEME-END -->"
 
 sed -i "/<\\/head>/i $INJECT" "$TPL"
 `;
@@ -55,4 +55,4 @@ spawnSync(sshExe, [host, injectScript], { stdio: 'inherit' });
 console.log('--- [4/4] Reloading pveproxy service ---');
 spawnSync(sshExe, [host, 'systemctl reload pveproxy'], { stdio: 'inherit' });
 
-console.log('\\n✅ Zesium Convoy Theme successfully deployed to https://85.239.155.209:8006/ !');
+console.log('\\n✅ Zesium Proxmox Theme successfully deployed to https://85.239.155.209:8006/ !');
