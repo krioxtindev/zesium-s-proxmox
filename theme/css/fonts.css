@@ -1,0 +1,72 @@
+/* ==========================================================================
+   Zesium Proxmox Theme - Modern Typography & CSS Tokens
+   Inspired by Convoy / Advin Cloud Management Panel
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Surface colors */
+  --zes-bg-canvas: #0e0e11;
+  --zes-bg-surface: #141417;
+  --zes-bg-card: #18181c;
+  --zes-bg-card-hover: #1f1f25;
+  --zes-bg-sidebar: #101013;
+  --zes-bg-subbar: #0b0b0e;
+  --zes-bg-input: #151518;
+  --zes-bg-input-focus: #18181d;
+  --zes-bg-modal: #18181c;
+  --zes-bg-modal-header: #131316;
+
+  /* Borders */
+  --zes-border-subtle: #202025;
+  --zes-border-base: #27272a;
+  --zes-border-focus: #3f3f46;
+  --zes-border-active: #ffffff;
+
+  /* Typography colors */
+  --zes-text-primary: #f4f4f5;
+  --zes-text-secondary: #a1a1aa;
+  --zes-text-muted: #71717a;
+  --zes-text-dim: #52525b;
+
+  /* Accents */
+  --zes-primary-btn-bg: #ffffff;
+  --zes-primary-btn-text: #09090b;
+  --zes-primary-btn-hover: #e4e4e7;
+  
+  --zes-accent-blue: #3b82f6;
+  --zes-accent-blue-hover: #2563eb;
+  --zes-accent-blue-subtle: rgba(59, 130, 246, 0.12);
+
+  --zes-status-success: #10b981;
+  --zes-status-success-bg: rgba(16, 185, 129, 0.12);
+  --zes-status-warning: #f59e0b;
+  --zes-status-warning-bg: rgba(245, 158, 11, 0.1);
+  --zes-status-warning-border: #78350f;
+  --zes-status-danger: #ef4444;
+  --zes-status-danger-bg: rgba(239, 68, 68, 0.12);
+
+  /* Radius & Shadows */
+  --zes-radius-sm: 6px;
+  --zes-radius-md: 8px;
+  --zes-radius-lg: 12px;
+  --zes-radius-xl: 16px;
+  --zes-radius-pill: 9999px;
+
+  --zes-shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --zes-shadow-modal: 0 20px 40px -4px rgba(0, 0, 0, 0.7);
+  --zes-shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+  --zes-shadow-glow: 0 0 15px rgba(255, 255, 255, 0.08);
+
+  /* Typography scale */
+  --zes-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --zes-font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Global Font Override */
+body, .x-body, .x-panel, .x-btn, .x-tree-panel, .x-grid, .x-form-item, input, select, textarea, button {
+  font-family: var(--zes-font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
