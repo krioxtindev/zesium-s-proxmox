@@ -241,6 +241,136 @@
           font-size: 13px !important;
           font-weight: 700 !important;
         }
+
+        /* Checkbox & Radio Buttons - Convoy styling without double circles or overlapping text */
+        .x-form-cb-wrap {
+          display: inline-flex !important;
+          align-items: center !important;
+          min-height: 24px !important;
+          padding: 4px 0 !important;
+          cursor: pointer !important;
+          vertical-align: middle !important;
+        }
+
+        .x-form-radio,
+        .x-form-radio-default,
+        .x-window .x-form-radio,
+        .x-window-default input.x-form-radio,
+        .x-form-type-radio input,
+        input.x-form-radio {
+          -webkit-appearance: none !important;
+          -moz-appearance: none !important;
+          appearance: none !important;
+          width: 16px !important;
+          height: 16px !important;
+          min-width: 16px !important;
+          min-height: 16px !important;
+          max-width: 16px !important;
+          max-height: 16px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border-radius: 50% !important;
+          border: 1.5px solid #3f3f46 !important;
+          background-color: #18181c !important;
+          background-image: none !important;
+          box-shadow: none !important;
+          cursor: pointer !important;
+          display: inline-block !important;
+          vertical-align: middle !important;
+          flex-shrink: 0 !important;
+          transition: all 0.15s ease !important;
+        }
+
+        .x-form-radio:before,
+        .x-form-radio:after,
+        .x-form-radio-default:before,
+        .x-form-radio-default:after,
+        .x-form-type-radio input:before,
+        .x-form-type-radio input:after {
+          display: none !important;
+          content: none !important;
+          opacity: 0 !important;
+        }
+
+        .x-form-radio.x-form-cb-checked,
+        .x-form-cb-checked .x-form-radio,
+        .x-form-radio-default.x-form-cb-checked,
+        .x-form-cb-wrap.x-form-cb-checked .x-form-radio,
+        .x-form-type-radio .x-form-cb-checked {
+          border-color: #ffffff !important;
+          background-color: #18181c !important;
+          background-image: radial-gradient(circle, #ffffff 42%, transparent 48%) !important;
+          background-repeat: no-repeat !important;
+          background-position: center !important;
+          box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .x-form-checkbox,
+        .x-form-checkbox-default,
+        .x-window .x-form-checkbox,
+        .x-window-default input.x-form-checkbox,
+        .x-form-type-checkbox input,
+        input.x-form-checkbox {
+          -webkit-appearance: none !important;
+          -moz-appearance: none !important;
+          appearance: none !important;
+          width: 16px !important;
+          height: 16px !important;
+          min-width: 16px !important;
+          min-height: 16px !important;
+          max-width: 16px !important;
+          max-height: 16px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border-radius: 4px !important;
+          border: 1.5px solid #3f3f46 !important;
+          background-color: #18181c !important;
+          background-image: none !important;
+          box-shadow: none !important;
+          cursor: pointer !important;
+          display: inline-block !important;
+          vertical-align: middle !important;
+          flex-shrink: 0 !important;
+          transition: all 0.15s ease !important;
+        }
+
+        .x-form-checkbox:before,
+        .x-form-checkbox:after,
+        .x-form-checkbox-default:before,
+        .x-form-checkbox-default:after {
+          display: none !important;
+          content: none !important;
+        }
+
+        .x-form-checkbox.x-form-cb-checked,
+        .x-form-cb-checked .x-form-checkbox,
+        .x-form-checkbox-default.x-form-cb-checked,
+        .x-form-cb-wrap.x-form-cb-checked .x-form-checkbox {
+          border-color: #ffffff !important;
+          background-color: #ffffff !important;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3E%3Cpath d='M13.485 3.515a1 1 0 0 1 0 1.414l-6.364 6.364a1 1 0 0 1-1.414 0l-3.182-3.182a1 1 0 1 1 1.414-1.414L6.414 9.172l5.657-5.657a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;
+          background-repeat: no-repeat !important;
+          background-position: center !important;
+          background-size: 11px 11px !important;
+        }
+
+        .x-form-cb-label,
+        .x-form-cb-label-default,
+        .x-window .x-form-cb-label,
+        .x-window-default .x-form-cb-label {
+          font-family: 'Inter', sans-serif !important;
+          color: #f4f4f5 !important;
+          font-size: 13px !important;
+          font-weight: 400 !important;
+          letter-spacing: -0.01em !important;
+          margin-left: 10px !important;
+          padding: 0 !important;
+          cursor: pointer !important;
+          display: inline-block !important;
+          vertical-align: middle !important;
+          line-height: 18px !important;
+          white-space: nowrap !important;
+        }
       `;
       document.head.appendChild(s);
     }
@@ -259,6 +389,12 @@
           b.style.setProperty('background-color', '#27272a', 'important');
           b.style.setProperty('border-color', '#3f3f46', 'important');
           b.style.setProperty('background-image', 'none', 'important');
+        });
+
+        const labels = document.querySelectorAll('.x-form-cb-label');
+        labels.forEach(l => {
+          l.style.setProperty('margin-left', '10px', 'important');
+          l.style.setProperty('padding', '0', 'important');
         });
       } catch (e) {}
     }

@@ -33,3 +33,11 @@ body, html, input, select, textarea, button, label,
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
 }
+
+/* Preserve icon fonts (FontAwesome) on pseudo-elements */
+.fa, .x-fa, [class*="fa-"],
+.x-btn-icon-el:before,
+.x-grid-checkcolumn:before,
+.x-tree-expander:before {
+  font-family: 'FontAwesome', 'Font Awesome 5 Free', 'Font Awesome 5 Pro' !important;
+}
