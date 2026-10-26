@@ -981,31 +981,61 @@ div.pmx-hint,
   margin-top: 10px !important;
 }
 
-/* BOTTOM MODAL TOOLBAR */
-.x-window-default .x-toolbar-docked-bottom {
+/* BOTTOM MODAL TOOLBAR & WIZARD FOOTER */
+.x-window .x-toolbar,
+.x-window .x-toolbar-footer,
+.x-window .x-toolbar-docked-bottom,
+.x-window-default .x-toolbar-docked-bottom,
+.x-toolbar-footer {
   background-color: #101014 !important;
   border-top: 1px solid #22222a !important;
   padding: 12px 20px !important;
 }
 
-.x-window-default .x-toolbar-docked-bottom .x-toolbar-item {
+.x-window .x-toolbar .x-toolbar-item,
+.x-toolbar-footer .x-toolbar-item {
   margin: 0 4px !important;
 }
 
-/* ADVANCED CHECKBOX SPACING */
-.x-window-default .x-toolbar-docked-bottom .x-form-item {
-  margin-right: 24px !important;
+/* HIDE UGLY HELP BUTTON IN WIZARDS & MODALS */
+.x-window .x-toolbar [itemId="help"],
+.x-window .x-toolbar-footer [itemId="help"],
+.x-window [itemId="help"],
+.x-toolbar-footer [itemId="help"],
+.x-window .x-btn[id*="help"] {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
-.x-window-default .x-toolbar-docked-bottom .x-form-cb-label {
+
+/* ADVANCED CHECKBOX SPACING */
+.x-window .x-toolbar .x-form-type-checkbox,
+.x-window .x-toolbar .x-form-cb-wrap,
+.x-window .x-toolbar .x-field[id*="checkbox"],
+.x-window .x-toolbar [name="advanced"],
+.x-window-default .x-toolbar .x-form-item,
+.x-toolbar-footer .x-form-item {
+  margin-right: 28px !important;
+}
+.x-window .x-toolbar .x-form-cb-label,
+.x-toolbar-footer .x-form-cb-label {
   font-family: var(--font-sans) !important;
   color: #f4f4f5 !important;
   font-size: 13px !important;
-  font-weight: 600 !important;
-  margin-right: 14px !important;
+  font-weight: 500 !important;
+  margin-right: 12px !important;
 }
 
-/* CANCEL / ABORT / BACK BUTTON */
-.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) {
+/* BASE STYLING FOR ALL WINDOW / WIZARD FOOTER BUTTONS */
+.x-window .x-toolbar .x-btn,
+.x-window .x-toolbar-footer .x-btn,
+.x-toolbar-footer .x-btn,
+.x-window .x-toolbar-docked-bottom .x-btn,
+.x-window .x-btn-default-small,
+.x-window .x-btn-default-toolbar-small {
   background-image: none !important;
   background-color: #27272a !important;
   border: 1px solid #3f3f46 !important;
@@ -1015,19 +1045,79 @@ div.pmx-hint,
   box-shadow: none !important;
   transition: all 0.15s ease !important;
 }
-.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) .x-btn-inner {
+.x-window .x-toolbar .x-btn .x-btn-inner,
+.x-window .x-toolbar-footer .x-btn .x-btn-inner,
+.x-toolbar-footer .x-btn .x-btn-inner,
+.x-window .x-btn-default-small .x-btn-inner,
+.x-window .x-btn-default-toolbar-small .x-btn-inner {
   font-family: var(--font-sans) !important;
   color: #f4f4f5 !important;
   font-size: 13px !important;
   font-weight: 600 !important;
 }
-.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child):hover {
+.x-window .x-toolbar .x-btn:hover,
+.x-window .x-toolbar-footer .x-btn:hover,
+.x-toolbar-footer .x-btn:hover {
   background-color: #383844 !important;
   border-color: #525260 !important;
 }
 
+/* BACK / CANCEL / ABORT SPECIFIC BUTTON - NEVER BLUE! */
+.x-window [itemId="back"],
+.x-window .x-toolbar [itemId="back"],
+.x-window .x-toolbar-footer [itemId="back"],
+.x-toolbar-footer [itemId="back"],
+.x-window [itemId="cancel"],
+.x-window .x-toolbar [itemId="cancel"],
+.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) {
+  background-image: none !important;
+  background-color: #27272a !important;
+  border: 1px solid #3f3f46 !important;
+  color: #f4f4f5 !important;
+}
+.x-window [itemId="back"] .x-btn-inner,
+.x-window .x-toolbar [itemId="back"] .x-btn-inner,
+.x-window .x-toolbar-footer [itemId="back"] .x-btn-inner,
+.x-toolbar-footer [itemId="back"] .x-btn-inner,
+.x-window [itemId="cancel"] .x-btn-inner,
+.x-window .x-toolbar [itemId="cancel"] .x-btn-inner {
+  color: #f4f4f5 !important;
+  font-weight: 600 !important;
+}
+.x-window [itemId="back"]:hover,
+.x-window .x-toolbar [itemId="back"]:hover {
+  background-color: #383844 !important;
+  border-color: #525260 !important;
+}
+
+/* DISABLED BUTTONS (e.g. Back on step 1) */
+.x-window .x-toolbar .x-btn.x-btn-disabled,
+.x-window .x-toolbar-footer .x-btn.x-btn-disabled,
+.x-toolbar-footer .x-btn.x-btn-disabled,
+.x-window [itemId="back"].x-btn-disabled,
+.x-window .x-btn-disabled,
+.x-window-default .x-toolbar-docked-bottom .x-btn-disabled {
+  background-image: none !important;
+  background-color: #1a1a20 !important;
+  border-color: #272730 !important;
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+.x-window .x-toolbar .x-btn.x-btn-disabled .x-btn-inner,
+.x-window [itemId="back"].x-btn-disabled .x-btn-inner,
+.x-window .x-btn-disabled .x-btn-inner {
+  color: #71717a !important;
+}
+
 /* PRIMARY SUBMIT BUTTON (Upload / Next / Finish / Create) */
-.x-window-default .x-toolbar-docked-bottom .x-btn:last-child {
+.x-window [itemId="next"]:not(.x-btn-disabled),
+.x-window [itemId="finish"]:not(.x-btn-disabled),
+.x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled),
+.x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled),
+.x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled),
+.x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled),
+.x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]),
+.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) {
   background-image: none !important;
   background-color: #ffffff !important;
   border: 1px solid #ffffff !important;
@@ -1037,24 +1127,25 @@ div.pmx-hint,
   box-shadow: none !important;
   transition: all 0.15s ease !important;
 }
-.x-window-default .x-toolbar-docked-bottom .x-btn:last-child .x-btn-inner {
+.x-window [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
+.x-window [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
+.x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
+.x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
+.x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
+.x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
+.x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner,
+.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner {
   font-family: var(--font-sans) !important;
   color: #000000 !important;
   font-size: 13px !important;
   font-weight: 700 !important;
 }
-.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:hover {
+.x-window [itemId="next"]:hover:not(.x-btn-disabled),
+.x-window [itemId="finish"]:hover:not(.x-btn-disabled),
+.x-window .x-toolbar-footer .x-btn:last-child:hover:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]),
+.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:hover:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) {
   background-color: #e4e4e7 !important;
   border-color: #e4e4e7 !important;
-}
-.x-window-default .x-toolbar-docked-bottom .x-btn-disabled:last-child {
-  background-color: #222228 !important;
-  border-color: #2e2e36 !important;
-  opacity: 0.5 !important;
-}
-.x-window-default .x-toolbar-docked-bottom .x-btn-disabled:last-child .x-btn-inner {
-  font-family: var(--font-sans) !important;
-  color: #71717a !important;
 }
 
 /* GRIDS INSIDE MODALS */

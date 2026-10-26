@@ -30,7 +30,6 @@
     zfs: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>`,
     backup: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
     network: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
-    firewall: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
     sdn: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`,
     cluster: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/></svg>`,
     shell: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
@@ -70,10 +69,6 @@
     lvm: [],
     zfs: [],
     networks: [],
-    firewallRules: [],
-    clusterFirewallRules: [],
-    firewallOptions: null,
-    firewallTab: 'node',
     sdn: [],
     clusterStatus: [],
     syslogEntries: [],
@@ -119,7 +114,7 @@
       } catch (e) {}
     }
 
-    // Force Inter typography stylesheet at runtime on every ExtJS element
+    // Force Inter typography stylesheet and wizard footer styling at runtime on every ExtJS element
     if (!document.getElementById('zes-runtime-font-force')) {
       const s = document.createElement('style');
       s.id = 'zes-runtime-font-force';
@@ -134,8 +129,146 @@
         .pmx-hint, .pmx-hint * {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         }
+
+        /* WIZARD & MODAL FOOTER BUTTONS & SPACING */
+        .x-window .x-toolbar [itemId="help"],
+        .x-window .x-toolbar-footer [itemId="help"],
+        .x-window [itemId="help"],
+        .x-toolbar-footer [itemId="help"],
+        .x-window .x-btn[id*="help"] {
+          display: none !important;
+          visibility: hidden !important;
+          width: 0 !important;
+          height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .x-window .x-toolbar .x-form-type-checkbox,
+        .x-window .x-toolbar .x-form-cb-wrap,
+        .x-window .x-toolbar .x-field[id*="checkbox"],
+        .x-window .x-toolbar [name="advanced"],
+        .x-window-default .x-toolbar .x-form-item,
+        .x-toolbar-footer .x-form-item {
+          margin-right: 28px !important;
+        }
+        .x-window .x-toolbar .x-form-cb-label,
+        .x-toolbar-footer .x-form-cb-label {
+          font-family: 'Inter', sans-serif !important;
+          color: #f4f4f5 !important;
+          font-size: 13px !important;
+          font-weight: 500 !important;
+          margin-right: 12px !important;
+        }
+
+        .x-window .x-toolbar .x-btn,
+        .x-window .x-toolbar-footer .x-btn,
+        .x-toolbar-footer .x-btn,
+        .x-window .x-toolbar-docked-bottom .x-btn,
+        .x-window .x-btn-default-small,
+        .x-window .x-btn-default-toolbar-small {
+          background-image: none !important;
+          background-color: #27272a !important;
+          border: 1px solid #3f3f46 !important;
+          border-radius: 6px !important;
+          padding: 6px 16px !important;
+          min-width: 75px !important;
+          box-shadow: none !important;
+        }
+
+        .x-window [itemId="back"],
+        .x-window .x-toolbar [itemId="back"],
+        .x-window .x-toolbar-footer [itemId="back"],
+        .x-toolbar-footer [itemId="back"],
+        .x-window [itemId="cancel"],
+        .x-window .x-toolbar [itemId="cancel"],
+        .x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) {
+          background-image: none !important;
+          background-color: #27272a !important;
+          border: 1px solid #3f3f46 !important;
+          color: #f4f4f5 !important;
+        }
+        .x-window [itemId="back"] .x-btn-inner,
+        .x-window .x-toolbar [itemId="back"] .x-btn-inner,
+        .x-window .x-toolbar-footer [itemId="back"] .x-btn-inner,
+        .x-toolbar-footer [itemId="back"] .x-btn-inner {
+          color: #f4f4f5 !important;
+          font-weight: 600 !important;
+        }
+
+        .x-window .x-toolbar .x-btn.x-btn-disabled,
+        .x-window .x-toolbar-footer .x-btn.x-btn-disabled,
+        .x-toolbar-footer .x-btn.x-btn-disabled,
+        .x-window [itemId="back"].x-btn-disabled,
+        .x-window .x-btn-disabled {
+          background-image: none !important;
+          background-color: #1a1a20 !important;
+          border-color: #272730 !important;
+          opacity: 0.45 !important;
+        }
+        .x-window .x-toolbar .x-btn.x-btn-disabled .x-btn-inner,
+        .x-window [itemId="back"].x-btn-disabled .x-btn-inner,
+        .x-window .x-btn-disabled .x-btn-inner {
+          color: #71717a !important;
+        }
+
+        .x-window [itemId="next"]:not(.x-btn-disabled),
+        .x-window [itemId="finish"]:not(.x-btn-disabled),
+        .x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled),
+        .x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled),
+        .x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled),
+        .x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled),
+        .x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]),
+        .x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) {
+          background-image: none !important;
+          background-color: #ffffff !important;
+          border: 1px solid #ffffff !important;
+          border-radius: 6px !important;
+          padding: 6px 18px !important;
+          min-width: 80px !important;
+          box-shadow: none !important;
+        }
+        .x-window [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
+        .x-window [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
+        .x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
+        .x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
+        .x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
+        .x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
+        .x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner,
+        .x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner {
+          font-family: 'Inter', sans-serif !important;
+          color: #000000 !important;
+          font-size: 13px !important;
+          font-weight: 700 !important;
+        }
       `;
       document.head.appendChild(s);
+    }
+
+    // Dynamic observer to continuously ensure ExtJS wizard toolbar elements are styled properly
+    function sanitizeExtWindows() {
+      try {
+        const helpBtns = document.querySelectorAll('.x-window [itemId="help"], .x-window .x-btn[id*="help"], .x-toolbar-footer [itemId="help"]');
+        helpBtns.forEach(b => { b.style.setProperty('display', 'none', 'important'); });
+
+        const checkboxes = document.querySelectorAll('.x-window .x-form-type-checkbox, .x-window [name="advanced"]');
+        checkboxes.forEach(c => { c.style.setProperty('margin-right', '28px', 'important'); });
+
+        const backBtns = document.querySelectorAll('.x-window [itemId="back"], .x-toolbar-footer [itemId="back"]');
+        backBtns.forEach(b => {
+          b.style.setProperty('background-color', '#27272a', 'important');
+          b.style.setProperty('border-color', '#3f3f46', 'important');
+          b.style.setProperty('background-image', 'none', 'important');
+        });
+      } catch (e) {}
+    }
+
+    if (!window.__zesWindowObserverInstalled) {
+      window.__zesWindowObserverInstalled = true;
+      const extWindowObserver = new MutationObserver(() => {
+        sanitizeExtWindows();
+      });
+      extWindowObserver.observe(document.body, { childList: true, subtree: true });
     }
   }
 
@@ -194,7 +327,6 @@
       else if (view === 'lvm') this.fetchLVM();
       else if (view === 'zfs') this.fetchZFS();
       else if (view === 'network') this.fetchNetworks();
-      else if (view === 'firewall') this.fetchFirewall();
       else if (view === 'sdn') this.fetchSDN();
       else if (view === 'cluster') this.fetchCluster();
       else if (view === 'syslog') this.fetchSyslog();
@@ -209,14 +341,9 @@
     setServerTab: function (tab) {
       State.selectedTab = tab;
       this.render();
-      if (tab === 'hardware' || tab === 'backup' || tab === 'firewall') {
+      if (tab === 'hardware' || tab === 'backup') {
         this.fetchServerDetails();
       }
-    },
-
-    setFirewallTab: function (tab) {
-      State.firewallTab = tab;
-      this.render();
     },
 
     // 100% Functioning Native Proxmox Wizards with Centering
@@ -280,32 +407,14 @@
       }
     },
 
-    // Fixed Firewall Rule Modal
-    openAddFirewallRuleWindow: function (type = 'node') {
-      if (window.Ext && Ext.ClassManager.get('PVE.FirewallRuleEdit')) {
-        const isNode = type === 'node';
-        const win = Ext.create('PVE.FirewallRuleEdit', {
-          firewall_type: isNode ? 'node' : 'dc',
-          allow_iface: isNode,
-          base_url: isNode ? '/nodes/pve/firewall/rules' : '/cluster/firewall/rules',
-          autoShow: true,
-          taskDone: () => Zesium.fetchFirewall()
-        });
-        win.show();
-        win.center();
-      }
-    },
-
-    // 100% Functional Backup Window with automatic fallback
+    // Direct, Minimal Backup Window
     openBackupWindow: function (vmid = null, vmtype = null) {
       let target = null;
       if (vmid) {
         target = State.servers.find(s => String(s.vmid) === String(vmid));
       } else if (State.activeServerId) {
         target = State.servers.find(s => String(s.id) === String(State.activeServerId));
-      }
-
-      if (!target && State.servers.length === 1) {
+      } else if (State.servers.length > 0) {
         target = State.servers[0];
       }
 
@@ -326,102 +435,7 @@
         }
       }
 
-      // If multiple servers exist and none preselected, show guest selection modal
-      if (State.servers.length > 0) {
-        Zesium.showBackupGuestChooser();
-        return;
-      }
-
-      // If NO virtual machines or containers exist yet
-      Zesium.showNoGuestsModal();
-    },
-
-    showBackupGuestChooser: function () {
-      const existing = document.getElementById('zes-guest-chooser-modal');
-      if (existing) existing.remove();
-
-      const modal = document.createElement('div');
-      modal.id = 'zes-guest-chooser-modal';
-      modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;';
-      modal.innerHTML = `
-        <div style="background:#141418;border:1px solid #27272a;border-radius:12px;width:440px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.85);">
-          <div style="padding:16px 20px;border-bottom:1px solid #22222a;display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-weight:600;font-size:16px;color:#fff;">Select Guest to Backup</span>
-            <span style="cursor:pointer;color:#a1a1aa;font-size:18px;" onclick="document.getElementById('zes-guest-chooser-modal').remove()">✕</span>
-          </div>
-          <div style="padding:20px;">
-            <p style="margin:0 0 16px 0;font-size:13px;color:#a1a1aa;">Choose which virtual machine or container to backup:</p>
-            <div style="display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;">
-              ${State.servers.map(s => `
-                <div style="background:#18181c;border:1px solid #27272a;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onmouseover="this.style.borderColor='#52525b'" onmouseout="this.style.borderColor='#27272a'" onclick="document.getElementById('zes-guest-chooser-modal').remove(); Zesium.openBackupWindow('${s.vmid}', '${s.type}')">
-                  <div>
-                    <div style="font-weight:600;font-size:14px;color:#fff;">${s.name || s.vmid}</div>
-                    <div style="font-size:12px;color:#71717a;">ID: ${s.vmid} • Type: ${s.type.toUpperCase()} • Node: ${s.node}</div>
-                  </div>
-                  <button class="zes-btn-primary" style="padding:4px 12px;font-size:12px;">Backup</button>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-          <div style="padding:12px 20px;background:#101014;border-top:1px solid #22222a;display:flex;justify-content:flex-end;">
-            <button class="zes-action-btn" onclick="document.getElementById('zes-guest-chooser-modal').remove()">Cancel</button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-    },
-
-    showNoGuestsModal: function () {
-      const existing = document.getElementById('zes-no-guests-modal');
-      if (existing) existing.remove();
-
-      const modal = document.createElement('div');
-      modal.id = 'zes-no-guests-modal';
-      modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;';
-      modal.innerHTML = `
-        <div style="background:#141418;border:1px solid #27272a;border-radius:12px;width:480px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.85);">
-          <div style="padding:16px 20px;border-bottom:1px solid #22222a;display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-weight:600;font-size:16px;color:#fff;">Backup & Disaster Recovery</span>
-            <span style="cursor:pointer;color:#a1a1aa;font-size:18px;" onclick="document.getElementById('zes-no-guests-modal').remove()">✕</span>
-          </div>
-          <div style="padding:24px 20px;">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;color:#f59e0b;">
-              <div style="width:28px;height:28px;">${Icons.backup}</div>
-              <div style="font-weight:600;font-size:15px;color:#fff;">No Virtual Machines or Containers Found</div>
-            </div>
-            <p style="margin:0 0 20px 0;font-size:13px;color:#a1a1aa;line-height:1.5;">
-              To create a guest backup archive, you must first create a Virtual Machine (KVM) or Container (LXC) on node <strong>pve</strong>. Alternatively, you can configure an automated Datacenter Backup Schedule Job.
-            </p>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <button class="zes-btn-primary" style="justify-content:center;padding:10px;" onclick="document.getElementById('zes-no-guests-modal').remove(); Zesium.openCreateVMWindow();">
-                ${Icons.createVm} Create Virtual Machine (KVM)
-              </button>
-              <button class="zes-action-btn" style="justify-content:center;padding:10px;" onclick="document.getElementById('zes-no-guests-modal').remove(); Zesium.openCreateCTWindow();">
-                ${Icons.createCt} Create LXC Container
-              </button>
-              <button class="zes-action-btn" style="justify-content:center;padding:10px;" onclick="document.getElementById('zes-no-guests-modal').remove(); Zesium.openBackupScheduleWindow();">
-                ${Icons.time} Configure Datacenter Backup Schedule
-              </button>
-            </div>
-          </div>
-          <div style="padding:12px 20px;background:#101014;border-top:1px solid #22222a;display:flex;justify-content:flex-end;">
-            <button class="zes-action-btn" onclick="document.getElementById('zes-no-guests-modal').remove()">Close</button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-    },
-
-    openBackupScheduleWindow: function () {
-      try {
-        const win = Ext.create('PVE.dc.BackupEdit', {
-          autoShow: true
-        });
-        win.show();
-        win.center();
-      } catch (e) {
-        showToast('Backup Job', 'Could not open backup schedule window: ' + e);
-      }
+      showToast('Backup', 'No virtual machines or containers found to backup.');
     },
 
     restoreBackup: function (volid) {
@@ -734,33 +748,7 @@
       });
     },
 
-    fetchFirewall: function () {
-      if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
-      Proxmox.Utils.API2Request({
-        url: '/nodes/pve/firewall/rules',
-        method: 'GET',
-        success: (response) => {
-          State.firewallRules = response.result.data || [];
-          this.render();
-        }
-      });
-      Proxmox.Utils.API2Request({
-        url: '/cluster/firewall/rules',
-        method: 'GET',
-        success: (response) => {
-          State.clusterFirewallRules = response.result.data || [];
-          this.render();
-        }
-      });
-      Proxmox.Utils.API2Request({
-        url: '/nodes/pve/firewall/options',
-        method: 'GET',
-        success: (response) => {
-          State.firewallOptions = response.result.data || {};
-          this.render();
-        }
-      });
-    },
+
 
     fetchSDN: function () {
       if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
@@ -1324,15 +1312,12 @@
         container.innerHTML = `
           <div class="zes-page-header">
             <div>
-              <h1 class="zes-page-title">Backups & Disaster Recovery</h1>
-              <p class="zes-page-subtitle">VZDump snapshot archives, automated backup jobs, and one-click restore</p>
+              <h1 class="zes-page-title">Backups</h1>
+              <p class="zes-page-subtitle">VZDump snapshot archives and one-click restore</p>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div>
               <button class="zes-btn-primary" onclick="Zesium.openBackupWindow()">
                 ${Icons.backup} + Backup Guest Now
-              </button>
-              <button class="zes-action-btn" onclick="Zesium.openBackupScheduleWindow()">
-                ${Icons.time} Add Backup Schedule
               </button>
             </div>
           </div>
@@ -1377,9 +1362,8 @@
                   <tr>
                     <td colspan="5" style="text-align: center; padding: 60px 20px; color: #71717a;">
                       <div style="font-size: 14px; margin-bottom: 12px; color: #a1a1aa;">No backup archives stored in 'local'.</div>
-                      <div style="display: flex; gap: 8px; justify-content: center;">
+                      <div>
                         <button class="zes-btn-primary" onclick="Zesium.openBackupWindow()">${Icons.backup} + Backup Guest Now</button>
-                        <button class="zes-action-btn" onclick="Zesium.openBackupScheduleWindow()">${Icons.time} Add Backup Schedule</button>
                       </div>
                     </td>
                   </tr>
@@ -1539,64 +1523,7 @@
             </table>
           </div>
         `;
-      } else if (State.currentView === 'firewall') {
-        const isNode = State.firewallTab === 'node';
-        const rules = isNode ? State.firewallRules : State.clusterFirewallRules;
-        const hasRules = rules.length > 0;
 
-        container.innerHTML = `
-          <div class="zes-page-header">
-            <div>
-              <h1 class="zes-page-title">Firewall & Security Rules</h1>
-              <p class="zes-page-subtitle">Packet filtering rules applied to hypervisor host and datacenter cluster</p>
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button class="zes-btn-primary" onclick="Zesium.openAddFirewallRuleWindow('${State.firewallTab}')">
-                ${Icons.firewall} + Add ${isNode ? 'Node' : 'Cluster'} Rule
-              </button>
-            </div>
-          </div>
-
-          <div class="zes-nav-tabs">
-            <button class="zes-nav-tab ${State.firewallTab === 'node' ? 'active' : ''}" onclick="Zesium.setFirewallTab('node')">Node 'pve' Rules</button>
-            <button class="zes-nav-tab ${State.firewallTab === 'cluster' ? 'active' : ''}" onclick="Zesium.setFirewallTab('cluster')">Cluster Rules</button>
-          </div>
-
-          <div class="zes-table-container">
-            <table class="zes-table">
-              <thead>
-                <tr>
-                  <th>Pos</th>
-                  <th>Action</th>
-                  <th>Direction</th>
-                  <th>Protocol</th>
-                  <th>Source</th>
-                  <th>Dest</th>
-                  <th>Port</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${hasRules ? rules.map(r => `
-                  <tr>
-                    <td style="font-family: monospace;">${r.pos}</td>
-                    <td><span style="font-weight: 600; color: ${r.action === 'ACCEPT' ? '#10b981' : '#ef4444'};">${r.action}</span></td>
-                    <td>${r.type}</td>
-                    <td>${r.proto || 'any'}</td>
-                    <td style="font-family: monospace;">${r.source || 'any'}</td>
-                    <td style="font-family: monospace;">${r.dest || 'any'}</td>
-                    <td style="font-family: monospace;">${r.dport || 'any'}</td>
-                  </tr>
-                `).join('') : `
-                  <tr>
-                    <td colspan="7" style="text-align: center; padding: 50px; color: #71717a;">
-                      No ${isNode ? 'node' : 'cluster'} firewall rules configured. Click "+ Add Rule" to create one.
-                    </td>
-                  </tr>
-                `}
-              </tbody>
-            </table>
-          </div>
-        `;
       } else if (State.currentView === 'sdn') {
         const hasSdn = State.sdn.length > 0;
         container.innerHTML = `
@@ -2078,10 +2005,7 @@
               ${Icons.network}
               <span>Network</span>
             </button>
-            <button class="zes-rail-btn" data-view="firewall" title="Firewall" onclick="Zesium.navigateTo('firewall')">
-              ${Icons.firewall}
-              <span>Firewall</span>
-            </button>
+
             <button class="zes-rail-btn" data-view="cluster" title="Cluster" onclick="Zesium.navigateTo('cluster')">
               ${Icons.cluster}
               <span>Cluster</span>
@@ -2179,10 +2103,7 @@
                 ${Icons.network}
                 <span>Network Interfaces</span>
               </a>
-              <a class="zes-menu-item" data-view="firewall" onclick="Zesium.navigateTo('firewall')">
-                ${Icons.firewall}
-                <span>Firewall</span>
-              </a>
+
               <a class="zes-menu-item" data-view="sdn" onclick="Zesium.navigateTo('sdn')">
                 ${Icons.sdn}
                 <span>Software Defined Net</span>
