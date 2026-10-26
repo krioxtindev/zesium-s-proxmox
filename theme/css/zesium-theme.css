@@ -915,51 +915,95 @@ div[id^="loginwindow-"] {
 }
 .x-window-default .x-tab-default {
   background-color: transparent !important;
+  border: none !important;
   border-radius: var(--radius-sm) !important;
   padding: 6px 12px !important;
 }
-.x-window-default .x-tab-default.x-tab-active {
-  background-color: var(--bg-pill) !important;
-  border: 1px solid var(--border-base) !important;
-}
-.x-window-default .x-tab-default.x-tab-active .x-tab-inner-default {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-.x-form-item-label-default {
-  color: var(--text-secondary) !important;
+.x-window-default .x-tab-default .x-tab-inner,
+.x-window-default .x-tab-inner-default {
+  color: #a1a1aa !important;
   font-size: 12px !important;
   font-weight: 500 !important;
 }
-.x-form-text-wrap-default {
-  background-color: var(--bg-input) !important;
-  border: 1px solid var(--border-base) !important;
+.x-window-default .x-tab-default.x-tab-active {
+  background-color: #27272a !important;
+  border: 1px solid #3f3f46 !important;
+}
+.x-window-default .x-tab-default.x-tab-active .x-tab-inner,
+.x-window-default .x-tab-default.x-tab-active .x-tab-inner-default {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* High Contrast Form Labels & Inputs inside Modals */
+.x-window-default .x-form-item-label,
+.x-window-default .x-form-item-label-inner,
+.x-window-default .x-form-item-label-default,
+.x-window-default label {
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.x-window-default .x-form-cb-label {
+  color: #f4f4f5 !important;
+  font-size: 13px !important;
+}
+.x-window-default .x-fieldset-header-text {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+.x-window-default .x-form-text-wrap,
+.x-window-default .x-form-text-wrap-default {
+  background-color: #0e0e11 !important;
+  border: 1px solid #3f3f46 !important;
   border-radius: var(--radius-sm) !important;
 }
-.x-form-text-wrap-default.x-form-text-wrap-focus {
+.x-window-default .x-form-text-wrap.x-form-text-wrap-focus {
   border-color: #ffffff !important;
 }
-.x-form-text-default {
+.x-window-default .x-form-text-default,
+.x-window-default input.x-form-field,
+.x-window-default .x-form-field {
   color: #ffffff !important;
   background-color: transparent !important;
   font-size: 13px !important;
   padding: 7px 10px !important;
 }
 
+/* Grids inside modals */
+.x-window-default .x-grid-cell-inner {
+  color: #f4f4f5 !important;
+  font-size: 12px !important;
+}
+.x-window-default .x-column-header-inner {
+  color: #a1a1aa !important;
+  font-weight: 600 !important;
+  background-color: #111114 !important;
+}
+
+/* Bottom Toolbar Buttons (Back, Next, Finish) */
 .x-window-default .x-toolbar-docked-bottom {
   background-color: var(--bg-modal-header) !important;
   border-top: 1px solid var(--border-base) !important;
   padding: 10px 16px !important;
 }
+.x-window-default .x-toolbar-docked-bottom .x-btn {
+  background-color: #27272a !important;
+  border: 1px solid #3f3f46 !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 6px 14px !important;
+}
+.x-window-default .x-toolbar-docked-bottom .x-btn .x-btn-inner {
+  color: #f4f4f5 !important;
+  font-weight: 600 !important;
+}
 .x-window-default .x-toolbar-docked-bottom .x-btn:last-child {
   background-color: #ffffff !important;
   border: 1px solid #ffffff !important;
-  border-radius: var(--radius-sm) !important;
 }
 .x-window-default .x-toolbar-docked-bottom .x-btn:last-child .x-btn-inner {
   color: #09090b !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
 }
 
 .x-mask {
