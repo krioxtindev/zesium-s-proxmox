@@ -89,7 +89,71 @@
     }
   }
 
-  // Override Ext.window.Window centering to guarantee perfect positioning
+  // Dynamic workspace center coordinate calculator (accounting for rail 58px + sidebar 260px)
+  function calculateWindowWorkspaceCenter(w, h) {
+    var rail = document.getElementById('zes-rail');
+    var sidebar = document.getElementById('zes-sidebar');
+    var navW = 0;
+    if (rail && rail.offsetParent !== null) navW += rail.offsetWidth;
+    if (sidebar && sidebar.offsetParent !== null) navW += sidebar.offsetWidth;
+    if (navW === 0 && document.body.classList.contains('zesium-active')) navW = 318;
+
+    var winW = window.innerWidth || document.documentElement.clientWidth;
+    var winH = window.innerHeight || document.documentElement.clientHeight;
+
+    var modalW = w || 780;
+    var modalH = h || 550;
+
+    var availW = Math.max(modalW, winW - navW);
+    var x = navW + Math.floor((availW - modalW) / 2);
+    var y = Math.max(20, Math.floor((winH - modalH) / 2));
+
+    // Clamp within viewport
+    if (x + modalW > winW - 10) x = Math.max(10, winW - modalW - 10);
+    if (x < navW + 10 && winW > navW + modalW + 20) x = navW + 10;
+
+    return { x: x, y: y };
+  }
+
+  function centerWindowInWorkspace(win) {
+    try {
+      if (!win) return;
+      var el = win.el ? (win.el.dom || win.el) : (win.nodeType ? win : null);
+      var cmp = win.isComponent ? win : (window.Ext && Ext.getCmp && el ? Ext.getCmp(el.id) : null);
+
+      if (el && (el.dataset.userMoved === 'true' || el.getAttribute('data-user-moved') === 'true')) {
+        return;
+      }
+
+      var w = (cmp && cmp.getWidth && cmp.getWidth()) || (el ? el.offsetWidth : 780);
+      var h = (cmp && cmp.getHeight && cmp.getHeight()) || (el ? el.offsetHeight : 550);
+      if (!w || w < 200) w = 780;
+      if (!h || h < 100) h = 550;
+
+      var pos = calculateWindowWorkspaceCenter(w, h);
+
+      if (cmp && cmp.setPagePosition) {
+        cmp.setPagePosition(pos.x, pos.y);
+      }
+      if (el) {
+        el.style.left = pos.x + 'px';
+        el.style.top = pos.y + 'px';
+        el.setAttribute('data-zes-centered', 'true');
+
+        var header = el.querySelector('.x-window-header');
+        if (header && !header.__zesDragBound) {
+          header.__zesDragBound = true;
+          header.addEventListener('mousedown', function () {
+            el.setAttribute('data-user-moved', 'true');
+            el.dataset.userMoved = 'true';
+            if (cmp) cmp.x_userMoved = true;
+          });
+        }
+      }
+    } catch (e) {}
+  }
+
+  // Override Ext.window.Window centering to guarantee perfect positioning in workspace
   function applyWindowCenteringFix() {
     if (window.Ext && Ext.window && Ext.window.Window) {
       try {
@@ -97,18 +161,24 @@
           override: 'Ext.window.Window',
           center: function () {
             var me = this;
-            var winW = window.innerWidth || document.documentElement.clientWidth;
-            var winH = window.innerHeight || document.documentElement.clientHeight;
-            var w = me.getWidth() || 760;
+            var w = me.getWidth() || 780;
             var h = me.getHeight() || 550;
-            var x = Math.max(10, Math.floor((winW - w) / 2));
-            var y = Math.max(10, Math.floor((winH - h) / 2));
-            me.setPagePosition(x, y);
+            var pos = calculateWindowWorkspaceCenter(w, h);
+            me.setPagePosition(pos.x, pos.y);
             return me;
           },
           afterShow: function () {
             this.callParent(arguments);
-            this.center();
+            var me = this;
+            if (!me.x_userMoved) {
+              me.center();
+            }
+            setTimeout(function () {
+              if (!me.x_userMoved) me.center();
+            }, 40);
+            setTimeout(function () {
+              if (!me.x_userMoved) me.center();
+            }, 180);
           }
         });
       } catch (e) {}
@@ -243,13 +313,64 @@
         }
 
         /* Checkbox & Radio Buttons - Convoy styling without double circles or overlapping text */
-        .x-form-cb-wrap {
+        .x-form-cb-wrap,
+        .x-form-cb-wrap-default,
+        .x-window .x-form-cb-wrap,
+        .x-window-default .x-form-cb-wrap,
+        .x-form-type-radio,
+        .x-form-type-checkbox {
           display: inline-flex !important;
           align-items: center !important;
+          position: relative !important;
           min-height: 24px !important;
-          padding: 4px 0 !important;
+          padding: 3px 0 !important;
           cursor: pointer !important;
           vertical-align: middle !important;
+        }
+
+        /* COMPLETE KILL OF EXTJS PSEUDO-ELEMENTS (Eliminates secondary blue circles, fontawesome duplicates, offcenter icons) */
+        .x-form-cb-label:before,
+        .x-form-cb-label:after,
+        .x-form-cb-label-default:before,
+        .x-form-cb-label-default:after,
+        .x-window .x-form-cb-label:before,
+        .x-window .x-form-cb-label:after,
+        .x-window-default .x-form-cb-label:before,
+        .x-window-default .x-form-cb-label:after,
+        .x-form-cb-wrap:before,
+        .x-form-cb-wrap:after,
+        .x-form-cb-wrap-default:before,
+        .x-form-cb-wrap-default:after,
+        .x-window .x-form-cb-wrap:before,
+        .x-window .x-form-cb-wrap:after,
+        .x-form-radio:before,
+        .x-form-radio:after,
+        .x-form-radio-default:before,
+        .x-form-radio-default:after,
+        .x-window .x-form-radio:before,
+        .x-window .x-form-radio:after,
+        .x-window-default input.x-form-radio:before,
+        .x-window-default input.x-form-radio:after,
+        .x-form-checkbox:before,
+        .x-form-checkbox:after,
+        .x-form-checkbox-default:before,
+        .x-form-checkbox-default:after,
+        .x-window .x-form-checkbox:before,
+        .x-window .x-form-checkbox:after,
+        .x-window-default input.x-form-checkbox:before,
+        .x-window-default input.x-form-checkbox:after,
+        .x-form-type-radio *:before,
+        .x-form-type-radio *:after,
+        .x-form-type-checkbox *:before,
+        .x-form-type-checkbox *:after {
+          display: none !important;
+          content: none !important;
+          opacity: 0 !important;
+          width: 0 !important;
+          height: 0 !important;
+          font-size: 0 !important;
+          border: none !important;
+          box-shadow: none !important;
         }
 
         .x-form-radio,
@@ -275,31 +396,31 @@
           background-image: none !important;
           box-shadow: none !important;
           cursor: pointer !important;
+          outline: none !important;
           display: inline-block !important;
           vertical-align: middle !important;
+          position: relative !important;
           flex-shrink: 0 !important;
           transition: all 0.15s ease !important;
         }
 
-        .x-form-radio:before,
-        .x-form-radio:after,
-        .x-form-radio-default:before,
-        .x-form-radio-default:after,
-        .x-form-type-radio input:before,
-        .x-form-type-radio input:after {
-          display: none !important;
-          content: none !important;
-          opacity: 0 !important;
+        .x-form-radio:hover,
+        .x-form-cb-wrap:hover .x-form-radio,
+        .x-form-type-radio:hover input {
+          border-color: #71717a !important;
+          background-color: #222228 !important;
         }
 
         .x-form-radio.x-form-cb-checked,
         .x-form-cb-checked .x-form-radio,
         .x-form-radio-default.x-form-cb-checked,
         .x-form-cb-wrap.x-form-cb-checked .x-form-radio,
-        .x-form-type-radio .x-form-cb-checked {
+        .x-form-type-radio .x-form-cb-checked input,
+        .x-form-type-radio.x-form-cb-checked input,
+        .x-form-cb-checked input.x-form-radio {
           border-color: #ffffff !important;
           background-color: #18181c !important;
-          background-image: radial-gradient(circle, #ffffff 42%, transparent 48%) !important;
+          background-image: radial-gradient(circle, #ffffff 38%, transparent 44%) !important;
           background-repeat: no-repeat !important;
           background-position: center !important;
           box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
@@ -328,24 +449,28 @@
           background-image: none !important;
           box-shadow: none !important;
           cursor: pointer !important;
+          outline: none !important;
           display: inline-block !important;
           vertical-align: middle !important;
+          position: relative !important;
           flex-shrink: 0 !important;
           transition: all 0.15s ease !important;
         }
 
-        .x-form-checkbox:before,
-        .x-form-checkbox:after,
-        .x-form-checkbox-default:before,
-        .x-form-checkbox-default:after {
-          display: none !important;
-          content: none !important;
+        .x-form-checkbox:hover,
+        .x-form-cb-wrap:hover .x-form-checkbox,
+        .x-form-type-checkbox:hover input {
+          border-color: #71717a !important;
+          background-color: #222228 !important;
         }
 
         .x-form-checkbox.x-form-cb-checked,
         .x-form-cb-checked .x-form-checkbox,
         .x-form-checkbox-default.x-form-cb-checked,
-        .x-form-cb-wrap.x-form-cb-checked .x-form-checkbox {
+        .x-form-cb-wrap.x-form-cb-checked .x-form-checkbox,
+        .x-form-type-checkbox .x-form-cb-checked input,
+        .x-form-type-checkbox.x-form-cb-checked input,
+        .x-form-cb-checked input.x-form-checkbox {
           border-color: #ffffff !important;
           background-color: #ffffff !important;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3E%3Cpath d='M13.485 3.515a1 1 0 0 1 0 1.414l-6.364 6.364a1 1 0 0 1-1.414 0l-3.182-3.182a1 1 0 1 1 1.414-1.414L6.414 9.172l5.657-5.657a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;
@@ -365,6 +490,7 @@
           letter-spacing: -0.01em !important;
           margin-left: 10px !important;
           padding: 0 !important;
+          position: static !important;
           cursor: pointer !important;
           display: inline-block !important;
           vertical-align: middle !important;
@@ -375,11 +501,15 @@
       document.head.appendChild(s);
     }
 
-    // Dynamic observer to continuously ensure ExtJS wizard toolbar elements are styled properly
+    // Dynamic observer to continuously ensure ExtJS wizard toolbar elements are styled properly & windows centered
     function sanitizeExtWindows() {
       try {
         const helpBtns = document.querySelectorAll('.x-window [itemId="help"], .x-window .x-btn[id*="help"], .x-toolbar-footer [itemId="help"]');
-        helpBtns.forEach(b => { b.style.setProperty('display', 'none', 'important'); });
+        helpBtns.forEach(b => {
+          b.style.setProperty('display', 'none', 'important');
+          b.style.setProperty('width', '0', 'important');
+          b.style.setProperty('height', '0', 'important');
+        });
 
         const checkboxes = document.querySelectorAll('.x-window .x-form-type-checkbox, .x-window [name="advanced"]');
         checkboxes.forEach(c => { c.style.setProperty('margin-right', '28px', 'important'); });
@@ -391,10 +521,19 @@
           b.style.setProperty('background-image', 'none', 'important');
         });
 
-        const labels = document.querySelectorAll('.x-form-cb-label');
+        const labels = document.querySelectorAll('.x-form-cb-label, .x-form-cb-label-default');
         labels.forEach(l => {
           l.style.setProperty('margin-left', '10px', 'important');
           l.style.setProperty('padding', '0', 'important');
+          l.style.setProperty('position', 'static', 'important');
+        });
+
+        // Center any newly displayed ExtJS windows in the workspace
+        const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+        activeWindows.forEach(w => {
+          if (w.offsetParent !== null && !w.getAttribute('data-zes-centered')) {
+            centerWindowInWorkspace(w);
+          }
         });
       } catch (e) {}
     }
@@ -405,6 +544,15 @@
         sanitizeExtWindows();
       });
       extWindowObserver.observe(document.body, { childList: true, subtree: true });
+
+      window.addEventListener('resize', () => {
+        const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+        activeWindows.forEach(w => {
+          if (w.offsetParent !== null) {
+            centerWindowInWorkspace(w);
+          }
+        });
+      });
     }
   }
 
@@ -482,13 +630,21 @@
       }
     },
 
-    // 100% Functioning Native Proxmox Wizards with Centering
+    // 100% Functioning Native Proxmox Wizards with Centering in Workspace
     openCreateVMWizard: function () {
       try {
         const btn = Ext.ComponentQuery.query('button[itemId=createvm]')[0] ||
                     Ext.ComponentQuery.query('button[text*=' + (window.gettext ? gettext('Create VM') : 'Create VM') + ']')[0];
         if (btn && typeof btn.handler === 'function') {
           btn.handler.call(btn);
+          setTimeout(() => {
+            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            wins.forEach(w => centerWindowInWorkspace(w));
+          }, 30);
+          setTimeout(() => {
+            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            wins.forEach(w => centerWindowInWorkspace(w));
+          }, 150);
           return;
         }
       } catch (e) {}
@@ -496,7 +652,7 @@
       if (window.Ext && Ext.ClassManager.get('PVE.qemu.CreateWizard')) {
         const wiz = Ext.create('PVE.qemu.CreateWizard', {});
         wiz.show();
-        wiz.center();
+        centerWindowInWorkspace(wiz);
       }
     },
 
@@ -506,6 +662,14 @@
                     Ext.ComponentQuery.query('button[text*=' + (window.gettext ? gettext('Create CT') : 'Create CT') + ']')[0];
         if (btn && typeof btn.handler === 'function') {
           btn.handler.call(btn);
+          setTimeout(() => {
+            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            wins.forEach(w => centerWindowInWorkspace(w));
+          }, 30);
+          setTimeout(() => {
+            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            wins.forEach(w => centerWindowInWorkspace(w));
+          }, 150);
           return;
         }
       } catch (e) {}
@@ -513,7 +677,7 @@
       if (window.Ext && Ext.ClassManager.get('PVE.lxc.CreateWizard')) {
         const wiz = Ext.create('PVE.lxc.CreateWizard', {});
         wiz.show();
-        wiz.center();
+        centerWindowInWorkspace(wiz);
       }
     },
 
