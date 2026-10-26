@@ -61,14 +61,17 @@ body, html {
 ::-webkit-scrollbar-thumb { background: var(--border-base); border-radius: var(--radius-pill); }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-focus); }
 
-/* Hide legacy background ExtJS desktop when Zesium Convoy is active */
+/* Keep native desktop at 0, 0, 100vw, 100vh so ExtJS viewport calculations are 100% accurate */
 body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;
   position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important;
 }
 
 /* KEEP ALL EXTJS MODALS, MENUS, MASKS FULLY VISIBLE & HIGH Z-INDEX */
@@ -80,7 +83,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 }
 
 /* ==========================================================================
-   2. Root App Layout: Rail (56px) + Sidebar (250px) + Main Content
+   2. Root App Layout: Rail (56px) + Sidebar (260px) + Main Content
    ========================================================================== */
 #zesium-app {
   display: flex;
@@ -167,9 +170,9 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   background-color: var(--bg-pill);
 }
 
-/* Main Sidebar (250px) */
+/* Main Sidebar (260px) */
 #zes-sidebar {
-  width: 250px;
+  width: 260px;
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-subtle);
   display: flex;
@@ -278,14 +281,6 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   color: #ffffff;
   background-color: var(--bg-pill);
   font-weight: 600;
-}
-.zes-badge {
-  margin-left: auto;
-  font-size: 11px;
-  background-color: #272730;
-  color: #d4d4d8;
-  padding: 2px 7px;
-  border-radius: 10px;
 }
 
 /* User Footer Card */
@@ -437,6 +432,9 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 
 .zes-page-header {
   margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .zes-page-title {
   font-size: 24px;
@@ -582,67 +580,6 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 .zes-status-dot.running { background-color: var(--accent-green); box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
 .zes-status-dot.stopped { background-color: #71717a; }
 .zes-status-dot.error { background-color: var(--accent-red); }
-
-/* Server Detail View */
-.zes-server-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-subtle);
-}
-.zes-server-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.zes-server-os-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: var(--radius-md);
-  background-color: #272730;
-  border: 1px solid var(--border-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.zes-server-os-icon svg {
-  width: 24px;
-  height: 24px;
-  stroke: #ffffff;
-}
-.zes-server-title-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
-}
-.zes-server-name {
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-}
-.zes-server-specs-line {
-  font-size: 13px;
-  color: var(--text-muted);
-  display: flex;
-  gap: 12px;
-}
-
-.zes-server-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.zes-action-btn.btn-stop {
-  border-color: #ef4444;
-  color: #ef4444;
-}
-.zes-action-btn.btn-stop:hover {
-  background-color: #dc2626;
-  color: #ffffff;
-}
 
 /* Horizontal Sub Tabs */
 .zes-nav-tabs {
@@ -833,8 +770,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 }
 
 /* ==========================================================================
-   6. EXTJS WIZARDS & MODALS: 100% VISIBLE, HIGH CONTRAST, LUXURY STYLING
-      Fixes: Create VM / Create CT / Upload / Backup / Firewall dialogs!
+   6. EXTJS WIZARDS & MODALS: 100% VISIBLE, CENTERED, HIGH CONTRAST
    ========================================================================== */
 .x-window-default {
   background-color: var(--bg-modal) !important;
@@ -863,7 +799,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   color: var(--text-primary) !important;
 }
 
-/* Ensure all panels & containers inside wizard are transparent and fully visible */
+/* All containers inside wizard */
 .x-window-default .x-panel,
 .x-window-default .x-panel-body,
 .x-window-default .x-container,
@@ -874,7 +810,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   background-color: transparent !important;
 }
 
-/* WIZARD TABS (General, OS, System, Disks, CPU, Memory, Network, Confirm) */
+/* WIZARD TABS */
 .x-window-default .x-tab-bar-default,
 .x-window-default .x-tab-bar {
   background-color: #121216 !important;
@@ -900,7 +836,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   font-weight: 600 !important;
 }
 
-/* DISABLED WIZARD TABS: MUST NEVER BE INVISIBLE */
+/* DISABLED WIZARD TABS */
 .x-window-default .x-tab.x-tab-disabled,
 .x-window-default .x-tab-disabled {
   background-color: #141419 !important;
@@ -926,7 +862,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   font-weight: 700 !important;
 }
 
-/* HIGH CONTRAST FORM LABELS & FIELDSETS */
+/* FORM LABELS */
 .x-window-default .x-form-item-label,
 .x-window-default .x-form-item-label-inner,
 .x-window-default .x-form-item-label-default,
@@ -943,12 +879,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   font-size: 13px !important;
 }
 
-.x-window-default .x-form-cb-label {
-  color: #f4f4f5 !important;
-  font-size: 13px !important;
-}
-
-/* INPUT BOXES: TEXT, NUMBER, COMBOBOX, SPINNERS */
+/* INPUT BOXES */
 .x-window-default .x-form-text-wrap,
 .x-window-default .x-form-text-wrap-default,
 .x-window-default .x-form-trigger-wrap,
@@ -976,7 +907,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   padding: 6px 10px !important;
 }
 
-/* COMBO / TRIGGER BUTTONS (DROPDOWN ARROWS) */
+/* COMBO DROPDOWN ARROWS */
 .x-window-default .x-form-trigger,
 .x-window-default .x-form-trigger-default {
   background-color: #272732 !important;
@@ -988,16 +919,33 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   color: #ffffff !important;
 }
 
-/* BOTTOM WIZARD TOOLBAR */
+/* BOTTOM TOOLBAR WITH CLEAN SPACING */
 .x-window-default .x-toolbar-docked-bottom {
-  background-color: var(--bg-modal-header) !important;
-  border-top: 1px solid var(--border-base) !important;
-  padding: 12px 18px !important;
+  background-color: #121216 !important;
+  border-top: 1px solid #282832 !important;
+  padding: 12px 20px !important;
 }
 
+.x-window-default .x-toolbar-docked-bottom .x-toolbar-item {
+  margin: 0 4px !important;
+}
+
+/* ADVANCED CHECKBOX SPACING (No overlapping Back button!) */
+.x-window-default .x-toolbar-docked-bottom .x-form-item {
+  margin-right: 24px !important;
+}
+.x-window-default .x-toolbar-docked-bottom .x-form-cb-label {
+  color: #f4f4f5 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  margin-right: 14px !important;
+}
+
+/* WIZARD BUTTONS */
 .x-window-default .x-toolbar-docked-bottom .x-btn {
   border-radius: var(--radius-sm) !important;
-  padding: 6px 16px !important;
+  padding: 7px 18px !important;
+  min-width: 75px !important;
 }
 
 /* NEXT & SUBMIT BUTTONS */
@@ -1026,7 +974,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   font-weight: 600 !important;
 }
 
-/* GRIDS INSIDE MODALS (STORAGE SELECTOR, DISKS, ETC.) */
+/* GRIDS INSIDE MODALS */
 .x-window-default .x-grid-body {
   background-color: #141418 !important;
 }
