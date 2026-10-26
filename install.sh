@@ -92,14 +92,15 @@ echo -e "${GREEN}[4/5]${NC} Injecting theme into web template..."
 sed -i '/<!-- ZESIUM-THEME-START -->/,/<!-- ZESIUM-THEME-END -->/d' "$TPL_FILE"
 
 # Prepare injection snippet
-THEME_INJECTION=$(cat << 'EOF'
+V_TS=$(date +%s)
+THEME_INJECTION=$(cat << EOF
     <!-- ZESIUM-THEME-START -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
-    <link rel="stylesheet" type="text/css" href="/pve2/css/fonts.css?v=2.0" />
-    <link rel="stylesheet" type="text/css" href="/pve2/css/zesium-theme.css?v=2.0" />
-    <script type="text/javascript" src="/pve2/js/zesium-theme.js?v=2.0"></script>
+    <link rel="stylesheet" type="text/css" href="/pve2/css/fonts.css?v=${V_TS}" />
+    <link rel="stylesheet" type="text/css" href="/pve2/css/zesium-theme.css?v=${V_TS}" />
+    <script type="text/javascript" src="/pve2/js/zesium-theme.js?v=${V_TS}"></script>
     <!-- ZESIUM-THEME-END -->
 EOF
 )
