@@ -982,11 +982,19 @@
       btn.innerText = 'Signing in...';
       if (errBox) errBox.style.display = 'none';
 
-      const fullUsername = u.includes('@') ? u : `${u}@${r}`;
+      let username = u;
+      let realm = r;
+
+      if (username.includes('@')) {
+        const parts = username.split('@');
+        username = parts[0];
+        realm = parts[1] || realm;
+      }
+
       const params = new URLSearchParams();
-      params.append('username', fullUsername);
+      params.append('username', username);
       params.append('password', p);
-      params.append('realm', r);
+      params.append('realm', realm);
       params.append('new-format', '1');
 
       fetch('/api2/extjs/access/ticket', {
