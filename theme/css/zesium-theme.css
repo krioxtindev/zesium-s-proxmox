@@ -1,7 +1,7 @@
 /* ==============================================================================
    Zesium - Proxmox Manager
-   Luxury Dark Theme for Proxmox VE 7.x, 8.x & 9.x
-   Aesthetic inspired by Convoy & Advin Modern Cloud UI
+   Luxury Dark Theme & Complete UI Overhaul for Proxmox VE 7.x, 8.x & 9.x
+   Aesthetic 1:1 identical to Convoy / Advin Servers Cloud Panel
    ============================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -9,418 +9,874 @@
 :root {
   color-scheme: dark;
 
-  /* Theme Tokens */
-  --zes-bg-canvas: #0e0e11;
-  --zes-bg-surface: #141417;
-  --zes-bg-card: #18181c;
-  --zes-bg-card-hover: #1f1f25;
-  --zes-bg-sidebar: #101013;
-  --zes-bg-input: #151518;
-  --zes-bg-pill: #222227;
-  --zes-bg-modal: #18181c;
-  --zes-bg-modal-header: #131316;
+  --bg-app: #0e0e11;
+  --bg-rail: #0a0a0c;
+  --bg-sidebar: #101013;
+  --bg-topbar: #0e0e11;
+  --bg-card: #18181c;
+  --bg-card-hover: #1f1f25;
+  --bg-input: #151518;
+  --bg-pill: #222227;
+  --bg-modal: #18181c;
+  --bg-modal-header: #131316;
 
-  --zes-border-subtle: #1e1e24;
-  --zes-border-base: #27272a;
-  --zes-border-focus: #3f3f46;
-  --zes-border-active: #ffffff;
+  --border-subtle: #1e1e24;
+  --border-base: #27272a;
+  --border-focus: #3f3f46;
+  --border-active: #ffffff;
 
-  --zes-text-primary: #f4f4f5;
-  --zes-text-secondary: #a1a1aa;
-  --zes-text-muted: #71717a;
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
 
-  --zes-radius-sm: 6px;
-  --zes-radius-md: 8px;
-  --zes-radius-lg: 12px;
-  --zes-radius-pill: 9999px;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-amber: #f59e0b;
+  --accent-blue: #3b82f6;
 
-  --zes-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* 1. Global Viewport & Resets */
-body, .x-body, .x-panel, .x-btn, .x-tree-panel, .x-grid, .x-form-item, input, select, textarea, button {
-  font-family: var(--zes-font-sans) !important;
+/* 1. Reset and Viewport */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-app) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-sans) !important;
   -webkit-font-smoothing: antialiased;
 }
 
-body, html, .x-viewport, .x-viewport > .x-body, body.x-border-layout-ct, div.x-border-layout-ct {
-  background-color: var(--zes-bg-canvas) !important;
-  color: var(--zes-text-primary) !important;
+/* Custom Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-app); }
+::-webkit-scrollbar-thumb { background: var(--border-base); border-radius: var(--radius-pill); }
+::-webkit-scrollbar-thumb:hover { background: var(--border-focus); }
+
+/* Hide legacy background ExtJS desktop when Zesium Convoy is active */
+body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
 }
 
-/* Custom Sleek Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--zes-bg-surface);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--zes-border-base);
-  border-radius: var(--zes-radius-pill);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--zes-border-focus);
+/* BUT KEEP ALL EXTJS MODALS, MENUS, MASKS FULLY VISIBLE & FUNCTIONAL! */
+.x-window, .x-mask, .x-message-box, .x-menu {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  z-index: 100000 !important;
 }
 
 /* ==========================================================================
-   2. Top Header Bar (Zesium - Proxmox Manager)
+   2. Root App Layout: Rail (56px) + Sidebar (240px) + Main Content
    ========================================================================== */
-div[id^="pveHeader-"],
-div[id^="pveHeader-"][id$="-body"] {
-  background-color: var(--zes-bg-sidebar) !important;
-  border-bottom: 1px solid var(--zes-border-subtle) !important;
-  height: 50px !important;
-  padding: 0 16px !important;
+#zesium-app {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-app);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
 }
 
-/* Brand Logo Replacement */
-img[id^="proxmoxlogo-"][id$="-img"],
-img[id^="proxmoxLogoSvg-"][id$="-img"] {
-  filter: none !important;
-  content: url('/pve2/images/zesium/logo.svg') !important;
-  width: 26px !important;
-  height: 26px !important;
-  vertical-align: middle;
-  margin-right: 10px;
+/* Left Slim Rail (56px) - Matches Screenshot 212051.png */
+#zes-rail {
+  width: 56px;
+  background-color: var(--bg-rail);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  flex-shrink: 0;
+  z-index: 60;
 }
 
-/* Version text replaced with Zesium - Proxmox Manager */
-div[id^="versioninfo-"] {
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  font-size: 15px !important;
-  letter-spacing: -0.02em;
+.zes-rail-logo {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.zes-rail-logo img {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.25));
 }
 
-/* Global Search Field in Top Bar */
-div[id^="pveHeader-"] .x-form-text-wrap {
-  background-color: var(--zes-bg-input) !important;
-  border: 1px solid var(--zes-border-base) !important;
-  border-radius: var(--zes-radius-md) !important;
-}
-div[id^="pveHeader-"] input.x-form-field {
-  color: #ffffff !important;
-  font-size: 13px !important;
-  padding: 6px 12px !important;
+.zes-rail-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
 }
 
-/* Header Action Buttons */
-div[id^="pveHeader-"] .x-btn {
-  border-radius: var(--zes-radius-sm) !important;
-  padding: 6px 14px !important;
-  transition: all 0.15s ease !important;
+.zes-rail-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 4px;
+  width: 48px;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+.zes-rail-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.75;
+}
+.zes-rail-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+}
+.zes-rail-btn.active {
+  color: #ffffff;
+  background-color: var(--bg-pill);
 }
 
-/* "Create VM" Button -> Clean White Pill */
-div[id^="pveHeader-"] .x-btn:has(.fa-desktop),
-.x-btn.zes-btn-create-vm {
+/* Sidebar (240px) - Matches Screenshot 212051.png */
+#zes-sidebar {
+  width: 240px;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 55;
+}
+
+.zes-sidebar-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.zes-team-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.zes-team-selector:hover {
+  border-color: var(--border-focus);
+}
+.zes-team-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background-color: #27272a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+.zes-team-avatar svg {
+  width: 16px;
+  height: 16px;
+}
+.zes-team-info {
+  flex: 1;
+  overflow: hidden;
+}
+.zes-team-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zes-team-role {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.zes-team-chevron {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.zes-sidebar-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.zes-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.zes-menu-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  padding: 4px 10px 6px 10px;
+}
+
+.zes-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.zes-menu-item svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.75;
+}
+.zes-menu-item:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+}
+.zes-menu-item.active {
+  color: #ffffff;
+  background-color: var(--bg-pill);
+  font-weight: 600;
+}
+.zes-badge {
+  margin-left: auto;
+  font-size: 11px;
+  background-color: #27272a;
+  color: var(--text-secondary);
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+/* User Footer Card */
+.zes-sidebar-footer {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+.zes-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.zes-user-card:hover {
+  border-color: var(--border-focus);
+}
+.zes-user-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background-color: #ffffff;
+  color: #09090b;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.zes-user-details {
+  flex: 1;
+  overflow: hidden;
+}
+.zes-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zes-user-email {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zes-user-chevron {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   3. Content Wrapper & Top Bar
+   ========================================================================== */
+#zes-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-app);
+}
+
+#zes-topbar {
+  height: 52px;
+  background-color: var(--bg-topbar);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  flex-shrink: 0;
+}
+
+.zes-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.crumb-link {
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.crumb-link:hover {
+  color: var(--text-primary);
+}
+.crumb-sep {
+  color: var(--text-dim);
+}
+.crumb-current {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.zes-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.zes-topbar-btn {
+  background: none;
+  border: 1px solid var(--border-base);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.zes-topbar-btn:hover {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+.zes-btn-primary-top {
   background-color: #ffffff !important;
-  border: 1px solid #ffffff !important;
-}
-div[id^="pveHeader-"] .x-btn:has(.fa-desktop) .x-btn-inner,
-div[id^="pveHeader-"] .x-btn:has(.fa-desktop) .x-btn-icon-el,
-.x-btn.zes-btn-create-vm .x-btn-inner,
-.x-btn.zes-btn-create-vm .x-btn-icon-el {
   color: #09090b !important;
+  border: 1px solid #ffffff !important;
   font-weight: 600 !important;
 }
-div[id^="pveHeader-"] .x-btn:has(.fa-desktop):hover,
-.x-btn.zes-btn-create-vm:hover {
+.zes-btn-primary-top:hover {
   background-color: #e4e4e7 !important;
 }
 
-/* "Create CT" Button -> Clean Dark Outline */
-div[id^="pveHeader-"] .x-btn:has(.fa-cube),
-.x-btn.zes-btn-create-ct {
-  background-color: var(--zes-bg-card) !important;
-  border: 1px solid var(--zes-border-base) !important;
-}
-div[id^="pveHeader-"] .x-btn:has(.fa-cube) .x-btn-inner,
-div[id^="pveHeader-"] .x-btn:has(.fa-cube) .x-btn-icon-el,
-.x-btn.zes-btn-create-ct .x-btn-inner,
-.x-btn.zes-btn-create-ct .x-btn-icon-el {
-  color: #f4f4f5 !important;
-  font-weight: 500 !important;
-}
-div[id^="pveHeader-"] .x-btn:has(.fa-cube):hover,
-.x-btn.zes-btn-create-ct:hover {
-  background-color: var(--zes-bg-card-hover) !important;
-  border-color: var(--zes-border-focus) !important;
-}
-
-/* User Info Pill (root@pam) */
-div[id^="userinfo-"] {
-  background-color: var(--zes-bg-card) !important;
-  border: 1px solid var(--zes-border-base) !important;
-  border-radius: var(--zes-radius-pill) !important;
-  padding: 4px 14px !important;
-}
-div[id^="userinfo-"]:hover {
-  border-color: var(--zes-border-focus) !important;
-  background-color: var(--zes-bg-card-hover) !important;
-}
-div[id^="userinfo-"] .x-btn-inner {
-  color: #f4f4f5 !important;
-  font-weight: 600 !important;
-  font-size: 13px !important;
-}
-
-/* Documentation / Help button */
-div[id^="pveHeader-"] .x-btn:has(.fa-book) {
-  background-color: transparent !important;
-  border: 1px solid var(--zes-border-base) !important;
-  color: var(--zes-text-muted) !important;
-}
-div[id^="pveHeader-"] .x-btn:has(.fa-book):hover {
-  color: #ffffff !important;
-  border-color: var(--zes-border-focus) !important;
-}
-
 /* ==========================================================================
-   3. Left Resource Tree
+   4. Main Content Area
    ========================================================================== */
-div[id^="pveResourceTree-"],
-div[id^="pveResourceTree-"][id$="-body"],
-.x-tree-panel {
-  background-color: var(--zes-bg-sidebar) !important;
-  border-right: 1px solid var(--zes-border-subtle) !important;
+#zes-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px;
+  box-sizing: border-box;
 }
 
-div[id^="pveResourceTree-"] .x-toolbar {
-  background-color: var(--zes-bg-sidebar) !important;
-  border-bottom: 1px solid var(--zes-border-subtle) !important;
-  padding: 10px !important;
+.zes-page-header {
+  margin-bottom: 24px;
+}
+.zes-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+.zes-page-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
 }
 
-.x-tree-view {
-  background-color: var(--zes-bg-sidebar) !important;
-  padding: 8px !important;
+/* Search Bar & Action Row */
+.zes-toolbar-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.zes-search-input-wrap {
+  flex: 1;
+  position: relative;
+}
+.zes-search-input-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+.zes-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  padding: 10px 14px 10px 40px;
+  color: #ffffff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.zes-search-input:focus {
+  border-color: #ffffff;
 }
 
-.x-tree-view .x-grid-item {
-  background: transparent !important;
-  border: none !important;
-  margin-bottom: 3px !important;
+.zes-btn-primary {
+  background-color: #ffffff;
+  color: #09090b;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 0.15s ease;
 }
-
-.x-tree-view .x-grid-cell-inner {
-  border-radius: var(--zes-radius-sm) !important;
-  padding: 7px 10px !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  color: var(--zes-text-secondary) !important;
-  transition: all 0.15s ease !important;
-}
-
-.x-tree-view .x-grid-item-over .x-grid-cell-inner {
-  background-color: var(--zes-bg-card) !important;
-  color: var(--zes-text-primary) !important;
-}
-
-.x-tree-view .x-grid-item-selected .x-grid-cell-inner {
-  background-color: var(--zes-bg-pill) !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
-}
-
-.x-splitter {
-  background-color: var(--zes-bg-sidebar) !important;
-  border: none !important;
-}
-.x-splitter:hover {
-  background-color: var(--zes-border-focus) !important;
+.zes-btn-primary:hover {
+  background-color: #e4e4e7;
 }
 
 /* ==========================================================================
-   4. Vertical Treelist Navigation (.x-treelist-pve-nav)
-      COMPLETELY OVERRIDES OLD CYAN/BLUE #0060a4 !
+   5. Tables (Convoy Style) - Matches Screenshots 212028.png & 212051.png
    ========================================================================== */
-.x-treelist-pve-nav {
-  background-color: var(--zes-bg-sidebar) !important;
-  border-right: 1px solid var(--zes-border-subtle) !important;
-  padding: 8px 6px !important;
+.zes-table-container {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.zes-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.zes-table th {
+  background-color: #151518;
+  border-bottom: 1px solid var(--border-base);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+.zes-table td {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.zes-table tr:hover td {
+  background-color: var(--bg-card-hover);
 }
 
-.x-treelist-pve-nav .x-treelist-row,
-.x-treelist-row {
-  border-radius: var(--zes-radius-sm) !important;
-  margin: 3px 0 !important;
-  padding: 6px 10px !important;
-  transition: all 0.15s ease !important;
+.zes-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
 }
-
-.x-treelist-item-text {
-  color: var(--zes-text-secondary) !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-}
-
-.x-treelist-item-icon {
-  color: var(--zes-text-muted) !important;
-  font-size: 14px !important;
-  margin-right: 6px !important;
-}
-
-.x-treelist-row-over {
-  background-color: var(--zes-bg-card) !important;
-}
-.x-treelist-row-over .x-treelist-item-text,
-.x-treelist-row-over .x-treelist-item-icon {
-  color: #ffffff !important;
-}
-
-/* SELECTED TREELIST ITEM: Sleek Gray Pill #222227, NO BLUE! */
-.x-treelist-item-selected > .x-treelist-row,
-.x-treelist-pve-nav .x-treelist-item-selected > .x-treelist-row,
-.x-treelist-row-selected {
-  background-color: var(--zes-bg-pill) !important;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
-}
-.x-treelist-item-selected .x-treelist-item-text {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-.x-treelist-item-selected .x-treelist-item-icon {
-  color: #ffffff !important;
-}
+.zes-status-dot.running { background-color: var(--accent-green); box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); }
+.zes-status-dot.stopped { background-color: var(--accent-red); }
 
 /* ==========================================================================
-   5. Horizontal Tabs (Overview, Settings, Graphs, etc.)
+   6. Server Detail View (Screenshot 193958.png Match)
    ========================================================================== */
-.x-tab-bar-default {
-  background-color: var(--zes-bg-surface) !important;
-  border-bottom: 1px solid var(--zes-border-base) !important;
-  padding-left: 8px !important;
+.zes-server-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
-.x-tab-bar-body-default {
-  background-color: transparent !important;
+.zes-server-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.zes-server-os-icon {
+  width: 38px;
+  height: 38px;
+  background-color: #e95420;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+}
+.zes-server-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.zes-server-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.zes-action-btn {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.zes-action-btn:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--border-focus);
+}
+.zes-action-btn.btn-stop {
+  background-color: var(--accent-red);
+  border-color: var(--accent-red);
+  color: #ffffff;
+}
+.zes-action-btn.btn-stop:hover {
+  background-color: #dc2626;
 }
 
-.x-tab-default {
-  background-color: transparent !important;
-  border: none !important;
-  border-radius: var(--zes-radius-sm) !important;
-  margin: 4px 3px !important;
-  padding: 7px 14px !important;
-  transition: all 0.15s ease !important;
+/* Horizontal Tabs (Overview, Settings, Graphs, Upgrade, etc.) */
+.zes-nav-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-base);
+  margin-bottom: 24px;
+  gap: 4px;
 }
-.x-tab-inner-default {
-  color: var(--zes-text-secondary) !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
+.zes-nav-tab {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s ease;
+}
+.zes-nav-tab:hover {
+  color: var(--text-primary);
+}
+.zes-nav-tab.active {
+  color: #ffffff;
+  font-weight: 600;
+  border-bottom-color: #ffffff;
 }
 
-.x-tab-default.x-tab-over {
-  background-color: rgba(255, 255, 255, 0.04) !important;
+/* Warning & Info Banners */
+.zes-alert-warning {
+  background-color: rgba(245, 158, 11, 0.08);
+  border: 1px solid #78350f;
+  border-radius: var(--radius-md);
+  color: #fde68a;
+  padding: 12px 16px;
+  font-size: 13px;
+  margin: 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.x-tab-default.x-tab-over .x-tab-inner-default {
-  color: #ffffff !important;
+.zes-alert-info {
+  background-color: rgba(59, 130, 246, 0.08);
+  border: 1px solid #1e3a8a;
+  border-radius: var(--radius-md);
+  color: #bfdbfe;
+  padding: 14px 18px;
+  font-size: 13px;
+  margin-bottom: 20px;
 }
 
-/* ACTIVE TAB: Convoy Pill #222227 (Overrides default blue #0078cf) */
-.x-tab-default.x-tab.x-tab-active,
-.x-tab-default.x-tab-active,
-.x-tab.x-tab-active {
-  background-color: var(--zes-bg-pill) !important;
-  border: 1px solid var(--zes-border-base) !important;
+/* Cards Grid (KVM Standard, Locations) */
+.zes-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
-.x-tab-default.x-tab.x-tab-active .x-tab-inner-default,
-.x-tab-default.x-tab-active .x-tab-inner,
-.x-tab.x-tab-active .x-tab-inner {
-  color: #ffffff !important;
-  font-weight: 600 !important;
+.zes-plan-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: 10px;
+  padding: 16px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
 }
+.zes-plan-card:hover {
+  border-color: var(--border-focus);
+}
+.zes-plan-card.selected {
+  border: 1.5px solid #ffffff;
+}
+.zes-plan-card.selected::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent #ffffff transparent transparent;
+}
+.zes-plan-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+.zes-plan-card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.zes-location-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.zes-location-card:hover {
+  border-color: var(--border-focus);
+}
+.zes-location-card.selected {
+  border: 1.5px solid #ffffff;
+}
+.zes-location-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(16, 185, 129, 0.2);
+  color: var(--accent-green);
+}
+
+/* Toast Notification (Screenshot 212051.png Match) */
+.zes-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #1a1a1f;
+  border: 1px solid #2e2e36;
+  border-radius: 10px;
+  padding: 14px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 999999;
+  min-width: 320px;
+  max-width: 440px;
+  animation: zesFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes zesFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.zes-toast-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.zes-toast-body { flex: 1; }
+.zes-toast-title { color: #f4f4f5; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.zes-toast-desc { color: #a1a1aa; font-size: 12px; line-height: 1.4; }
+.zes-toast-close { color: #71717a; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0 4px; }
+.zes-toast-close:hover { color: #ffffff; }
 
 /* ==========================================================================
-   6. Main Content Area & Panels
+   7. Split Screen Login (Screenshot 211834.png Match)
    ========================================================================== */
-.x-panel-body-default {
-  background-color: var(--zes-bg-surface) !important;
-  color: var(--zes-text-primary) !important;
-  border-color: var(--zes-border-subtle) !important;
+.zes-login-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 200000 !important;
+  display: flex;
+  background-color: #111113;
 }
-
-div[id^="pveWorkspace-"] {
-  background-color: var(--zes-bg-surface) !important;
+.zes-login-left {
+  width: 50%;
+  height: 100%;
+  background-color: #111113;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 60px;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
+.zes-login-brand { display: flex; align-items: center; justify-content: space-between; }
+.zes-login-brand-left { display: flex; align-items: center; gap: 12px; }
+.zes-login-brand-logo { width: 32px; height: 32px; }
+.zes-login-brand-title { font-size: 18px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em; }
+.zes-login-theme-pills { display: flex; align-items: center; background-color: #18181c; border: 1px solid #27272a; border-radius: 9999px; padding: 3px 6px; gap: 4px; }
+.zes-login-pill { color: #71717a; padding: 4px 8px; font-size: 12px; border-radius: 9999px; cursor: pointer; }
+.zes-login-pill.active { color: #ffffff; background-color: #27272a; }
 
-/* All Titles White */
-.x-panel-header-title-default,
-.x-window-header-title-default,
-.x-title-text {
-  color: #ffffff !important;
-  font-weight: 600 !important;
+.zes-login-center { max-width: 460px; width: 100%; margin: 20px auto; }
+.zes-login-heading { font-size: 32px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em; margin: 0 0 6px 0; }
+.zes-login-subheading { font-size: 14px; color: #a1a1aa; margin: 0 0 24px 0; }
+.zes-login-form-group { margin-bottom: 18px; }
+.zes-login-label { display: block; font-size: 13px; font-weight: 500; color: #f4f4f5; margin-bottom: 6px; }
+.zes-login-input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: #ffffff;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+.zes-login-input:focus { border-color: #ffffff; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2); }
+.zes-login-btn-submit {
+  width: 100%;
+  background-color: #ffffff;
+  color: #09090b;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  margin-top: 10px;
+}
+.zes-login-btn-submit:hover { background-color: #e4e4e7; }
+.zes-login-footer { font-size: 12px; color: #71717a; display: flex; gap: 16px; }
+.zes-login-footer a { color: #71717a; text-decoration: none; }
+.zes-login-footer a:hover { color: #f4f4f5; }
+
+.zes-login-right {
+  width: 50%;
+  height: 100%;
+  background-image: url('/pve2/images/zesium/datacenter-bg.png');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px;
+  box-sizing: border-box;
+}
+.zes-login-right::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(14, 14, 17, 0.2) 0%, rgba(14, 14, 17, 0.85) 100%);
+  pointer-events: none;
+}
+.zes-login-hero-text { position: relative; z-index: 2; max-width: 480px; }
+.zes-login-hero-title { font-size: 28px; font-weight: 700; color: #ffffff; margin: 0 0 10px 0; letter-spacing: -0.02em; }
+.zes-login-hero-desc { font-size: 14px; color: #d4d4d8; line-height: 1.6; margin: 0; }
+
+@media (max-width: 960px) {
+  .zes-login-right { display: none; }
+  .zes-login-left { width: 100%; padding: 30px 24px; }
 }
 
 /* ==========================================================================
-   7. Tables & Grids (Convoy Style)
-   ========================================================================== */
-.x-grid-header-ct {
-  background-color: var(--zes-bg-sidebar) !important;
-  border-bottom: 1px solid var(--zes-border-base) !important;
-}
-
-.x-column-header {
-  background-color: var(--zes-bg-sidebar) !important;
-  border-right: 1px solid var(--zes-border-subtle) !important;
-  padding: 10px 12px !important;
-}
-.x-column-header-inner {
-  color: var(--zes-text-secondary) !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.05em !important;
-}
-
-.x-grid-view, .x-grid-body {
-  background-color: var(--zes-bg-card) !important;
-}
-
-.x-grid-item {
-  background-color: var(--zes-bg-card) !important;
-  border-bottom: 1px solid var(--zes-border-subtle) !important;
-  color: var(--zes-text-primary) !important;
-}
-.x-grid-item:hover,
-.x-grid-item-over {
-  background-color: var(--zes-bg-card-hover) !important;
-}
-.x-grid-item-selected {
-  background-color: #262630 !important;
-  color: #ffffff !important;
-}
-.x-grid-cell-inner {
-  padding: 10px 12px !important;
-  font-size: 13px !important;
-}
-
-.x-grid-empty {
-  background-color: var(--zes-bg-card) !important;
-  color: var(--zes-text-muted) !important;
-  font-size: 14px !important;
-  text-align: center !important;
-  padding: 40px !important;
-}
-
-/* ==========================================================================
-   8. Wizards, Dialogs & Modals (Create VM, Create LXC, Settings)
-      FULLY FIXED: All containers, wizard cards and forms are 100% visible!
+   8. ExtJS Wizards & Modals (Create VM / CT, Settings)
+      FULLY VISIBLE: No blank wizard body!
    ========================================================================== */
 .x-window-default {
-  background-color: var(--zes-bg-modal) !important;
-  border: 1px solid var(--zes-border-base) !important;
-  border-radius: var(--zes-radius-lg) !important;
+  background-color: var(--bg-modal) !important;
+  border: 1px solid var(--border-base) !important;
+  border-radius: var(--radius-lg) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8) !important;
-  overflow: hidden !important;
+  z-index: 100000 !important;
 }
-
 .x-window-header-default {
-  background-color: var(--zes-bg-modal-header) !important;
-  border-bottom: 1px solid var(--zes-border-base) !important;
+  background-color: var(--bg-modal-header) !important;
+  border-bottom: 1px solid var(--border-base) !important;
   padding: 14px 18px !important;
 }
 .x-window-header-title-default {
@@ -428,54 +884,52 @@ div[id^="pveWorkspace-"] {
   font-size: 15px !important;
   font-weight: 600 !important;
 }
-
 .x-window-body-default {
-  background-color: var(--zes-bg-modal) !important;
-  color: var(--zes-text-primary) !important;
+  background-color: var(--bg-modal) !important;
+  color: var(--text-primary) !important;
 }
 
-/* Wizard card layout containers must display clearly */
+/* Ensure cards and panels inside wizard are completely visible */
 .x-window-default .x-panel,
 .x-window-default .x-panel-body,
 .x-window-default .x-form-item,
-.x-window-default .x-container {
-  background-color: transparent;
-  color: var(--zes-text-primary);
+.x-window-default .x-container,
+.x-window-default .x-border-layout-ct {
+  opacity: 1 !important;
+  visibility: visible !important;
+  background-color: transparent !important;
 }
 
-/* Wizard Step Tabs (General, OS, System, Disks, CPU, Memory, Network, Confirm) */
 .x-window-default .x-tab-bar-default {
-  background-color: var(--zes-bg-modal-header) !important;
-  border-bottom: 1px solid var(--zes-border-base) !important;
+  background-color: var(--bg-modal-header) !important;
+  border-bottom: 1px solid var(--border-base) !important;
 }
 .x-window-default .x-tab-default {
   background-color: transparent !important;
-  border-radius: var(--zes-radius-sm) !important;
+  border-radius: var(--radius-sm) !important;
   padding: 6px 12px !important;
 }
 .x-window-default .x-tab-default.x-tab-active {
-  background-color: var(--zes-bg-pill) !important;
-  border: 1px solid var(--zes-border-base) !important;
+  background-color: var(--bg-pill) !important;
+  border: 1px solid var(--border-base) !important;
 }
 .x-window-default .x-tab-default.x-tab-active .x-tab-inner-default {
   color: #ffffff !important;
   font-weight: 600 !important;
 }
 
-/* Form items inside modals */
 .x-form-item-label-default {
-  color: var(--zes-text-secondary) !important;
+  color: var(--text-secondary) !important;
   font-size: 12px !important;
   font-weight: 500 !important;
 }
 .x-form-text-wrap-default {
-  background-color: var(--zes-bg-input) !important;
-  border: 1px solid var(--zes-border-base) !important;
-  border-radius: var(--zes-radius-sm) !important;
+  background-color: var(--bg-input) !important;
+  border: 1px solid var(--border-base) !important;
+  border-radius: var(--radius-sm) !important;
 }
 .x-form-text-wrap-default.x-form-text-wrap-focus {
   border-color: #ffffff !important;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
 }
 .x-form-text-default {
   color: #ffffff !important;
@@ -484,113 +938,23 @@ div[id^="pveWorkspace-"] {
   padding: 7px 10px !important;
 }
 
-/* Wizard Bottom Dock (Help, Advanced, Back, Next, Finish) */
 .x-window-default .x-toolbar-docked-bottom {
-  background-color: var(--zes-bg-modal-header) !important;
-  border-top: 1px solid var(--zes-border-base) !important;
+  background-color: var(--bg-modal-header) !important;
+  border-top: 1px solid var(--border-base) !important;
   padding: 10px 16px !important;
 }
-
-/* Primary "Next" / "Finish" buttons inside wizard */
 .x-window-default .x-toolbar-docked-bottom .x-btn:last-child {
   background-color: #ffffff !important;
   border: 1px solid #ffffff !important;
-  border-radius: var(--zes-radius-sm) !important;
+  border-radius: var(--radius-sm) !important;
 }
 .x-window-default .x-toolbar-docked-bottom .x-btn:last-child .x-btn-inner {
   color: #09090b !important;
   font-weight: 600 !important;
 }
 
-/* Mask behind modals */
 .x-mask {
   background-color: rgba(10, 10, 13, 0.75) !important;
   backdrop-filter: blur(4px) !important;
   -webkit-backdrop-filter: blur(4px) !important;
-}
-
-/* ==========================================================================
-   9. Real Proxmox Login Window Styling (Zesium - Proxmox Manager)
-   ========================================================================== */
-body.zes-login-page {
-  background: url('/pve2/images/zesium/datacenter-bg.png') no-repeat center center fixed !important;
-  background-size: cover !important;
-}
-body.zes-login-page::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at center, rgba(14, 14, 17, 0.75) 0%, rgba(10, 10, 13, 0.95) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Proxmox Login Window Card */
-.x-window:has(form[action*="ticket"]) {
-  z-index: 100 !important;
-  background-color: #111113 !important;
-  border: 1px solid var(--zes-border-base) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9) !important;
-  padding: 10px !important;
-  width: 440px !important;
-}
-
-.x-window:has(form[action*="ticket"]) .x-window-header-default {
-  background-color: transparent !important;
-  border-bottom: 1px solid var(--zes-border-subtle) !important;
-  text-align: center !important;
-  padding: 16px 10px !important;
-}
-.x-window:has(form[action*="ticket"]) .x-window-header-title-default {
-  color: #ffffff !important;
-  font-size: 16px !important;
-  font-weight: 700 !important;
-}
-
-.x-window:has(form[action*="ticket"]) .x-form-text-wrap-default {
-  background-color: #18181b !important;
-  border: 1px solid var(--zes-border-base) !important;
-  border-radius: 8px !important;
-  height: 38px !important;
-}
-.x-window:has(form[action*="ticket"]) input.x-form-field {
-  padding: 9px 12px !important;
-  font-size: 14px !important;
-}
-
-.x-window:has(form[action*="ticket"]) .x-toolbar-docked-bottom .x-btn:last-child {
-  background-color: #ffffff !important;
-  border: 1px solid #ffffff !important;
-  border-radius: 8px !important;
-  height: 40px !important;
-  width: 100% !important;
-}
-.x-window:has(form[action*="ticket"]) .x-toolbar-docked-bottom .x-btn:last-child .x-btn-inner {
-  color: #09090b !important;
-  font-weight: 600 !important;
-  font-size: 14px !important;
-}
-
-/* Context Menus (Settings, TFA, Theme, Logout) */
-.x-menu-default {
-  background-color: var(--zes-bg-card) !important;
-  border: 1px solid var(--zes-border-base) !important;
-  border-radius: var(--zes-radius-md) !important;
-  padding: 6px !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
-}
-.x-menu-item-default {
-  border-radius: var(--zes-radius-sm) !important;
-  padding: 6px 12px !important;
-}
-.x-menu-item-text-default {
-  color: var(--zes-text-primary) !important;
-  font-size: 13px !important;
-}
-.x-menu-item-default.x-menu-item-active {
-  background-color: var(--zes-bg-card-hover) !important;
 }

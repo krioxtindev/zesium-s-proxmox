@@ -94,9 +94,9 @@ sed -i '/<!-- ZESIUM-THEME-START -->/,/<!-- ZESIUM-THEME-END -->/d' "$TPL_FILE"
 # Prepare injection snippet
 THEME_INJECTION=$(cat << 'EOF'
     <!-- ZESIUM-THEME-START -->
-    <link rel="stylesheet" type="text/css" href="/pve2/css/fonts.css" />
-    <link rel="stylesheet" type="text/css" href="/pve2/css/zesium-theme.css" />
-    <script type="text/javascript" src="/pve2/js/zesium-theme.js"></script>
+    <link rel="stylesheet" type="text/css" href="/pve2/css/fonts.css?v=2.0" />
+    <link rel="stylesheet" type="text/css" href="/pve2/css/zesium-theme.css?v=2.0" />
+    <script type="text/javascript" src="/pve2/js/zesium-theme.js?v=2.0"></script>
     <!-- ZESIUM-THEME-END -->
 EOF
 )

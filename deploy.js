@@ -31,7 +31,7 @@ if (uploadRes.status !== 0) {
   process.exit(1);
 }
 
-console.log('--- [3/4] Injecting clean theme tags into index.html.tpl ---');
+const v = Date.now();
 const injectScript = `
 TPL="/usr/share/pve-manager/index.html.tpl"
 BACKUP="/usr/share/pve-manager/index.html.tpl.zesium-backup"
@@ -45,9 +45,9 @@ fi
 sed -i '/<!-- ZESIUM-THEME-START -->/,/<!-- ZESIUM-THEME-END -->/d' "$TPL"
 
 # Inject before </head>
-INJECT="    <!-- ZESIUM-THEME-START -->\\n    <link rel=\\\"stylesheet\\\" type=\\\"text/css\\\" href=\\\"/pve2/css/fonts.css\\\" />\\n    <link rel=\\\"stylesheet\\\" type=\\\"text/css\\\" href=\\\"/pve2/css/zesium-theme.css\\\" />\\n    <script type=\\\"text/javascript\\\" src=\\\"/pve2/js/zesium-theme.js\\\"></script>\\n    <!-- ZESIUM-THEME-END -->"
+INJECT="    <!-- ZESIUM-THEME-START -->\\\\n    <link rel=\\\\\\"stylesheet\\\\\\" type=\\\\\\"text/css\\\\\\" href=\\\\\\"/pve2/css/fonts.css?v=${v}\\\\\\" />\\\\n    <link rel=\\\\\\"stylesheet\\\\\\" type=\\\\\\"text/css\\\\\\" href=\\\\\\"/pve2/css/zesium-theme.css?v=${v}\\\\\\" />\\\\n    <script type=\\\\\\"text/javascript\\\\\\" src=\\\\\\"/pve2/js/zesium-theme.js?v=${v}\\\\\\">\\\\x3C/script>\\\\n    <!-- ZESIUM-THEME-END -->"
 
-sed -i "/<\\/head>/i $INJECT" "$TPL"
+sed -i "/<\\\\/head>/i $INJECT" "$TPL"
 `;
 
 spawnSync(sshExe, [host, injectScript], { stdio: 'inherit' });
