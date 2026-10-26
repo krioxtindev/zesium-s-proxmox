@@ -17,7 +17,7 @@
 
   // Pure White Clean Inline SVG Icons (Zero Unicode Emojis)
   const Icons = {
-    logo: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+    logo: `<svg viewBox="0 0 48 48" fill="#ffffff"><path d="M24 4C23.1 5.8 21.8 7.5 20.3 8.9C18.6 10.4 16.5 11.4 14.3 11.9C15.8 12.8 17.5 13.3 19.3 13.5C18.1 14.8 16.6 15.9 14.9 16.6C16.8 17.3 18.9 17.5 20.9 17.3C19.7 18.8 18 19.9 16.1 20.5C18.5 21.1 21 20.9 23.3 20C21.8 22.2 19.4 23.7 16.8 24.3C19.8 24.8 23 24.1 25.5 22.4C26.9 21.4 28 20 28.7 18.4C29.4 16.8 29.6 15 29.3 13.3C29.2 12.5 29 11.7 28.6 11C28.2 10.3 27.6 9.7 26.9 9.3C25.5 8.5 24.5 7.1 24.2 5.5C24.1 5 24 4.5 24 4Z"/><path d="M12.5 13.5C10.2 14.8 7.6 15.5 5 15.7C7.8 17.1 10.8 17.9 13.9 18C11.9 19.7 9.5 21 6.8 21.7C9.8 22.8 13.1 23.1 16.2 22.7C14.5 24.6 12.2 26 9.6 26.8C13 27.6 16.7 27.2 19.8 25.6C21.4 24.8 22.8 23.6 23.8 22.1C21.4 21.9 19.2 20.8 17.6 19.1C16.1 17.5 15.3 15.4 15.2 13.2C14.3 13.2 13.4 13.3 12.5 13.5Z"/><path d="M25.8 12.8C27.1 11.2 28.8 9.9 30.7 9C32.7 8.1 34.9 7.7 37.1 7.8C35.2 9.2 33.6 11 32.4 13.1C34.5 12.6 36.7 12.7 38.7 13.3C36.6 14.9 34.1 16 31.5 16.6C33.7 16.6 35.8 17.2 37.7 18.3C35 19.7 31.9 20.2 28.9 19.8C27.5 19.6 26.3 18.9 25.4 17.8C24.6 16.8 24.2 15.4 24.3 14.1C24.4 13.6 25 13.1 25.8 12.8Z"/><path d="M30.2 19.5C32.8 18.9 35.4 18.9 38 19.5C40.6 20.1 43 21.3 45 23C42 23.5 39 23.3 36.2 22.4C37.8 24 39.1 25.9 39.9 28C37.5 27.6 35.2 26.5 33.4 24.9C33.8 27.2 33.4 29.5 32.3 31.5C31.1 29.3 30.6 26.8 30.8 24.3C30.9 22.7 30.7 21.1 30.2 19.5Z"/><path d="M21.5 8C22.2 7.2 23.2 6.6 24.3 6.3C23.8 7.4 23 8.3 22 8.9C21.7 8.6 21.5 8.3 21.5 8Z"/><path d="M8.2 23.5C5.8 25.1 3 26.1 0.2 26.5C3.5 28.3 7.3 29.1 11.1 28.8C8.9 31 6.1 32.6 3 33.4C7 34.6 11.3 34.4 15.2 32.8C17.5 31.9 19.5 30.3 20.8 28.2C17.7 28.7 14.4 28 11.8 26.3C10.4 25.5 9.2 24.5 8.2 23.5Z"/><path d="M21 28C21.8 30.5 22.1 33.1 21.8 35.7C21.5 38.3 20.6 40.8 19.2 43C21.5 41.2 23.3 38.8 24.4 36.1C25.5 33.4 25.9 30.4 25.4 27.5C24.1 27.9 22.5 28.1 21 28Z"/><path d="M25 29C26.2 31.8 27.8 34.4 30 36.5C28.8 34 28.2 31.2 28.2 28.4C27.1 28.8 26 29 25 29Z"/></svg>`,
     server: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
     container: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
     createVm: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>`,
@@ -117,6 +117,25 @@
           }
         });
       } catch (e) {}
+    }
+
+    // Force Inter typography stylesheet at runtime on every ExtJS element
+    if (!document.getElementById('zes-runtime-font-force')) {
+      const s = document.createElement('style');
+      s.id = 'zes-runtime-font-force';
+      s.innerHTML = `
+        *, *::before, *::after,
+        .x-window, .x-window *,
+        .x-window-default, .x-window-default *,
+        .x-title-text, .x-title-text-default,
+        .x-form-item-label, .x-form-item-label-default,
+        .x-form-text, .x-form-text-default,
+        .x-btn-inner, .x-btn-inner-default-small,
+        .pmx-hint, .pmx-hint * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        }
+      `;
+      document.head.appendChild(s);
     }
   }
 
@@ -277,17 +296,164 @@
       }
     },
 
-    openBackupWindow: function (vmid = null) {
-      const activeVmid = vmid || (this.getActiveServer() ? this.getActiveServer().vmid : null);
-      if (window.Ext && Ext.ClassManager.get('PVE.window.Backup')) {
-        const win = Ext.create('PVE.window.Backup', {
-          nodename: 'pve',
-          vmid: activeVmid,
-          autoShow: true,
-          taskDone: () => Zesium.fetchBackups()
-        });
-        win.center();
+    // 100% Functional Backup Window with automatic fallback
+    openBackupWindow: function (vmid = null, vmtype = null) {
+      let target = null;
+      if (vmid) {
+        target = State.servers.find(s => String(s.vmid) === String(vmid));
+      } else if (State.activeServerId) {
+        target = State.servers.find(s => String(s.id) === String(State.activeServerId));
       }
+
+      if (!target && State.servers.length === 1) {
+        target = State.servers[0];
+      }
+
+      if (target) {
+        try {
+          const win = Ext.create('PVE.window.Backup', {
+            nodename: target.node || 'pve',
+            vmid: target.vmid,
+            vmtype: target.type === 'lxc' ? 'lxc' : 'qemu',
+            autoShow: true,
+            taskDone: () => Zesium.fetchBackups()
+          });
+          win.show();
+          win.center();
+          return;
+        } catch (e) {
+          console.error('Backup window error:', e);
+        }
+      }
+
+      // If multiple servers exist and none preselected, show guest selection modal
+      if (State.servers.length > 0) {
+        Zesium.showBackupGuestChooser();
+        return;
+      }
+
+      // If NO virtual machines or containers exist yet
+      Zesium.showNoGuestsModal();
+    },
+
+    showBackupGuestChooser: function () {
+      const existing = document.getElementById('zes-guest-chooser-modal');
+      if (existing) existing.remove();
+
+      const modal = document.createElement('div');
+      modal.id = 'zes-guest-chooser-modal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;';
+      modal.innerHTML = `
+        <div style="background:#141418;border:1px solid #27272a;border-radius:12px;width:440px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.85);">
+          <div style="padding:16px 20px;border-bottom:1px solid #22222a;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:600;font-size:16px;color:#fff;">Select Guest to Backup</span>
+            <span style="cursor:pointer;color:#a1a1aa;font-size:18px;" onclick="document.getElementById('zes-guest-chooser-modal').remove()">✕</span>
+          </div>
+          <div style="padding:20px;">
+            <p style="margin:0 0 16px 0;font-size:13px;color:#a1a1aa;">Choose which virtual machine or container to backup:</p>
+            <div style="display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;">
+              ${State.servers.map(s => `
+                <div style="background:#18181c;border:1px solid #27272a;border-radius:8px;padding:12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onmouseover="this.style.borderColor='#52525b'" onmouseout="this.style.borderColor='#27272a'" onclick="document.getElementById('zes-guest-chooser-modal').remove(); Zesium.openBackupWindow('${s.vmid}', '${s.type}')">
+                  <div>
+                    <div style="font-weight:600;font-size:14px;color:#fff;">${s.name || s.vmid}</div>
+                    <div style="font-size:12px;color:#71717a;">ID: ${s.vmid} • Type: ${s.type.toUpperCase()} • Node: ${s.node}</div>
+                  </div>
+                  <button class="zes-btn-primary" style="padding:4px 12px;font-size:12px;">Backup</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div style="padding:12px 20px;background:#101014;border-top:1px solid #22222a;display:flex;justify-content:flex-end;">
+            <button class="zes-action-btn" onclick="document.getElementById('zes-guest-chooser-modal').remove()">Cancel</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    },
+
+    showNoGuestsModal: function () {
+      const existing = document.getElementById('zes-no-guests-modal');
+      if (existing) existing.remove();
+
+      const modal = document.createElement('div');
+      modal.id = 'zes-no-guests-modal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;';
+      modal.innerHTML = `
+        <div style="background:#141418;border:1px solid #27272a;border-radius:12px;width:480px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,0.85);">
+          <div style="padding:16px 20px;border-bottom:1px solid #22222a;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:600;font-size:16px;color:#fff;">Backup & Disaster Recovery</span>
+            <span style="cursor:pointer;color:#a1a1aa;font-size:18px;" onclick="document.getElementById('zes-no-guests-modal').remove()">✕</span>
+          </div>
+          <div style="padding:24px 20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;color:#f59e0b;">
+              <div style="width:28px;height:28px;">${Icons.backup}</div>
+              <div style="font-weight:600;font-size:15px;color:#fff;">No Virtual Machines or Containers Found</div>
+            </div>
+            <p style="margin:0 0 20px 0;font-size:13px;color:#a1a1aa;line-height:1.5;">
+              To create a guest backup archive, you must first create a Virtual Machine (KVM) or Container (LXC) on node <strong>pve</strong>. Alternatively, you can configure an automated Datacenter Backup Schedule Job.
+            </p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <button class="zes-btn-primary" style="justify-content:center;padding:10px;" onclick="document.getElementById('zes-no-guests-modal').remove(); Zesium.openCreateVMWindow();">
+                ${Icons.createVm} Create Virtual Machine (KVM)
+              </button>
+              <button class="zes-action-btn" style="justify-content:center;padding:10px;" onclick="document.getElementById('zes-no-guests-modal').remove(); Zesium.openCreateCTWindow();">
+                ${Icons.createCt} Create LXC Container
+              </button>
+              <button class="zes-action-btn" style="justify-content:center;padding:10px;" onclick="document.getElementById('zes-no-guests-modal').remove(); Zesium.openBackupScheduleWindow();">
+                ${Icons.time} Configure Datacenter Backup Schedule
+              </button>
+            </div>
+          </div>
+          <div style="padding:12px 20px;background:#101014;border-top:1px solid #22222a;display:flex;justify-content:flex-end;">
+            <button class="zes-action-btn" onclick="document.getElementById('zes-no-guests-modal').remove()">Close</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    },
+
+    openBackupScheduleWindow: function () {
+      try {
+        const win = Ext.create('PVE.dc.BackupEdit', {
+          autoShow: true
+        });
+        win.show();
+        win.center();
+      } catch (e) {
+        showToast('Backup Job', 'Could not open backup schedule window: ' + e);
+      }
+    },
+
+    restoreBackup: function (volid) {
+      if (!volid) return;
+      const isQemu = volid.includes('qemu');
+      try {
+        const win = Ext.create('PVE.window.Restore', {
+          autoShow: true,
+          nodename: 'pve',
+          volid: volid,
+          volidText: volid.split('/').pop(),
+          vmtype: isQemu ? 'qemu' : 'lxc'
+        });
+        win.show();
+        win.center();
+      } catch (e) {
+        showToast('Restore Failed', 'Could not open restore window: ' + e);
+      }
+    },
+
+    deleteBackup: function (volid) {
+      if (!volid) return;
+      if (!confirm(`Are you sure you want to permanently delete backup ${volid.split('/').pop()}?`)) return;
+      Proxmox.Utils.API2Request({
+        url: `/nodes/pve/storage/local/content/${encodeURIComponent(volid)}`,
+        method: 'DELETE',
+        success: () => {
+          showToast('Backup Deleted', 'Backup archive removed from storage.');
+          Zesium.fetchBackups();
+        },
+        failure: (err) => showToast('Delete Failed', err.htmlStatus || 'Could not delete backup')
+      });
     },
 
     openNodeShell: function () {
@@ -865,7 +1031,7 @@
               <button class="zes-action-btn ${isRunning ? 'btn-stop' : ''}" style="${!isRunning ? 'background-color: #10b981; border-color: #10b981;' : ''}" onclick="${isRunning ? `Zesium.stopServer('${s.id}')` : `Zesium.startServer('${s.id}')`}">
                 ${isRunning ? `${Icons.stop} Stop` : `${Icons.start} Start`}
               </button>
-              <button class="zes-action-btn" onclick="Zesium.openBackupWindow('${s.vmid}')">
+              <button class="zes-action-btn" onclick="Zesium.openBackupWindow('${s.vmid}', '${s.type}')">
                 ${Icons.backup} Backup Now
               </button>
               <button class="zes-action-btn" style="border-color: #ef4444; color: #ef4444;" onclick="Zesium.deleteServer('${s.id}')">
@@ -927,6 +1093,7 @@
                     <th>Archive</th>
                     <th>Format</th>
                     <th>Size</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -935,8 +1102,13 @@
                       <td style="font-weight: 600; color: #ffffff;">${b.volid.split('/').pop()}</td>
                       <td>${b.format}</td>
                       <td>${(b.size / (1024 * 1024 * 1024)).toFixed(2)} GB</td>
+                      <td>
+                        <button class="zes-action-btn" style="padding: 4px 8px; font-size: 11px;" onclick="Zesium.restoreBackup('${b.volid}')">
+                          Restore
+                        </button>
+                      </td>
                     </tr>
-                  `).join('') || `<tr><td colspan="3" style="text-align: center; padding: 40px; color: #71717a;">No backups found for VMID ${s.vmid}.</td></tr>`}
+                  `).join('') || `<tr><td colspan="4" style="text-align: center; padding: 40px; color: #71717a;">No backups found for VMID ${s.vmid}. Click "Backup Now" to create one.</td></tr>`}
                 </tbody>
               </table>
             </div>
@@ -974,7 +1146,7 @@
           <div class="zes-cards-grid" style="grid-template-columns: repeat(4, 1fr);">
             <div class="zes-plan-card">
               <div style="font-size: 12px; color: #a1a1aa;">CPU Model</div>
-              <div style="font-size: 16px; font-weight: 700; color: #fff; margin: 8px 0;">${cpuInfo.model || 'Intel Xeon CPU'}</div>
+              <div style="font-size: 15px; font-weight: 700; color: #fff; margin: 8px 0;">${cpuInfo.model || 'Intel Xeon CPU'}</div>
               <div style="font-size: 11px; color: #71717a;">${cpuInfo.cores || 4} Cores (${cpuInfo.sockets || 1} Socket)</div>
             </div>
             <div class="zes-plan-card">
@@ -1152,12 +1324,24 @@
         container.innerHTML = `
           <div class="zes-page-header">
             <div>
-              <h1 class="zes-page-title">Backups & Archives</h1>
-              <p class="zes-page-subtitle">VZDump snapshot archives and backup files for disaster recovery</p>
+              <h1 class="zes-page-title">Backups & Disaster Recovery</h1>
+              <p class="zes-page-subtitle">VZDump snapshot archives, automated backup jobs, and one-click restore</p>
             </div>
-            <button class="zes-btn-primary" onclick="Zesium.openBackupWindow()">
-              ${Icons.backup} + Create Backup
-            </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openBackupWindow()">
+                ${Icons.backup} + Backup Guest Now
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openBackupScheduleWindow()">
+                ${Icons.time} Add Backup Schedule
+              </button>
+            </div>
+          </div>
+
+          <div class="zes-toolbar-row">
+            <div class="zes-search-input-wrap">
+              ${Icons.search}
+              <input type="text" class="zes-search-input" placeholder="Search backup archives..." />
+            </div>
           </div>
 
           <div class="zes-table-container">
@@ -1168,6 +1352,7 @@
                   <th>Format</th>
                   <th>Size</th>
                   <th>Volume ID</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1177,12 +1362,25 @@
                     <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px;">${b.format}</span></td>
                     <td>${(b.size / (1024 * 1024 * 1024)).toFixed(2)} GB</td>
                     <td style="font-family: monospace; font-size: 11px; color: #71717a;">${b.volid}</td>
+                    <td>
+                      <div style="display: flex; gap: 6px;">
+                        <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px;" onclick="Zesium.restoreBackup('${b.volid}')">
+                          Restore
+                        </button>
+                        <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px; border-color: #ef4444; color: #ef4444;" onclick="Zesium.deleteBackup('${b.volid}')">
+                          Delete
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 `).join('') : `
                   <tr>
-                    <td colspan="4" style="text-align: center; padding: 60px 20px; color: #71717a;">
-                      <div style="font-size: 14px; margin-bottom: 12px; color: #a1a1aa;">No backups stored in 'local'.</div>
-                      <button class="zes-btn-primary" onclick="Zesium.openBackupWindow()">${Icons.backup} + Create Backup</button>
+                    <td colspan="5" style="text-align: center; padding: 60px 20px; color: #71717a;">
+                      <div style="font-size: 14px; margin-bottom: 12px; color: #a1a1aa;">No backup archives stored in 'local'.</div>
+                      <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button class="zes-btn-primary" onclick="Zesium.openBackupWindow()">${Icons.backup} + Backup Guest Now</button>
+                        <button class="zes-action-btn" onclick="Zesium.openBackupScheduleWindow()">${Icons.time} Add Backup Schedule</button>
+                      </div>
                     </td>
                   </tr>
                 `}
@@ -1349,8 +1547,8 @@
         container.innerHTML = `
           <div class="zes-page-header">
             <div>
-              <h1 class="zes-page-title">Firewall & Packet Filtering</h1>
-              <p class="zes-page-subtitle">Security rules applied to hypervisor host and datacenter cluster</p>
+              <h1 class="zes-page-title">Firewall & Security Rules</h1>
+              <p class="zes-page-subtitle">Packet filtering rules applied to hypervisor host and datacenter cluster</p>
             </div>
             <div style="display: flex; gap: 8px;">
               <button class="zes-btn-primary" onclick="Zesium.openAddFirewallRuleWindow('${State.firewallTab}')">
@@ -1702,7 +1900,9 @@
         <div class="zes-login-left">
           <div class="zes-login-brand">
             <div class="zes-login-brand-left">
-              <img src="/pve2/images/zesium/logo.svg" class="zes-login-brand-logo" alt="Zesium Logo" />
+              <div style="width: 32px; height: 32px;">
+                ${Icons.logo}
+              </div>
               <div>
                 <span class="zes-login-brand-title">Zesium</span>
                 <span style="display: block; font-size: 11px; color: #71717a; font-weight: 500;">Proxmox Manager</span>
@@ -1841,10 +2041,12 @@
       const app = document.createElement('div');
       app.id = 'zesium-app';
       app.innerHTML = `
-        <!-- Left Slim Rail (56px) with White SVG Icons -->
+        <!-- Left Slim Rail (56px) with Pure White SVG Icons -->
         <div id="zes-rail">
           <div class="zes-rail-logo" title="Zesium - Proxmox Manager" onclick="Zesium.navigateTo('servers')">
-            <img src="/pve2/images/zesium/logo.svg" alt="Zesium Logo" />
+            <div style="width: 28px; height: 28px;">
+              ${Icons.logo}
+            </div>
           </div>
 
           <div class="zes-rail-nav">
@@ -1856,13 +2058,17 @@
               ${Icons.server}
               <span>Node</span>
             </button>
+            <button class="zes-rail-btn" data-view="storage" title="Storage Pools" onclick="Zesium.navigateTo('storage')">
+              ${Icons.storage}
+              <span>Storage</span>
+            </button>
             <button class="zes-rail-btn" data-view="isos" title="ISO Images" onclick="Zesium.navigateTo('isos')">
               ${Icons.iso}
               <span>ISOs</span>
             </button>
-            <button class="zes-rail-btn" data-view="storage" title="Storage Pools" onclick="Zesium.navigateTo('storage')">
-              ${Icons.storage}
-              <span>Storage</span>
+            <button class="zes-rail-btn" data-view="backups" title="Backups" onclick="Zesium.navigateTo('backups')">
+              ${Icons.backup}
+              <span>Backup</span>
             </button>
             <button class="zes-rail-btn" data-view="disks" title="Physical Disks" onclick="Zesium.navigateTo('disks')">
               ${Icons.disks}
@@ -1890,9 +2096,14 @@
         <!-- Main Navigation Sidebar (260px) -->
         <div id="zes-sidebar">
           <div class="zes-sidebar-header">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-              <span style="font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: -0.01em;">Zesium</span>
-              <span style="font-size: 12px; color: #71717a; font-weight: 500;">Proxmox Manager</span>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <div style="width: 22px; height: 22px;">
+                ${Icons.logo}
+              </div>
+              <div>
+                <span style="font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: -0.01em;">Zesium</span>
+                <span style="display: block; font-size: 11px; color: #71717a; font-weight: 500;">Proxmox Manager</span>
+              </div>
             </div>
             <div class="zes-team-selector" onclick="Zesium.navigateTo('node-summary')">
               <div class="zes-team-avatar">
@@ -1940,7 +2151,7 @@
               </a>
               <a class="zes-menu-item" data-view="backups" onclick="Zesium.navigateTo('backups')">
                 ${Icons.backup}
-                <span>Backups & Archives</span>
+                <span>Backups & Disaster Recovery</span>
               </a>
             </div>
 

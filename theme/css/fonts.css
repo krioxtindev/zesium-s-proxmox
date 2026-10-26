@@ -1,72 +1,35 @@
 /* ==========================================================================
-   Zesium Proxmox Theme - Modern Typography & CSS Tokens
+   Zesium Proxmox Theme - Inter Typography & Global Font Override
+   Precision millimeter-accurate replica of Convoy / Advin dark design
    © Zesium. All rights reserved.
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Surface colors */
-  --zes-bg-canvas: #0e0e11;
-  --zes-bg-surface: #141417;
-  --zes-bg-card: #18181c;
-  --zes-bg-card-hover: #1f1f25;
-  --zes-bg-sidebar: #101013;
-  --zes-bg-subbar: #0b0b0e;
-  --zes-bg-input: #151518;
-  --zes-bg-input-focus: #18181d;
-  --zes-bg-modal: #18181c;
-  --zes-bg-modal-header: #131316;
-
-  /* Borders */
-  --zes-border-subtle: #202025;
-  --zes-border-base: #27272a;
-  --zes-border-focus: #3f3f46;
-  --zes-border-active: #ffffff;
-
-  /* Typography colors */
-  --zes-text-primary: #f4f4f5;
-  --zes-text-secondary: #a1a1aa;
-  --zes-text-muted: #71717a;
-  --zes-text-dim: #52525b;
-
-  /* Accents */
-  --zes-primary-btn-bg: #ffffff;
-  --zes-primary-btn-text: #09090b;
-  --zes-primary-btn-hover: #e4e4e7;
-  
-  --zes-accent-blue: #3b82f6;
-  --zes-accent-blue-hover: #2563eb;
-  --zes-accent-blue-subtle: rgba(59, 130, 246, 0.12);
-
-  --zes-status-success: #10b981;
-  --zes-status-success-bg: rgba(16, 185, 129, 0.12);
-  --zes-status-warning: #f59e0b;
-  --zes-status-warning-bg: rgba(245, 158, 11, 0.1);
-  --zes-status-warning-border: #78350f;
-  --zes-status-danger: #ef4444;
-  --zes-status-danger-bg: rgba(239, 68, 68, 0.12);
-
-  /* Radius & Shadows */
-  --zes-radius-sm: 6px;
-  --zes-radius-md: 8px;
-  --zes-radius-lg: 12px;
-  --zes-radius-xl: 16px;
-  --zes-radius-pill: 9999px;
-
-  --zes-shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
-  --zes-shadow-modal: 0 20px 40px -4px rgba(0, 0, 0, 0.7);
-  --zes-shadow-dropdown: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
-  --zes-shadow-glow: 0 0 15px rgba(255, 255, 255, 0.08);
-
-  /* Typography scale */
-  --zes-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --zes-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --zes-font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
-/* Global Font Override */
-body, .x-body, .x-panel, .x-btn, .x-tree-panel, .x-grid, .x-form-item, input, select, textarea, button {
+/* Absolute Global Typography Reset - Overrides all ExtJS Arial/Tahoma shorthands */
+*, *::before, *::after,
+body, html, input, select, textarea, button, label,
+.x-body, .x-panel, .x-panel-body,
+.x-window, .x-window *, .x-window-default, .x-window-default *,
+.x-window-body, .x-window-header, .x-window-header-default,
+.x-window-header-title, .x-window-header-title-default, .x-title-text, .x-title-text-default,
+.x-form-item, .x-form-item-label, .x-form-item-label-default, .x-form-item-label-inner,
+.x-form-text, .x-form-text-default, .x-form-field, input.x-form-field, input.x-form-text,
+.x-btn, .x-btn *, .x-btn-inner, .x-btn-inner-default-small, .x-btn-inner-default-toolbar-small,
+.x-tab, .x-tab *, .x-tab-inner, .x-tab-inner-default,
+.x-grid, .x-grid *, .x-grid-cell, .x-grid-cell-inner,
+.x-column-header, .x-column-header-text, .x-column-header-inner,
+.x-toolbar, .x-toolbar *, .x-toolbar-item, .x-toolbar-text,
+.x-menu, .x-menu *, .x-menu-item, .x-menu-item-text,
+.x-tip, .x-tip-body, .x-form-display-field, .x-form-display-field-default,
+.pmx-hint, .pmx-hint * {
   font-family: var(--zes-font-sans) !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.012em !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }

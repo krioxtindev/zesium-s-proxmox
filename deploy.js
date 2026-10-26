@@ -45,9 +45,10 @@ fi
 sed -i '/<!-- ZESIUM-THEME-START -->/,/<!-- ZESIUM-THEME-END -->/d' "$TPL"
 
 # Inject before </head>
-INJECT="    <!-- ZESIUM-THEME-START -->\\\\n    <link rel=\\\\\\"stylesheet\\\\\\" type=\\\\\\"text/css\\\\\\" href=\\\\\\"/pve2/css/fonts.css?v=${v}\\\\\\" />\\\\n    <link rel=\\\\\\"stylesheet\\\\\\" type=\\\\\\"text/css\\\\\\" href=\\\\\\"/pve2/css/zesium-theme.css?v=${v}\\\\\\" />\\\\n    <script type=\\\\\\"text/javascript\\\\\\" src=\\\\\\"/pve2/js/zesium-theme.js?v=${v}\\\\\\">\\\\x3C/script>\\\\n    <!-- ZESIUM-THEME-END -->"
+INJECT="    <!-- ZESIUM-THEME-START -->\\\\n    <link rel=\\\\\\"preconnect\\\\\\" href=\\\\\\"https://fonts.googleapis.com\\\\\\" />\\\\n    <link rel=\\\\\\"preconnect\\\\\\" href=\\\\\\"https://fonts.gstatic.com\\\\\\" crossorigin />\\\\n    <link rel=\\\\\\"stylesheet\\\\\\" href=\\\\\\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap\\\\\\" />\\\\n    <link rel=\\\\\\"stylesheet\\\\\\" type=\\\\\\"text/css\\\\\\" href=\\\\\\"/pve2/css/fonts.css?v=${v}\\\\\\" />\\\\n    <link rel=\\\\\\"stylesheet\\\\\\" type=\\\\\\"text/css\\\\\\" href=\\\\\\"/pve2/css/zesium-theme.css?v=${v}\\\\\\" />\\\\n    <script type=\\\\\\"text/javascript\\\\\\" src=\\\\\\"/pve2/js/zesium-theme.js?v=${v}\\\\\\">\\\\x3C/script>\\\\n    <!-- ZESIUM-THEME-END -->"
 
 sed -i "/<\\\\/head>/i $INJECT" "$TPL"
+
 `;
 
 spawnSync(sshExe, [host, injectScript], { stdio: 'inherit' });

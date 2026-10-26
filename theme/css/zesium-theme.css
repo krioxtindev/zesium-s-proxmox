@@ -15,7 +15,7 @@
   --bg-topbar: #0e0e11;
   --bg-card: #18181c;
   --bg-card-hover: #1f1f25;
-  --bg-input: #1b1b22;
+  --bg-input: #1a1a22;
   --bg-pill: #222228;
   --bg-modal: #141418;
   --bg-modal-header: #101014;
@@ -39,10 +39,31 @@
   --radius-lg: 12px;
   --radius-pill: 9999px;
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* 1. Global Reset and Viewport */
+*, *::before, *::after,
+body, html, input, select, textarea, button, label,
+.x-body, .x-panel, .x-panel-body,
+.x-window, .x-window-default, .x-window-body,
+.x-window-header, .x-window-header-default,
+.x-window-header-title, .x-window-header-title-default, .x-title-text,
+.x-form-item, .x-form-item-label, .x-form-item-label-default, .x-form-item-label-inner,
+.x-form-text, .x-form-text-default, .x-form-field, input.x-form-field,
+.x-btn, .x-btn-inner, .x-btn-inner-default-small, .x-btn-inner-default-toolbar-small,
+.x-tab, .x-tab-inner, .x-tab-inner-default,
+.x-grid, .x-grid-cell, .x-grid-cell-inner,
+.x-column-header, .x-column-header-text, .x-column-header-inner,
+.x-toolbar, .x-toolbar-item, .x-toolbar-text,
+.x-menu, .x-menu-item, .x-menu-item-text,
+.x-tip, .x-tip-body, .x-form-display-field {
+  font-family: var(--font-sans) !important;
+  letter-spacing: -0.012em !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
 body, html {
   margin: 0;
   padding: 0;
@@ -51,8 +72,6 @@ body, html {
   overflow: hidden;
   background-color: var(--bg-app) !important;
   color: var(--text-primary) !important;
-  font-family: var(--font-sans) !important;
-  -webkit-font-smoothing: antialiased;
 }
 
 /* Custom Scrollbars */
@@ -111,8 +130,8 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 }
 
 .zes-rail-logo {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   margin-bottom: 20px;
   cursor: pointer;
   display: flex;
@@ -121,12 +140,11 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   transition: transform 0.15s ease;
 }
 .zes-rail-logo:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 .zes-rail-logo img {
   width: 28px;
   height: 28px;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.25));
 }
 
 .zes-rail-nav {
@@ -671,135 +689,104 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 .zes-toast-close:hover { color: #ffffff; }
 
 /* ==========================================================================
-   5. Login Screen
+   5. EXTJS WIZARDS & MODALS: 100% INTER FONT, MODERN DARK LUXURY STYLING
+   Precision millimeter-accurate replica of Convoy / Advin dark design
    ========================================================================== */
-.zes-login-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 200000 !important;
-  display: flex;
-  background-color: #111113;
-}
-.zes-login-left {
-  width: 50%;
-  height: 100%;
-  background-color: #111113;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 40px 60px;
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-.zes-login-brand { display: flex; align-items: center; justify-content: space-between; }
-.zes-login-brand-left { display: flex; align-items: center; gap: 12px; }
-.zes-login-brand-logo { width: 32px; height: 32px; }
-.zes-login-brand-title { font-size: 18px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em; }
-
-.zes-login-center { max-width: 440px; width: 100%; margin: 20px auto; }
-.zes-login-heading { font-size: 30px; font-weight: 700; color: #ffffff; letter-spacing: -0.02em; margin: 0 0 6px 0; }
-.zes-login-subheading { font-size: 14px; color: #a1a1aa; margin: 0 0 24px 0; }
-.zes-login-form-group { margin-bottom: 18px; }
-.zes-login-label { display: block; font-size: 13px; font-weight: 500; color: #f4f4f5; margin-bottom: 6px; }
-.zes-login-input {
-  width: 100%;
-  box-sizing: border-box;
-  background-color: #18181b;
-  border: 1px solid #27272a;
-  border-radius: 8px;
-  padding: 11px 14px;
-  color: #ffffff;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.15s ease;
-}
-.zes-login-input:focus { border-color: #ffffff; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2); }
-.zes-login-btn-submit {
-  width: 100%;
-  background-color: #ffffff;
-  color: #09090b;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-  margin-top: 10px;
-}
-.zes-login-btn-submit:hover { background-color: #e4e4e7; }
-.zes-login-footer { font-size: 12px; color: #71717a; display: flex; gap: 16px; }
-
-.zes-login-right {
-  width: 50%;
-  height: 100%;
-  background-image: url('/pve2/images/zesium/datacenter-bg.png');
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 60px;
-  box-sizing: border-box;
-}
-.zes-login-right::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(180deg, rgba(14, 14, 17, 0.2) 0%, rgba(14, 14, 17, 0.85) 100%);
-  pointer-events: none;
-}
-.zes-login-hero-text { position: relative; z-index: 2; max-width: 480px; }
-.zes-login-hero-title { font-size: 28px; font-weight: 700; color: #ffffff; margin: 0 0 10px 0; letter-spacing: -0.02em; }
-.zes-login-hero-desc { font-size: 14px; color: #d4d4d8; line-height: 1.6; margin: 0; }
-
-@media (max-width: 960px) {
-  .zes-login-right { display: none; }
-  .zes-login-left { width: 100%; padding: 30px 24px; }
-}
-
-.pve-login-window, div[id^="loginwindow-"] {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-/* ==========================================================================
-   6. EXTJS WIZARDS & MODALS: 100% VISIBLE, CENTERED, HIGH CONTRAST
-   ========================================================================== */
+.x-window,
 .x-window-default {
-  background-color: var(--bg-modal) !important;
-  border: 1px solid #33333e !important;
-  border-radius: var(--radius-lg) !important;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85) !important;
+  background-color: #141418 !important;
+  border: 1px solid #27272a !important;
+  border-radius: 12px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
   z-index: 100000 !important;
+  overflow: hidden !important;
 }
 
 .x-window-header-default {
-  background-color: var(--bg-modal-header) !important;
-  border-bottom: 1px solid var(--border-base) !important;
-  padding: 14px 18px !important;
+  background-color: #101014 !important;
+  border-bottom: 1px solid #22222a !important;
+  padding: 14px 20px !important;
 }
 
 .x-window-header-title-default,
-.x-window-header-default .x-title-text {
+.x-window-header-title-default > .x-title-text-default,
+.x-window-header-default .x-title-text,
+.x-title-text {
+  font-family: var(--font-sans) !important;
   color: #ffffff !important;
-  font-size: 15px !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.01em !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
 }
 
 .x-window-body-default {
-  background-color: var(--bg-modal) !important;
-  color: var(--text-primary) !important;
+  background-color: #141418 !important;
+  color: #f4f4f5 !important;
+  padding: 18px 20px !important;
+  font-family: var(--font-sans) !important;
 }
 
-/* All containers inside wizard */
+/* Close tool button - Pure White '✕', Kill Cyan/Blue ExtJS Sprite */
+.x-tool,
+.x-tool-default {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.x-tool-close,
+.x-tool-close.x-tool,
+.x-tool-close .x-tool-img,
+.x-tool-close.x-tool-img,
+.x-tool-tool-el {
+  background-image: none !important;
+}
+
+.x-tool-close .x-tool-img,
+.x-tool-close .x-tool-tool-el {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.x-tool-close {
+  background: transparent !important;
+  width: 24px !important;
+  height: 24px !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.x-tool-close::after {
+  content: '✕' !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 15px !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 400 !important;
+  color: #ffffff !important;
+  opacity: 0.8 !important;
+  line-height: 1 !important;
+  transition: opacity 0.15s ease, transform 0.15s ease !important;
+}
+
+.x-tool-close:hover {
+  background-color: #272730 !important;
+}
+
+.x-tool-close:hover::after {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1.15) !important;
+}
+
+/* Containers inside modal */
 .x-window-default .x-panel,
 .x-window-default .x-panel-body,
 .x-window-default .x-container,
@@ -808,20 +795,21 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   opacity: 1 !important;
   visibility: visible !important;
   background-color: transparent !important;
+  font-family: var(--font-sans) !important;
 }
 
 /* WIZARD TABS */
 .x-window-default .x-tab-bar-default,
 .x-window-default .x-tab-bar {
-  background-color: #121216 !important;
-  border-bottom: 1px solid #2e2e38 !important;
+  background-color: #101014 !important;
+  border-bottom: 1px solid #282832 !important;
   padding: 8px 10px 0 10px !important;
 }
 
 .x-window-default .x-tab-default,
 .x-window-default .x-tab {
   background-color: #1a1a22 !important;
-  border: 1px solid #2e2e38 !important;
+  border: 1px solid #282832 !important;
   border-bottom: none !important;
   border-radius: 6px 6px 0 0 !important;
   margin-right: 4px !important;
@@ -831,17 +819,19 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 
 .x-window-default .x-tab .x-tab-inner,
 .x-window-default .x-tab-inner-default {
+  font-family: var(--font-sans) !important;
   color: #a1a1aa !important;
   font-size: 12px !important;
   font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
 }
 
 /* DISABLED WIZARD TABS */
 .x-window-default .x-tab.x-tab-disabled,
 .x-window-default .x-tab-disabled {
   background-color: #141419 !important;
-  border-color: #22222a !important;
-  opacity: 0.8 !important;
+  border-color: #202028 !important;
+  opacity: 0.75 !important;
 }
 .x-window-default .x-tab-disabled .x-tab-inner,
 .x-window-default .x-tab-disabled .x-tab-inner-default {
@@ -862,21 +852,20 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   font-weight: 700 !important;
 }
 
-/* FORM LABELS */
+/* FORM LABELS - Clean, subtle 500 weight, not heavy Tahoma bold */
 .x-window-default .x-form-item-label,
 .x-window-default .x-form-item-label-inner,
 .x-window-default .x-form-item-label-default,
-.x-window-default label {
-  color: #ffffff !important;
+.x-window-default label,
+.x-form-item-label,
+.x-form-item-label-default {
+  font-family: var(--font-sans) !important;
+  color: #a1a1aa !important;
   font-size: 13px !important;
-  font-weight: 600 !important;
-  padding-top: 5px !important;
-}
-
-.x-window-default .x-fieldset-header-text {
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  padding-top: 6px !important;
+  padding-right: 12px !important;
 }
 
 /* INPUT BOXES */
@@ -884,45 +873,118 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
 .x-window-default .x-form-text-wrap-default,
 .x-window-default .x-form-trigger-wrap,
 .x-window-default .x-form-trigger-wrap-default {
-  background-color: #1e1e26 !important;
-  border: 1px solid #3f3f4c !important;
-  border-radius: var(--radius-sm) !important;
+  background-color: #18181c !important;
+  border: 1px solid #27272a !important;
+  border-radius: 6px !important;
+  transition: all 0.15s ease !important;
 }
 
 .x-window-default .x-form-text-wrap:focus-within,
 .x-window-default .x-form-trigger-wrap:focus-within,
 .x-window-default .x-form-text-wrap.x-form-text-wrap-focus {
-  border-color: #ffffff !important;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+  border-color: #52525b !important;
+  background-color: #1e1e24 !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
 }
 
 .x-window-default .x-form-text-default,
 .x-window-default input.x-form-field,
 .x-window-default input.x-form-text,
-.x-window-default .x-form-field {
-  color: #ffffff !important;
+.x-window-default .x-form-field,
+.x-form-text-default,
+input.x-form-text-default {
+  font-family: var(--font-sans) !important;
+  color: #f4f4f5 !important;
   background-color: transparent !important;
   font-size: 13px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   padding: 6px 10px !important;
+  box-shadow: none !important;
+  letter-spacing: -0.01em !important;
 }
 
-/* COMBO DROPDOWN ARROWS */
+/* FILE UPLOAD BUTTON ("Select File") - Modern Clean Dark Button */
+.x-window-default .x-form-file-btn,
+.x-window-default .x-form-file-wrap .x-btn,
+.x-form-file-btn,
+.x-form-file-btn.x-btn-default-small,
+.x-form-file-wrap .x-btn,
+.x-form-file-wrap .x-btn-default-small {
+  background-image: none !important;
+  background-color: #272730 !important;
+  border: 1px solid #3f3f4c !important;
+  border-radius: 6px !important;
+  margin-left: 8px !important;
+  padding: 0 14px !important;
+  height: 32px !important;
+  box-shadow: none !important;
+  transition: all 0.15s ease !important;
+}
+.x-window-default .x-form-file-btn:hover,
+.x-window-default .x-form-file-wrap .x-btn:hover,
+.x-form-file-btn:hover,
+.x-form-file-wrap .x-btn:hover {
+  background-color: #383844 !important;
+  border-color: #525260 !important;
+}
+.x-window-default .x-form-file-btn .x-btn-inner,
+.x-window-default .x-form-file-wrap .x-btn .x-btn-inner,
+.x-form-file-btn .x-btn-inner,
+.x-form-file-wrap .x-btn .x-btn-inner {
+  font-family: var(--font-sans) !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 30px !important;
+}
+
+/* COMBO DROPDOWN TRIGGER */
 .x-window-default .x-form-trigger,
 .x-window-default .x-form-trigger-default {
-  background-color: #272732 !important;
-  border-left: 1px solid #3f3f4c !important;
-  color: #ffffff !important;
+  background-color: #18181c !important;
+  border-left: 1px solid #27272a !important;
+  color: #a1a1aa !important;
 }
 .x-window-default .x-form-trigger:before,
 .x-window-default .x-form-trigger:after {
   color: #ffffff !important;
 }
 
-/* BOTTOM TOOLBAR WITH CLEAN SPACING */
+/* NORMAL DISPLAY FIELDS (like File size, MIME type) */
+.x-window-default .x-form-display-field-default:not(.pmx-hint),
+.x-form-display-field-default:not(.pmx-hint) {
+  background: transparent !important;
+  border: none !important;
+  color: #f4f4f5 !important;
+  font-family: var(--font-sans) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+/* WARNING AND INFO BANNERS IN DIALOGS (Convoy/Advin amber alert banner) */
+.pmx-hint,
+.x-window-default .pmx-hint,
+div.pmx-hint,
+.x-form-display-field.pmx-hint {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  background-image: none !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  border-radius: 8px !important;
+  color: #f59e0b !important;
+  padding: 10px 14px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  margin-top: 10px !important;
+}
+
+/* BOTTOM MODAL TOOLBAR */
 .x-window-default .x-toolbar-docked-bottom {
-  background-color: #121216 !important;
-  border-top: 1px solid #282832 !important;
+  background-color: #101014 !important;
+  border-top: 1px solid #22222a !important;
   padding: 12px 20px !important;
 }
 
@@ -930,48 +992,69 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   margin: 0 4px !important;
 }
 
-/* ADVANCED CHECKBOX SPACING (No overlapping Back button!) */
+/* ADVANCED CHECKBOX SPACING */
 .x-window-default .x-toolbar-docked-bottom .x-form-item {
   margin-right: 24px !important;
 }
 .x-window-default .x-toolbar-docked-bottom .x-form-cb-label {
+  font-family: var(--font-sans) !important;
   color: #f4f4f5 !important;
   font-size: 13px !important;
   font-weight: 600 !important;
   margin-right: 14px !important;
 }
 
-/* WIZARD BUTTONS */
-.x-window-default .x-toolbar-docked-bottom .x-btn {
-  border-radius: var(--radius-sm) !important;
-  padding: 7px 18px !important;
+/* CANCEL / ABORT / BACK BUTTON */
+.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) {
+  background-image: none !important;
+  background-color: #27272a !important;
+  border: 1px solid #3f3f46 !important;
+  border-radius: 6px !important;
+  padding: 6px 16px !important;
   min-width: 75px !important;
+  box-shadow: none !important;
+  transition: all 0.15s ease !important;
+}
+.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) .x-btn-inner {
+  font-family: var(--font-sans) !important;
+  color: #f4f4f5 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child):hover {
+  background-color: #383844 !important;
+  border-color: #525260 !important;
 }
 
-/* NEXT & SUBMIT BUTTONS */
-.x-window-default .x-toolbar-docked-bottom .x-btn[id*="next"],
-.x-window-default .x-toolbar-docked-bottom .x-btn[id*="submit"],
+/* PRIMARY SUBMIT BUTTON (Upload / Next / Finish / Create) */
 .x-window-default .x-toolbar-docked-bottom .x-btn:last-child {
+  background-image: none !important;
   background-color: #ffffff !important;
   border: 1px solid #ffffff !important;
+  border-radius: 6px !important;
+  padding: 6px 18px !important;
+  min-width: 80px !important;
+  box-shadow: none !important;
+  transition: all 0.15s ease !important;
 }
-.x-window-default .x-toolbar-docked-bottom .x-btn[id*="next"] .x-btn-inner,
-.x-window-default .x-toolbar-docked-bottom .x-btn[id*="submit"] .x-btn-inner,
 .x-window-default .x-toolbar-docked-bottom .x-btn:last-child .x-btn-inner {
-  color: #09090b !important;
+  font-family: var(--font-sans) !important;
+  color: #000000 !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
 }
-
-/* BACK BUTTON */
-.x-window-default .x-toolbar-docked-bottom .x-btn[id*="back"],
-.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) {
-  background-color: #22222a !important;
-  border: 1px solid #3f3f4c !important;
+.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:hover {
+  background-color: #e4e4e7 !important;
+  border-color: #e4e4e7 !important;
 }
-.x-window-default .x-toolbar-docked-bottom .x-btn[id*="back"] .x-btn-inner,
-.x-window-default .x-toolbar-docked-bottom .x-btn:not(:last-child) .x-btn-inner {
-  color: #ffffff !important;
-  font-weight: 600 !important;
+.x-window-default .x-toolbar-docked-bottom .x-btn-disabled:last-child {
+  background-color: #222228 !important;
+  border-color: #2e2e36 !important;
+  opacity: 0.5 !important;
+}
+.x-window-default .x-toolbar-docked-bottom .x-btn-disabled:last-child .x-btn-inner {
+  font-family: var(--font-sans) !important;
+  color: #71717a !important;
 }
 
 /* GRIDS INSIDE MODALS */
@@ -988,6 +1071,7 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   color: #ffffff !important;
 }
 .x-window-default .x-column-header-inner {
+  font-family: var(--font-sans) !important;
   color: #a1a1aa !important;
   font-weight: 600 !important;
   background-color: #101014 !important;
@@ -1001,3 +1085,12 @@ body.zesium-active .x-viewport > div.x-border-layout-ct:first-child {
   -webkit-backdrop-filter: blur(4px) !important;
   z-index: 99990 !important;
 }
+
+/* Hide legacy login window */
+.pve-login-window, div[id^="loginwindow-"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
