@@ -111,16 +111,19 @@ tr '\a' '\n' < "$TPL_FILE" > "${TPL_FILE}.tmp" && mv "${TPL_FILE}.tmp" "$TPL_FIL
 
 # 5. Authorize local PC SSH key for passwordless direct deploy
 echo -e "${GREEN}[5/6]${NC} Configuring SSH access for local deploy..."
-mkdir -p /root/.ssh
-if ! grep -q "marti@NB-MARTIN" /root/.ssh/authorized_keys 2>/dev/null; then
-  echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIWZz0uvSAF3Q6BOebVXMhTXrutVsT8wQzkzSBfuvWyr marti@NB-MARTIN" >> /root/.ssh/authorized_keys
-  chmod 700 /root/.ssh
-  chmod 600 /root/.ssh/authorized_keys
-fi
+mkdir -p /root/.ssh 2>/dev/null || true
+(
+  chattr -i /root/.ssh /root/.ssh/authorized_keys 2>/dev/null || true
+  if ! grep -q "marti@NB-MARTIN" /root/.ssh/authorized_keys 2>/dev/null; then
+    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIWZz0uvSAF3Q6BOebVXMhTXrutVsT8wQzkzSBfuvWyr marti@NB-MARTIN" >> /root/.ssh/authorized_keys 2>/dev/null || true
+    chmod 700 /root/.ssh 2>/dev/null || true
+    chmod 600 /root/.ssh/authorized_keys 2>/dev/null || true
+  fi
+) || true
 
 # 6. Reload pveproxy service
 echo -e "${GREEN}[6/6]${NC} Reloading Proxmox web proxy service..."
-systemctl reload pveproxy
+systemctl reload pveproxy 2>/dev/null || systemctl restart pveproxy 2>/dev/null || true
 
 echo ""
 echo -e "${GREEN}======================================================${NC}"
