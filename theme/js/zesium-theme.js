@@ -1187,34 +1187,6 @@
       });
     },
 
-    openAddHardwareWindow: function (deviceType, vmid, node, type) {
-      if (window.Ext && Ext.create) {
-        try {
-          if (deviceType === 'disk') {
-            if (type === 'lxc') {
-              Ext.create('PVE.lxc.MPAdd', { nodename: node || 'pve', vmid: parseInt(vmid, 10) }).show();
-            } else {
-              Ext.create('PVE.qemu.HDAdd', { nodename: node || 'pve', vmid: parseInt(vmid, 10) }).show();
-            }
-            return;
-          } else if (deviceType === 'network') {
-            if (type === 'lxc') {
-              Ext.create('PVE.lxc.NetworkEdit', { nodename: node || 'pve', vmid: parseInt(vmid, 10), isCreate: true }).show();
-            } else {
-              Ext.create('PVE.qemu.NetworkEdit', { nodename: node || 'pve', vmid: parseInt(vmid, 10), isCreate: true }).show();
-            }
-            return;
-          } else if (deviceType === 'cdrom') {
-            Ext.create('PVE.qemu.CDEdit', { nodename: node || 'pve', vmid: parseInt(vmid, 10), isCreate: true }).show();
-            return;
-          }
-        } catch (e) {
-          console.warn(e);
-        }
-      }
-      this.openProxmoxConfigWindow(vmid, node, type);
-    },
-
     openEditNotesWindow: function (vmid, node, type, currentNotes) {
       var existing = document.getElementById('zes-notes-modal');
       if (existing) existing.remove();
@@ -1788,92 +1760,28 @@
         console.warn('Edit dialog error:', e);
       }
 
-      Zesium.openProxmoxHardwareWindow(vmid, node, type);
-    },
-
-    openAddHardwareWindow: function (type, vmid, nodename, vmtype) {
-      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
-      const isLxc = vmtype === 'lxc';
-      let win = null;
-
-      try {
-        if (type === 'disk' && !isLxc && Ext.ClassManager.get('PVE.qemu.HDEdit')) {
-          win = Ext.create('PVE.qemu.HDEdit', { nodename: node, vmid: vmid, isCreate: true, autoShow: true });
-        } else if (type === 'network' && !isLxc && Ext.ClassManager.get('PVE.qemu.NetworkEdit')) {
-          win = Ext.create('PVE.qemu.NetworkEdit', { nodename: node, vmid: vmid, isCreate: true, autoShow: true });
-        } else if (type === 'cdrom' && !isLxc && Ext.ClassManager.get('PVE.qemu.CDEdit')) {
-          win = Ext.create('PVE.qemu.CDEdit', { nodename: node, vmid: vmid, isCreate: true, autoShow: true });
-        }
-        if (win) {
-          win.show();
-          win.center();
-          win.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
-          return;
-        }
-      } catch (e) {
-        console.warn('Add hardware error:', e);
-      }
-
-      Zesium.openProxmoxHardwareWindow(vmid, node, vmtype);
-    },
-
-    openProxmoxHardwareWindow: function (vmid, nodename, vmtype) {
-      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
-      const isLxc = vmtype === 'lxc';
-      const hwCls = isLxc ? 'PVE.lxc.RessourceView' : 'PVE.qemu.HardwareView';
-
-      if (window.Ext && Ext.ClassManager.get(hwCls)) {
-        try {
-          const hwView = Ext.create(hwCls, {
-            nodename: node,
-            vmid: vmid
-          });
-          const wrap = Ext.create('Ext.window.Window', {
-            title: (isLxc ? 'LXC ' : 'VM ') + vmid + ' Hardware & Resources',
-            width: 900,
-            height: 520,
-            layout: 'fit',
-            modal: true,
-            items: [hwView]
-          });
-          wrap.show();
-          wrap.center();
-          wrap.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
-          return;
-        } catch (e) {
-          console.warn('Hardware window error:', e);
-        }
-      }
-      Zesium.openProxmoxConfigWindow(vmid, node, vmtype);
+      Zesium.openProxmoxConfigWindow(vmid, node, type);
     },
 
     openProxmoxConfigWindow: function (vmid, nodename, vmtype) {
-      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
-      const isLxc = vmtype === 'lxc';
-      const clsName = isLxc ? 'PVE.lxc.Config' : 'PVE.qemu.Config';
-
-      if (window.Ext && Ext.ClassManager.get(clsName)) {
-        try {
-          const panel = Ext.create(clsName, {
-            nodename: node,
-            vmid: vmid,
-            pveSelNode: { data: { nodename: node, vmid: vmid, type: isLxc ? 'lxc' : 'qemu' } }
-          });
-          const wrap = Ext.create('Ext.window.Window', {
-            title: (isLxc ? 'LXC ' : 'VM ') + vmid + ' Configuration',
-            width: 950,
-            height: 600,
-            layout: 'fit',
-            modal: true,
-            items: [panel]
-          });
-          wrap.show();
-          wrap.center();
-          wrap.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
-        } catch (e) {
-          console.warn('Proxmox config window error:', e);
-        }
+      if (document.body.classList.contains('zesium-active')) {
+        this.toggleNativeView();
       }
+      setTimeout(function () {
+        try {
+          var tree = Ext.ComponentQuery.query('pveResourceTree')[0];
+          if (tree) {
+            var store = tree.getStore();
+            var targetId = (vmtype === 'lxc' ? 'lxc/' : 'qemu/') + vmid;
+            var rec = store.findRecord('id', targetId) || store.findRecord('vmid', parseInt(vmid, 10));
+            if (rec) {
+              tree.getSelectionModel().select(rec);
+            }
+          }
+        } catch (e) {
+          console.warn('Select tree node note:', e);
+        }
+      }, 60);
     },
 
     // Direct, Minimal Backup Window
@@ -3242,22 +3150,8 @@
               </div>
             </div>
           ` : State.selectedTab === 'hardware' ? `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-              <div style="font-size: 13px; color: #a1a1aa;">Hardware specifications & virtual devices</div>
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')">
-                  ⚙ Full Proxmox Config
-                </button>
-                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.openAddHardwareWindow('disk', '${s.vmid}', '${s.node}', '${s.type}')">
-                  + Add Disk
-                </button>
-                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.openAddHardwareWindow('network', '${s.vmid}', '${s.node}', '${s.type}')">
-                  + Add Network
-                </button>
-                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.openAddHardwareWindow('cdrom', '${s.vmid}', '${s.node}', '${s.type}')">
-                  + Add CD/DVD
-                </button>
-              </div>
+            <div style="margin-bottom: 12px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Hardware specifications &amp; virtual devices</div>
             </div>
             <div class="zes-table-container">
               <table class="zes-table">
