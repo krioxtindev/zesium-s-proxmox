@@ -89,28 +89,16 @@
     }
   }
 
-  // Dynamic workspace center coordinate calculator (accounting for rail 58px + sidebar 260px)
+  // Dynamic workspace center coordinate calculator: dead center in viewport
   function calculateWindowWorkspaceCenter(w, h) {
-    var rail = document.getElementById('zes-rail');
-    var sidebar = document.getElementById('zes-sidebar');
-    var navW = 0;
-    if (rail && rail.offsetParent !== null) navW += rail.offsetWidth;
-    if (sidebar && sidebar.offsetParent !== null) navW += sidebar.offsetWidth;
-    if (navW === 0 && document.body.classList.contains('zesium-active')) navW = 318;
-
     var winW = window.innerWidth || document.documentElement.clientWidth;
     var winH = window.innerHeight || document.documentElement.clientHeight;
 
     var modalW = w || 780;
     var modalH = h || 550;
 
-    var availW = Math.max(modalW, winW - navW);
-    var x = navW + Math.floor((availW - modalW) / 2);
-    var y = Math.max(20, Math.floor((winH - modalH) / 2));
-
-    // Clamp within viewport
-    if (x + modalW > winW - 10) x = Math.max(10, winW - modalW - 10);
-    if (x < navW + 10 && winW > navW + modalW + 20) x = navW + 10;
+    var x = Math.max(10, Math.floor((winW - modalW) / 2));
+    var y = Math.max(10, Math.floor((winH - modalH) / 2));
 
     return { x: x, y: y };
   }
@@ -153,7 +141,7 @@
     } catch (e) {}
   }
 
-  // Override Ext.window.Window centering to guarantee perfect positioning in workspace
+  // Override Ext.window.Window centering & hook ComboBox dropdown pickers
   function applyWindowCenteringFix() {
     if (window.Ext && Ext.window && Ext.window.Window) {
       try {
@@ -179,6 +167,43 @@
             var pos = calculateWindowWorkspaceCenter(w, h);
             me.setPagePosition(pos.x, pos.y);
             return me;
+          };
+        }
+      } catch (e) {}
+    }
+
+    // Hook Ext.form.field.ComboBox.prototype.expand so dropdown pickers are never hidden behind windows
+    if (window.Ext && Ext.form && Ext.form.field && Ext.form.field.ComboBox) {
+      try {
+        if (!Ext.form.field.ComboBox.prototype.__zesExpandPatched) {
+          Ext.form.field.ComboBox.prototype.__zesExpandPatched = true;
+          var origExpand = Ext.form.field.ComboBox.prototype.expand;
+          Ext.form.field.ComboBox.prototype.expand = function () {
+            var ret = origExpand.apply(this, arguments);
+            try {
+              var picker = this.getPicker();
+              var win = this.up('window');
+              if (picker) {
+                var targetZ = 110050;
+                if (win && win.el && win.el.dom) {
+                  var winZ = parseInt(window.getComputedStyle(win.el.dom).zIndex, 10) || 100000;
+                  targetZ = Math.max(targetZ, winZ + 50);
+                }
+                var layer = picker.el ? (picker.el.dom.closest('.x-layer') || picker.el.dom) : null;
+                if (layer) {
+                  layer.style.setProperty('z-index', targetZ.toString(), 'important');
+                  layer.style.setProperty('display', 'block', 'important');
+                  layer.style.setProperty('visibility', 'visible', 'important');
+                  layer.style.setProperty('opacity', '1', 'important');
+                }
+                if (picker.el && picker.el.dom) {
+                  picker.el.dom.style.setProperty('z-index', targetZ.toString(), 'important');
+                }
+              }
+            } catch (e) {
+              console.warn('Picker z-index error:', e);
+            }
+            return ret;
           };
         }
       } catch (e) {}
@@ -637,6 +662,14 @@
           l.style.setProperty('position', 'static', 'important');
         });
 
+        // Ensure picker dropdown layers are given z-index >= 110000
+        const layers = document.querySelectorAll('.x-layer');
+        layers.forEach(l => {
+          if (l.style.zIndex && parseInt(l.style.zIndex, 10) < 110000) {
+            l.style.setProperty('z-index', '110000', 'important');
+          }
+        });
+
         // Center any newly displayed ExtJS windows in the workspace
         const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
         activeWindows.forEach(w => {
@@ -653,6 +686,29 @@
         sanitizeExtWindows();
       });
       extWindowObserver.observe(document.body, { childList: true, subtree: true });
+
+      // Click listener: when clicking any button that could open a window, ensure window centers
+      document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (target && (target.closest('.x-btn, button, .zes-btn, .zes-quick-btn') || target.tagName === 'BUTTON')) {
+          setTimeout(() => {
+            const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            activeWindows.forEach(w => {
+              if (w.offsetParent !== null && !w.getAttribute('data-zes-centered')) {
+                centerWindowInWorkspace(w);
+              }
+            });
+          }, 30);
+          setTimeout(() => {
+            const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            activeWindows.forEach(w => {
+              if (w.offsetParent !== null && !w.getAttribute('data-zes-centered')) {
+                centerWindowInWorkspace(w);
+              }
+            });
+          }, 120);
+        }
+      });
 
       window.addEventListener('resize', () => {
         const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
