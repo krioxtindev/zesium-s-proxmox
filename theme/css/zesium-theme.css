@@ -1142,16 +1142,77 @@ input.x-form-checkbox {
   line-height: 30px !important;
 }
 
-/* COMBO DROPDOWN TRIGGER */
+/* COMBO DROPDOWN & SPINNER TRIGGERS - Seamless, no boxy borders */
 .x-window-default .x-form-trigger,
-.x-window-default .x-form-trigger-default {
-  background-color: #18181c !important;
-  border-left: 1px solid #27272a !important;
+.x-window-default .x-form-trigger-default,
+.x-form-trigger,
+.x-form-trigger-default {
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
   color: #a1a1aa !important;
+  width: 26px !important;
 }
 .x-window-default .x-form-trigger:before,
-.x-window-default .x-form-trigger:after {
+.x-window-default .x-form-trigger:after,
+.x-form-trigger:before,
+.x-form-trigger:after {
+  color: #a1a1aa !important;
+  transition: color 0.15s ease !important;
+}
+.x-window-default .x-form-trigger:hover:before,
+.x-window-default .x-form-trigger:hover:after,
+.x-form-trigger:hover:before {
   color: #ffffff !important;
+}
+.x-form-spinner-up,
+.x-form-spinner-down {
+  background: transparent !important;
+  border: none !important;
+}
+.x-form-spinner-up:before,
+.x-form-spinner-down:before {
+  color: #a1a1aa !important;
+}
+
+/* HORIZONTAL DIVIDERS IN MODALS (Replaces harsh inset double lines) */
+.x-window hr,
+.x-window-default hr,
+hr.x-component,
+.x-component-default[id*="box"] hr,
+.x-form-item hr {
+  border: none !important;
+  border-top: 1px solid #272730 !important;
+  height: 1px !important;
+  background: transparent !important;
+  margin: 14px 0 !important;
+}
+
+/* FORM VALIDATION & INVALID FIELD STYLING */
+.x-form-invalid-field,
+.x-form-invalid-field-default,
+.x-form-text-wrap.x-form-invalid-field,
+.x-form-trigger-wrap.x-form-invalid-field {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.04) !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25) !important;
+}
+
+.x-form-invalid-under,
+.x-form-error-msg {
+  color: #f87171 !important;
+  font-family: var(--font-sans) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  padding-top: 4px !important;
+  line-height: 1.3 !important;
+}
+
+.x-form-invalid-icon {
+  margin-left: 6px !important;
+  vertical-align: middle !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4)) !important;
 }
 
 /* NORMAL DISPLAY FIELDS (like File size, MIME type) */
@@ -1205,7 +1266,10 @@ div.pmx-hint,
 .x-window .x-toolbar-footer [itemId="help"],
 .x-window [itemId="help"],
 .x-toolbar-footer [itemId="help"],
-.x-window .x-btn[id*="help"] {
+.x-window .x-btn[id*="help"],
+.x-window .proxmox-inline-button,
+.x-window [id*="proxmoxHelpButton"],
+.proxmox-inline-button {
   display: none !important;
   visibility: hidden !important;
   width: 0 !important;
@@ -1296,10 +1360,17 @@ div.pmx-hint,
 /* DISABLED BUTTONS (e.g. Back on step 1) */
 .x-window .x-toolbar .x-btn.x-btn-disabled,
 .x-window .x-toolbar-footer .x-btn.x-btn-disabled,
+/* DISABLED FOOTER BUTTONS */
+.x-window .x-toolbar-footer .x-btn.x-btn-disabled,
+.x-window .x-toolbar-footer .x-btn.x-item-disabled,
 .x-toolbar-footer .x-btn.x-btn-disabled,
+.x-toolbar-footer .x-btn.x-item-disabled,
 .x-window [itemId="back"].x-btn-disabled,
+.x-window [itemId="back"].x-item-disabled,
 .x-window .x-btn-disabled,
-.x-window-default .x-toolbar-docked-bottom .x-btn-disabled {
+.x-window .x-item-disabled,
+.x-window-default .x-toolbar-docked-bottom .x-btn-disabled,
+.x-window-default .x-toolbar-docked-bottom .x-item-disabled {
   background-image: none !important;
   background-color: #1a1a20 !important;
   border-color: #272730 !important;
@@ -1307,20 +1378,25 @@ div.pmx-hint,
   cursor: not-allowed !important;
 }
 .x-window .x-toolbar .x-btn.x-btn-disabled .x-btn-inner,
+.x-window .x-toolbar .x-btn.x-item-disabled .x-btn-inner,
 .x-window [itemId="back"].x-btn-disabled .x-btn-inner,
-.x-window .x-btn-disabled .x-btn-inner {
+.x-window .x-btn-disabled .x-btn-inner,
+.x-window .x-item-disabled .x-btn-inner {
   color: #71717a !important;
 }
 
-/* PRIMARY SUBMIT BUTTON (Upload / Next / Finish / Create) */
-.x-window [itemId="next"]:not(.x-btn-disabled),
-.x-window [itemId="finish"]:not(.x-btn-disabled),
-.x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled),
-.x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled),
-.x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled),
-.x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled),
-.x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]),
-.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) {
+/* PRIMARY SUBMIT BUTTON (Upload / Next / Finish / Create / Submit) */
+.x-window [itemId="next"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window [itemId="finish"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window [itemId="submit"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar [itemId="submit"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar-footer [itemId="submit"]:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not(.x-item-disabled):not([itemId="back"]):not([itemId="cancel"]),
+.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not(.x-item-disabled):not([itemId="back"]):not([itemId="cancel"]) {
   background-image: none !important;
   background-color: #ffffff !important;
   border: 1px solid #ffffff !important;
@@ -1330,23 +1406,27 @@ div.pmx-hint,
   box-shadow: none !important;
   transition: all 0.15s ease !important;
 }
-.x-window [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
-.x-window [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
-.x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
-.x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
-.x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled) .x-btn-inner,
-.x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled) .x-btn-inner,
-.x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner,
-.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner {
+.x-window [itemId="next"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window [itemId="finish"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window [itemId="submit"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window .x-toolbar [itemId="next"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window .x-toolbar [itemId="finish"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window .x-toolbar [itemId="submit"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window .x-toolbar-footer [itemId="next"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window .x-toolbar-footer [itemId="finish"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window .x-toolbar-footer [itemId="submit"]:not(.x-btn-disabled):not(.x-item-disabled) .x-btn-inner,
+.x-window .x-toolbar-footer .x-btn:last-child:not(.x-btn-disabled):not(.x-item-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner,
+.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:not(.x-btn-disabled):not(.x-item-disabled):not([itemId="back"]):not([itemId="cancel"]) .x-btn-inner {
   font-family: var(--font-sans) !important;
   color: #000000 !important;
   font-size: 13px !important;
   font-weight: 700 !important;
 }
-.x-window [itemId="next"]:hover:not(.x-btn-disabled),
-.x-window [itemId="finish"]:hover:not(.x-btn-disabled),
-.x-window .x-toolbar-footer .x-btn:last-child:hover:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]),
-.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:hover:not(.x-btn-disabled):not([itemId="back"]):not([itemId="cancel"]) {
+.x-window [itemId="next"]:hover:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window [itemId="finish"]:hover:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window [itemId="submit"]:hover:not(.x-btn-disabled):not(.x-item-disabled),
+.x-window .x-toolbar-footer .x-btn:last-child:hover:not(.x-btn-disabled):not(.x-item-disabled):not([itemId="back"]):not([itemId="cancel"]),
+.x-window-default .x-toolbar-docked-bottom .x-btn:last-child:hover:not(.x-btn-disabled):not(.x-item-disabled):not([itemId="back"]):not([itemId="cancel"]) {
   background-color: #e4e4e7 !important;
   border-color: #e4e4e7 !important;
 }

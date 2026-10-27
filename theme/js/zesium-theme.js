@@ -735,6 +735,136 @@
       }
     },
 
+    deleteISO: function (volid) {
+      if (!volid) return;
+      const fileName = volid.split('/').pop() || volid;
+      if (!confirm('Are you sure you want to permanently delete ISO image "' + fileName + '"?')) return;
+
+      const node = (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const storage = volid.split(':')[0] || 'local';
+
+      if (window.Proxmox && Proxmox.Utils && Proxmox.Utils.API2Request) {
+        Proxmox.Utils.API2Request({
+          url: '/nodes/' + node + '/storage/' + storage + '/content/' + encodeURIComponent(volid),
+          method: 'DELETE',
+          waitMsgTarget: Ext.getBody(),
+          success: function () {
+            Zesium.fetchISOs();
+          },
+          failure: function (response) {
+            Ext.Msg.alert('Error', response.htmlStatus || 'Failed to delete ISO image.');
+          }
+        });
+      }
+    },
+
+    deleteBackup: function (volid) {
+      if (!volid) return;
+      const fileName = volid.split('/').pop() || volid;
+      if (!confirm('Are you sure you want to permanently delete backup "' + fileName + '"?')) return;
+
+      const node = (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const storage = volid.split(':')[0] || 'local';
+
+      if (window.Proxmox && Proxmox.Utils && Proxmox.Utils.API2Request) {
+        Proxmox.Utils.API2Request({
+          url: '/nodes/' + node + '/storage/' + storage + '/content/' + encodeURIComponent(volid),
+          method: 'DELETE',
+          waitMsgTarget: Ext.getBody(),
+          success: function () {
+            Zesium.fetchBackups();
+          },
+          failure: function (response) {
+            Ext.Msg.alert('Error', response.htmlStatus || 'Failed to delete backup.');
+          }
+        });
+      }
+    },
+
+    openHardwareEdit: function (device, vmid, nodename, type) {
+      const node = nodename || (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const isLxc = type === 'lxc';
+
+      try {
+        let win = null;
+        if (device === 'memory') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.MemoryEdit')) {
+            win = Ext.create('PVE.qemu.MemoryEdit', { nodename: node, vmid: vmid, autoShow: true });
+          }
+        } else if (device === 'cores' || device === 'sockets' || device === 'cpu') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.ProcessorEdit')) {
+            win = Ext.create('PVE.qemu.ProcessorEdit', { nodename: node, vmid: vmid, autoShow: true });
+          }
+        } else if (device.startsWith('ide') || device === 'cdrom') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.CDEdit')) {
+            win = Ext.create('PVE.qemu.CDEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
+          }
+        } else if (device.startsWith('net')) {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.NetworkEdit')) {
+            win = Ext.create('PVE.qemu.NetworkEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
+          }
+        } else if (device.startsWith('scsi') || device.startsWith('virtio') || device.startsWith('sata') || device.startsWith('rootfs')) {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.HDEdit')) {
+            win = Ext.create('PVE.qemu.HDEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
+          }
+        }
+
+        if (win) {
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchServerConfig(vmid, type));
+          return;
+        }
+      } catch (e) {
+        console.warn('Edit dialog error:', e);
+      }
+
+      Zesium.openProxmoxConfigWindow(vmid, node, type);
+    },
+
+    openAddHardwareWindow: function (type, vmid, nodename, vmtype) {
+      const node = nodename || (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const isLxc = vmtype === 'lxc';
+      let win = null;
+
+      try {
+        if (type === 'disk' && !isLxc && Ext.ClassManager.get('PVE.qemu.HDEdit')) {
+          win = Ext.create('PVE.qemu.HDEdit', { nodename: node, vmid: vmid, isCreate: true, autoShow: true });
+        } else if (type === 'network' && !isLxc && Ext.ClassManager.get('PVE.qemu.NetworkEdit')) {
+          win = Ext.create('PVE.qemu.NetworkEdit', { nodename: node, vmid: vmid, isCreate: true, autoShow: true });
+        } else if (type === 'cdrom' && !isLxc && Ext.ClassManager.get('PVE.qemu.CDEdit')) {
+          win = Ext.create('PVE.qemu.CDEdit', { nodename: node, vmid: vmid, isCreate: true, autoShow: true });
+        }
+        if (win) {
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
+          return;
+        }
+      } catch (e) {
+        console.warn('Add hardware error:', e);
+      }
+
+      Zesium.openProxmoxConfigWindow(vmid, node, vmtype);
+    },
+
+    openProxmoxConfigWindow: function (vmid, nodename, vmtype) {
+      const node = nodename || (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const isLxc = vmtype === 'lxc';
+      const clsName = isLxc ? 'PVE.lxc.Config' : 'PVE.qemu.Config';
+
+      if (window.Ext && Ext.ClassManager.get(clsName)) {
+        const win = Ext.create(clsName, {
+          nodename: node,
+          vmid: vmid,
+          autoShow: true
+        });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
+      }
+    },
+
     // Direct, Minimal Backup Window
     openBackupWindow: function (vmid = null, vmtype = null) {
       let target = null;
@@ -1381,22 +1511,45 @@
               </div>
             </div>
           ` : State.selectedTab === 'hardware' ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Hardware specifications & virtual devices</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')">
+                  ${Icons.server} Full Proxmox Hardware & Config
+                </button>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.openAddHardwareWindow('disk', '${s.vmid}', '${s.node}', '${s.type}')">
+                  + Add Disk
+                </button>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.openAddHardwareWindow('network', '${s.vmid}', '${s.node}', '${s.type}')">
+                  + Add Network
+                </button>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.openAddHardwareWindow('cdrom', '${s.vmid}', '${s.node}', '${s.type}')">
+                  + Add CD/DVD
+                </button>
+              </div>
+            </div>
             <div class="zes-table-container">
               <table class="zes-table">
                 <thead>
                   <tr>
                     <th>Device</th>
                     <th>Configuration Value</th>
+                    <th style="text-align: right; width: 100px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   ${Object.keys(cfg).length > 0 ? Object.entries(cfg).map(([k, v]) => `
                     <tr>
-                      <td style="font-weight: 600; color: #ffffff; width: 220px;">${k}</td>
+                      <td style="font-weight: 600; color: #ffffff; width: 200px;">${k}</td>
                       <td style="font-family: monospace; color: #d4d4d8;">${v}</td>
+                      <td style="text-align: right;">
+                        <button class="zes-action-btn" style="padding: 3px 12px; font-size: 11px;" onclick="Zesium.openHardwareEdit('${k}', '${s.vmid}', '${s.node}', '${s.type}')">
+                          Edit
+                        </button>
+                      </td>
                     </tr>
                   `).join('') : `
-                    <tr><td colspan="2" style="text-align: center; padding: 30px; color: #71717a;">Loading hardware configuration...</td></tr>
+                    <tr><td colspan="3" style="text-align: center; padding: 30px; color: #71717a;">Loading hardware configuration...</td></tr>
                   `}
                 </tbody>
               </table>
@@ -1409,7 +1562,7 @@
                     <th>Archive</th>
                     <th>Format</th>
                     <th>Size</th>
-                    <th>Actions</th>
+                    <th style="text-align: right;">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1418,10 +1571,15 @@
                       <td style="font-weight: 600; color: #ffffff;">${b.volid.split('/').pop()}</td>
                       <td>${b.format}</td>
                       <td>${(b.size / (1024 * 1024 * 1024)).toFixed(2)} GB</td>
-                      <td>
-                        <button class="zes-action-btn" style="padding: 4px 8px; font-size: 11px;" onclick="Zesium.restoreBackup('${b.volid}')">
-                          Restore
-                        </button>
+                      <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 6px;">
+                          <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px;" onclick="Zesium.restoreBackup('${b.volid}')">
+                            Restore
+                          </button>
+                          <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteBackup('${b.volid}')">
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   `).join('') || `<tr><td colspan="4" style="text-align: center; padding: 40px; color: #71717a;">No backups found for VMID ${s.vmid}. Click "Backup Now" to create one.</td></tr>`}
@@ -1515,6 +1673,7 @@
                   <th>Format</th>
                   <th>Size</th>
                   <th>Volume ID</th>
+                  <th style="text-align: right; width: 100px;">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -1524,10 +1683,15 @@
                     <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px;">${iso.format || 'iso'}</span></td>
                     <td>${(iso.size / (1024 * 1024 * 1024)).toFixed(2)} GB</td>
                     <td style="font-family: monospace; font-size: 11px; color: #71717a;">${iso.volid}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteISO('${iso.volid}')" title="Delete ISO Image">
+                        ${Icons.deleteIcon} Delete
+                      </button>
+                    </td>
                   </tr>
                 `).join('') : `
                   <tr>
-                    <td colspan="4" style="text-align: center; padding: 60px 20px; color: #71717a;">
+                    <td colspan="5" style="text-align: center; padding: 60px 20px; color: #71717a;">
                       <div style="font-size: 14px; margin-bottom: 12px; color: #a1a1aa;">No ISO images in storage 'local'.</div>
                       <div style="display: flex; gap: 10px; justify-content: center;">
                         <button class="zes-btn-primary" onclick="Zesium.openUploadISOWindow()">${Icons.upload} Upload ISO</button>
@@ -1614,19 +1778,25 @@
                   <th>Format</th>
                   <th>Size</th>
                   <th>Volume ID</th>
+                  <th style="text-align: right; width: 100px;">Action</th>
                 </tr>
               </thead>
               <tbody>
                 ${hasTmpl ? State.templates.map(t => `
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">${t.volid.split('/').pop()}</td>
-                    <td>${t.format}</td>
+                    <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px;">${t.format}</span></td>
                     <td>${(t.size / (1024 * 1024 * 1024)).toFixed(2)} GB</td>
                     <td style="font-family: monospace; font-size: 11px; color: #71717a;">${t.volid}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteISO('${t.volid}')" title="Delete Template">
+                        ${Icons.deleteIcon} Delete
+                      </button>
+                    </td>
                   </tr>
                 `).join('') : `
                   <tr>
-                    <td colspan="4" style="text-align: center; padding: 50px 20px; color: #71717a;">
+                    <td colspan="5" style="text-align: center; padding: 50px 20px; color: #71717a;">
                       No container templates stored in 'local'. Click "Download Template" to fetch one.
                     </td>
                   </tr>
