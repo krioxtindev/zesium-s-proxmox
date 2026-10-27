@@ -65,6 +65,10 @@
     fullscreen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`,
     ha: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
     monitor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>`,
+    chip: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="15" x2="23" y2="15"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="15" x2="4" y2="15"/></svg>`,
+    globe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    play: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
+    eye: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
     reboot: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>`,
     plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
     edit: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
@@ -2225,6 +2229,18 @@
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.AudioEdit')) {
             win = Ext.create('PVE.qemu.AudioEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
           }
+        } else if (devType === 'memory') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.MemoryEdit')) {
+            win = Ext.create('PVE.qemu.MemoryEdit', { nodename: nodename, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.MemoryEdit')) {
+            win = Ext.create('PVE.lxc.MemoryEdit', { nodename: nodename, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'cpu') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.ProcessorEdit')) {
+            win = Ext.create('PVE.qemu.ProcessorEdit', { nodename: nodename, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.CPUEdit')) {
+            win = Ext.create('PVE.lxc.CPUEdit', { nodename: nodename, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
         }
 
         if (win) {
@@ -2792,6 +2808,338 @@
         win.show();
         win.center();
       }
+    },
+
+    
+    // Storage Pool Management
+    openAddStorageWindow: function (type) {
+      var stType = type || 'dir';
+      if (window.PVE && PVE.Utils && PVE.Utils.storageSchema && PVE.Utils.storageSchema[stType]) {
+        var schema = PVE.Utils.storageSchema[stType];
+        if (window.Ext && Ext.ClassManager.get('PVE.storage.BaseEdit')) {
+          try {
+            var win = Ext.create('PVE.storage.BaseEdit', {
+              paneltype: 'PVE.storage.' + schema.ipanel,
+              type: stType,
+              canDoBackups: schema.backups,
+              autoShow: true
+            });
+            win.show();
+            win.center();
+            win.on('destroy', () => Zesium.fetchStorages());
+            return;
+          } catch (e) {
+            console.warn('Add storage error:', e);
+          }
+        }
+      }
+      this.showToast('Add storage for ' + stType + ' initiated', 'info');
+    },
+
+    openEditStorageWindow: function (type, sid) {
+      if (window.PVE && PVE.Utils && PVE.Utils.storageSchema && PVE.Utils.storageSchema[type]) {
+        var schema = PVE.Utils.storageSchema[type];
+        if (window.Ext && Ext.ClassManager.get('PVE.storage.BaseEdit')) {
+          try {
+            var win = Ext.create('PVE.storage.BaseEdit', {
+              paneltype: 'PVE.storage.' + schema.ipanel,
+              type: type,
+              storageId: sid,
+              canDoBackups: schema.backups,
+              autoShow: true
+            });
+            win.show();
+            win.center();
+            win.on('destroy', () => Zesium.fetchStorages());
+            return;
+          } catch (e) {
+            console.warn('Edit storage error:', e);
+          }
+        }
+      }
+      this.showToast('Edit storage ' + sid, 'info');
+    },
+
+    deleteStorage: function (sid) {
+      if (!confirm('Are you sure you want to delete storage pool "' + sid + '"?\nThis removes the storage configuration from the hypervisor.')) {
+        return;
+      }
+      var self = this;
+      self.apiCall('/storage/' + sid, 'DELETE', null, function () {
+        self.showToast('Storage pool ' + sid + ' deleted', 'success');
+        self.fetchStorages();
+      });
+    },
+
+    // LVM & ZFS Creation
+    openCreateLVMWindow: function (node) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      if (window.Ext && Ext.ClassManager.get('PVE.node.CreateLVM')) {
+        var win = Ext.create('PVE.node.CreateLVM', { nodename: nodename, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchLVM());
+      }
+    },
+
+    openCreateLVMThinWindow: function (node) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      if (window.Ext && Ext.ClassManager.get('PVE.node.CreateLVMThin')) {
+        var win = Ext.create('PVE.node.CreateLVMThin', { nodename: nodename, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchLVM());
+      }
+    },
+
+    openCreateZFSWindow: function (node) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      if (window.Ext && Ext.ClassManager.get('PVE.node.CreateZFS')) {
+        var win = Ext.create('PVE.node.CreateZFS', { nodename: nodename, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchZFS());
+      }
+    },
+
+    openCreateDirectoryWindow: function (node) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      if (window.Ext && Ext.ClassManager.get('PVE.node.CreateDirectory')) {
+        var win = Ext.create('PVE.node.CreateDirectory', { nodename: nodename, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchZFS());
+      }
+    },
+
+    // Network Interfaces
+    openCreateBondWindow: function (node) {
+      var nodename = node || 'pve';
+      if (window.Ext && Ext.ClassManager.get('Proxmox.node.NetworkEdit')) {
+        var win = Ext.create('Proxmox.node.NetworkEdit', { nodename: nodename, iftype: 'bond', isCreate: true, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchNetworks());
+      }
+    },
+
+    openCreateVlanWindow: function (node) {
+      var nodename = node || 'pve';
+      if (window.Ext && Ext.ClassManager.get('Proxmox.node.NetworkEdit')) {
+        var win = Ext.create('Proxmox.node.NetworkEdit', { nodename: nodename, iftype: 'vlan', isCreate: true, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchNetworks());
+      }
+    },
+
+    openEditNetworkWindow: function (iftype, iface, node) {
+      var nodename = node || 'pve';
+      if (window.Ext && Ext.ClassManager.get('Proxmox.node.NetworkEdit')) {
+        var win = Ext.create('Proxmox.node.NetworkEdit', { nodename: nodename, iftype: iftype, iface: iface, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchNetworks());
+      }
+    },
+
+    deleteNetworkInterface: function (iface, node) {
+      if (!confirm('Are you sure you want to delete network interface "' + iface + '"?')) return;
+      var nodename = node || 'pve';
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/network/' + iface, 'DELETE', null, function () {
+        self.showToast('Interface ' + iface + ' deleted (pending reload)', 'warning');
+        self.fetchNetworks();
+      });
+    },
+
+    applyNetworkConfiguration: function (node) {
+      var nodename = node || 'pve';
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/network', 'PUT', null, function () {
+        self.showToast('Network configuration applied successfully', 'success');
+        self.fetchNetworks();
+      });
+    },
+
+    revertNetworkConfiguration: function (node) {
+      var nodename = node || 'pve';
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/network', 'DELETE', null, function () {
+        self.showToast('Pending network changes reverted', 'info');
+        self.fetchNetworks();
+      });
+    },
+
+    // Physical Disks Actions
+    wipeDisk: function (diskPath, node) {
+      if (!confirm('DANGER: Are you sure you want to WIPE disk "' + diskPath + '"?\nAll partitions, volume groups, and files on this drive will be destroyed.')) {
+        return;
+      }
+      var nodename = node || 'pve';
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/disks/wipedisk', 'PUT', { disk: diskPath }, function () {
+        self.showToast('Wipe initiated for ' + diskPath, 'warning');
+        self.fetchDisks();
+      });
+    },
+
+    initGptDisk: function (diskPath, node) {
+      if (!confirm('Are you sure you want to initialize disk "' + diskPath + '" with a GPT partition table?')) {
+        return;
+      }
+      var nodename = node || 'pve';
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/disks/initgpt', 'POST', { disk: diskPath }, function () {
+        self.showToast('GPT table initialized for ' + diskPath, 'success');
+        self.fetchDisks();
+      });
+    },
+
+    // User Access
+    openEditUserWindow: function (userid) {
+      if (window.Ext && Ext.ClassManager.get('PVE.dc.UserEdit')) {
+        var win = Ext.create('PVE.dc.UserEdit', { userid: userid, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchUsers());
+      }
+    },
+
+    deleteUser: function (userid) {
+      if (!confirm('Are you sure you want to delete user "' + userid + '"?')) return;
+      var self = this;
+      self.apiCall('/access/users/' + userid, 'DELETE', null, function () {
+        self.showToast('User ' + userid + ' deleted', 'success');
+        self.fetchUsers();
+      });
+    },
+
+    // Task Viewer
+    openTaskViewer: function (upid) {
+      if (!upid) return;
+      if (window.Ext && Ext.ClassManager.get('Proxmox.window.TaskViewer')) {
+        try {
+          var win = Ext.create('Proxmox.window.TaskViewer', { upid: upid, autoShow: true });
+          win.show();
+          win.center();
+          return;
+        } catch (e) {
+          console.warn('TaskViewer error:', e);
+        }
+      }
+      this.showToast('Task details for ' + upid, 'info');
+    },
+
+    // Hosts File (/etc/hosts)
+    openEditHostsModal: function () {
+      var raw = (State.hostsInfo && State.hostsInfo.data) || '';
+      var digest = (State.hostsInfo && State.hostsInfo.digest) || '';
+      var modalHtml = `
+        <div class="zes-modal-backdrop" id="zes-hosts-modal" style="display: flex;">
+          <div class="zes-modal-card" style="width: 700px; max-width: 95vw;">
+            <div class="zes-modal-header">
+              <div style="font-size: 16px; font-weight: 700; color: #ffffff;">Edit /etc/hosts Configuration</div>
+              <button class="zes-chip-btn" onclick="document.getElementById('zes-hosts-modal').remove()">✕</button>
+            </div>
+            <div class="zes-modal-body" style="padding: 16px;">
+              <p style="font-size: 12px; color: #a1a1aa; margin-bottom: 10px;">
+                Configure static DNS resolutions mapped on node <b>pve</b>.
+              </p>
+              <textarea id="zes-hosts-editor" class="zes-script-textarea" style="height: 280px; font-family: monospace; font-size: 12px; line-height: 1.5; white-space: pre;">${raw}</textarea>
+            </div>
+            <div class="zes-modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; padding: 12px 16px; border-top: 1px solid #272730;">
+              <button class="zes-action-btn" onclick="document.getElementById('zes-hosts-modal').remove()">Cancel</button>
+              <button class="zes-btn-primary" onclick="Zesium.saveHostsFile('${digest}')">Save & Apply</button>
+            </div>
+          </div>
+        </div>
+      `;
+      var existing = document.getElementById('zes-hosts-modal');
+      if (existing) existing.remove();
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    },
+
+    saveHostsFile: function (digest) {
+      var textarea = document.getElementById('zes-hosts-editor');
+      if (!textarea) return;
+      var newContent = textarea.value;
+      var self = this;
+      var params = { data: newContent };
+      if (digest) params.digest = digest;
+      self.apiCall('/nodes/pve/hosts', 'POST', params, function () {
+        self.showToast('Hosts file saved successfully', 'success');
+        var modal = document.getElementById('zes-hosts-modal');
+        if (modal) modal.remove();
+        self.fetchHosts();
+      });
+    },
+
+    // Time & NTP
+    openEditTimeWindow: function (node) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      if (window.Ext && Ext.ClassManager.get('Proxmox.node.TimeEdit')) {
+        try {
+          var win = Ext.create('Proxmox.node.TimeEdit', {
+            nodename: nodename,
+            autoShow: true
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchTime());
+          return;
+        } catch (e) {
+          console.warn('TimeEdit error:', e);
+        }
+      }
+      this.showToast('Time dialog opened', 'info');
+    },
+
+    // DNS Settings
+    openEditDNSWindow: function (node) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      if (window.Ext && Ext.ClassManager.get('Proxmox.node.DNSEdit')) {
+        try {
+          var win = Ext.create('Proxmox.node.DNSEdit', {
+            nodename: nodename,
+            autoShow: true
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchDNS());
+          return;
+        } catch (e) {
+          console.warn('DNSEdit error:', e);
+        }
+      }
+      this.showToast('DNS dialog opened', 'info');
+    },
+
+    // Scheduled Backup Jobs
+    runBackupJob: function (jobId) {
+      if (!confirm('Are you sure you want to immediately start backup job "' + jobId + '"?')) return;
+      var self = this;
+      self.apiCall('/cluster/backup/' + jobId + '/run', 'POST', null, function () {
+        self.showToast('Backup job ' + jobId + ' started', 'success');
+      });
+    },
+
+    openEditBackupScheduleWindow: function (jobId) {
+      if (window.Ext && Ext.ClassManager.get('PVE.dc.BackupEdit')) {
+        var win = Ext.create('PVE.dc.BackupEdit', { jobId: jobId, autoShow: true });
+        win.show();
+        win.center();
+        win.on('destroy', () => Zesium.fetchBackupJobs());
+      }
+    },
+
+    deleteBackupJob: function (jobId) {
+      if (!confirm('Are you sure you want to delete backup schedule "' + jobId + '"?')) return;
+      var self = this;
+      self.apiCall('/cluster/backup/' + jobId, 'DELETE', null, function () {
+        self.showToast('Backup schedule ' + jobId + ' deleted', 'success');
+        self.fetchBackupJobs();
+      });
     },
 
     openAddTokenWindow: function () {
@@ -3754,29 +4102,35 @@
                   </button>
                   <div class="zes-dropdown-menu">
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('disk', '${s.vmid}', '${s.node}', '${s.type}')">
-                      🖴 Hard Disk
+                      ${Icons.disks} Hard Disk
                     </button>
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('net', '${s.vmid}', '${s.node}', '${s.type}')">
-                      🌐 Network Device
+                      ${Icons.network} Network Device
                     </button>
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('cdrom', '${s.vmid}', '${s.node}', '${s.type}')">
-                      💿 CD/DVD Drive
+                      ${Icons.iso} CD/DVD Drive
                     </button>
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('cloudinit', '${s.vmid}', '${s.node}', '${s.type}')">
-                      ☁ Cloud-Init Drive
+                      ${Icons.cloudinit} Cloud-Init Drive
                     </button>
                     <div class="zes-dropdown-divider"></div>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('memory', '${s.vmid}', '${s.node}', '${s.type}')">
+                      ${Icons.chip} Memory (RAM)
+                    </button>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('cpu', '${s.vmid}', '${s.node}', '${s.type}')">
+                      ${Icons.server} Processors / Cores
+                    </button>
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('usb', '${s.vmid}', '${s.node}', '${s.type}')">
-                      🔌 USB Device
+                      ${Icons.chip} USB Device
                     </button>
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('pci', '${s.vmid}', '${s.node}', '${s.type}')">
-                      ⚡ PCI Device
+                      ${Icons.chip} PCI Device
                     </button>
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('serial', '${s.vmid}', '${s.node}', '${s.type}')">
-                      ⌨ Serial Port
+                      ${Icons.shell} Serial Port
                     </button>
                     <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('audio', '${s.vmid}', '${s.node}', '${s.type}')">
-                      🔊 Audio Device
+                      ${Icons.options} Audio Device
                     </button>
                   </div>
                 </div>
@@ -4118,6 +4472,7 @@
                     <th>Task Type</th>
                     <th>Node</th>
                     <th>Status</th>
+                    <th style="text-align: right; width: 100px;">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -4132,9 +4487,14 @@
                           <span class="zes-status-dot ${t.status === 'OK' ? 'running' : 'stopped'}"></span> ${t.status || 'RUNNING'}
                         </span>
                       </td>
+                      <td style="text-align: right;">
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openTaskViewer('${t.upid}')">
+                          View Log
+                        </button>
+                      </td>
                     </tr>
                   `).join('') : `
-                    <tr><td colspan="5" style="text-align: center; padding: 40px; color: #71717a;">No recorded tasks found for VMID ${s.vmid}.</td></tr>
+                    <tr><td colspan="6" style="text-align: center; padding: 40px; color: #71717a;">No recorded tasks found for VMID ${s.vmid}.</td></tr>
                   `}
                 </tbody>
               </table>
@@ -4420,6 +4780,39 @@
               <h1 class="zes-page-title">Storage Pools</h1>
               <p class="zes-page-subtitle">Disks, directory pools, thin-provisioned LVM, and ZFS storage</p>
             </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <div class="zes-dropdown" id="zes-add-storage-dropdown">
+                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;" onclick="document.getElementById('zes-add-storage-dropdown').classList.toggle('open')">
+                  ${Icons.plus} Add Storage ▾
+                </button>
+                <div class="zes-dropdown-menu">
+                  <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-storage-dropdown').classList.remove('open'); Zesium.openAddStorageWindow('dir')">
+                    ${Icons.storage} Directory (dir)
+                  </button>
+                  <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-storage-dropdown').classList.remove('open'); Zesium.openAddStorageWindow('lvm')">
+                    ${Icons.lvm} LVM Volume Group
+                  </button>
+                  <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-storage-dropdown').classList.remove('open'); Zesium.openAddStorageWindow('lvmthin')">
+                    ${Icons.lvm} LVM-Thin Pool
+                  </button>
+                  <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-storage-dropdown').classList.remove('open'); Zesium.openAddStorageWindow('nfs')">
+                    ${Icons.network} NFS Share
+                  </button>
+                  <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-storage-dropdown').classList.remove('open'); Zesium.openAddStorageWindow('cifs')">
+                    ${Icons.network} SMB / CIFS Share
+                  </button>
+                  <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-storage-dropdown').classList.remove('open'); Zesium.openAddStorageWindow('zfspool')">
+                    ${Icons.zfs} ZFS Pool
+                  </button>
+                  <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-storage-dropdown').classList.remove('open'); Zesium.openAddStorageWindow('pbs')">
+                    ${Icons.backup} Proxmox Backup Server (PBS)
+                  </button>
+                </div>
+              </div>
+              <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.fetchStorages()">
+                ${Icons.refresh} Refresh
+              </button>
+            </div>
           </div>
 
           <div class="zes-table-container">
@@ -4433,6 +4826,7 @@
                   <th>Total Size</th>
                   <th>Available</th>
                   <th>Usage</th>
+                  <th style="text-align: right; width: 140px;">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -4456,10 +4850,20 @@
                           <span style="font-size: 12px; font-weight: 500;">${pct}%</span>
                         </div>
                       </td>
+                      <td style="text-align: right;">
+                        <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                          <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openEditStorageWindow('${st.type}', '${st.storage}')">
+                            ${Icons.edit} Edit
+                          </button>
+                          <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteStorage('${st.storage}')">
+                            ${Icons.deleteIcon} Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   `;
                 }).join('') : `
-                  <tr><td colspan="7" style="text-align: center; padding: 40px; color: #71717a;">Loading storage pools...</td></tr>
+                  <tr><td colspan="8" style="text-align: center; padding: 40px; color: #71717a;">Loading storage pools...</td></tr>
                 `}
               </tbody>
             </table>
@@ -4611,9 +5015,17 @@
                     <td><span class="zes-status-dot running"></span> <strong style="color: #10b981;">${d.health || 'OK'}</strong></td>
                     <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px;">${d.used || 'System'}</span></td>
                     <td style="text-align: right;">
-                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openDiskSmartWindow('${d.devpath || d.disk}')">
-                        View SMART
-                      </button>
+                      <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openDiskSmartWindow('${d.devpath || d.disk}')">
+                          View SMART
+                        </button>
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.initGptDisk('${d.devpath || d.disk}')">
+                          Init GPT
+                        </button>
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.wipeDisk('${d.devpath || d.disk}')">
+                          Wipe
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 `).join('') : `
@@ -4630,6 +5042,17 @@
             <div>
               <h1 class="zes-page-title">LVM & Thin Pools</h1>
               <p class="zes-page-subtitle">Logical Volume Management volume groups and thin-provisioned pools</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openCreateLVMWindow()">
+                ${Icons.plus} Create Volume Group
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openCreateLVMThinWindow()">
+                ${Icons.plus} Create Thinpool
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.fetchLVM()">
+                ${Icons.refresh} Refresh
+              </button>
             </div>
           </div>
 
@@ -4668,6 +5091,17 @@
               <h1 class="zes-page-title">Directory & ZFS Pools</h1>
               <p class="zes-page-subtitle">Mounted directories and ZFS file systems</p>
             </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openCreateZFSWindow()">
+                ${Icons.plus} Create ZFS Pool
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openCreateDirectoryWindow()">
+                ${Icons.plus} Create Directory
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.fetchZFS()">
+                ${Icons.refresh} Refresh
+              </button>
+            </div>
           </div>
 
           <div class="zes-table-container">
@@ -4701,9 +5135,21 @@
               <h1 class="zes-page-title">Network Bridges & Interfaces</h1>
               <p class="zes-page-subtitle">Linux Bridges (vmbr), physical adapters, and virtual switches</p>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
               <button class="zes-btn-primary" onclick="Zesium.openCreateBridgeWindow()">
-                + Create Linux Bridge
+                + Create Bridge
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openCreateBondWindow()">
+                + Create Bond
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openCreateVlanWindow()">
+                + Create VLAN
+              </button>
+              <button class="zes-action-btn" style="border-color: #10b981; color: #10b981;" onclick="Zesium.applyNetworkConfiguration()">
+                Apply Configuration
+              </button>
+              <button class="zes-action-btn" style="border-color: #ef4444; color: #ef4444;" onclick="Zesium.revertNetworkConfiguration()">
+                Revert Changes
               </button>
               <button class="zes-action-btn" onclick="Zesium.openNodeShell()">
                 ${Icons.shell} Shell
@@ -4721,6 +5167,7 @@
                   <th>CIDR Address</th>
                   <th>Gateway</th>
                   <th>Autostart</th>
+                  <th style="text-align: right; width: 140px;">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -4732,9 +5179,19 @@
                     <td style="font-family: monospace;">${n.cidr || n.address || '-'}</td>
                     <td style="font-family: monospace;">${n.gateway || '-'}</td>
                     <td>${n.autostart ? 'Yes' : 'No'}</td>
+                    <td style="text-align: right;">
+                      <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openEditNetworkWindow('${n.type}', '${n.iface}')">
+                          ${Icons.edit} Edit
+                        </button>
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteNetworkInterface('${n.iface}')">
+                          ${Icons.deleteIcon} Delete
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 `).join('') : `
-                  <tr><td colspan="6" style="text-align: center; padding: 40px; color: #71717a;">Loading network adapters...</td></tr>
+                  <tr><td colspan="7" style="text-align: center; padding: 40px; color: #71717a;">Loading network adapters...</td></tr>
                 `}
               </tbody>
             </table>
@@ -4978,6 +5435,14 @@
               <h1 class="zes-page-title">Hosts Configuration (/etc/hosts)</h1>
               <p class="zes-page-subtitle">Local static domain name resolutions mapped on node pve</p>
             </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openEditHostsModal()">
+                ${Icons.edit} Edit /etc/hosts
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.fetchHosts()">
+                ${Icons.refresh} Refresh
+              </button>
+            </div>
           </div>
 
           <div class="zes-table-container" style="background-color: #0b0b0e; font-family: monospace; font-size: 13px; padding: 18px; color: #ffffff; white-space: pre-wrap; line-height: 1.6;">
@@ -4991,6 +5456,14 @@
             <div>
               <h1 class="zes-page-title">System Time & NTP</h1>
               <p class="zes-page-subtitle">Hardware clock synchronization and active timezone</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openEditTimeWindow()">
+                ${Icons.edit} Edit Timezone / NTP
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.fetchTime()">
+                ${Icons.refresh} Refresh
+              </button>
             </div>
           </div>
 
@@ -5033,6 +5506,7 @@
                   <th>Realm Type</th>
                   <th>Email</th>
                   <th>Enabled</th>
+                  <th style="text-align: right; width: 140px;">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -5042,9 +5516,19 @@
                     <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px; text-transform: uppercase;">${u['realm-type'] || 'pam'}</span></td>
                     <td>${u.email || '-'}</td>
                     <td><span class="zes-status-dot ${u.enable ? 'running' : 'stopped'}"></span> ${u.enable ? 'Enabled' : 'Disabled'}</td>
+                    <td style="text-align: right;">
+                      <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openEditUserWindow('${u.userid}')">
+                          ${Icons.edit} Edit
+                        </button>
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteUser('${u.userid}')">
+                          ${Icons.deleteIcon} Delete
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 `).join('') : `
-                  <tr><td colspan="4" style="text-align: center; padding: 40px; color: #71717a;">Loading users...</td></tr>
+                  <tr><td colspan="5" style="text-align: center; padding: 40px; color: #71717a;">Loading users...</td></tr>
                 `}
               </tbody>
             </table>
@@ -5069,6 +5553,7 @@
                   <th>User</th>
                   <th>Task Type</th>
                   <th>Status</th>
+                  <th style="text-align: right; width: 100px;">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -5085,10 +5570,15 @@
                         <span class="zes-status-dot ${isOk ? 'running' : 'stopped'}"></span>
                         <span style="color: ${isOk ? '#10b981' : '#ef4444'}; font-weight: 500;">${t.status}</span>
                       </td>
+                      <td style="text-align: right;">
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openTaskViewer('${t.upid}')">
+                          View Log
+                        </button>
+                      </td>
                     </tr>
                   `;
                 }).join('') : `
-                  <tr><td colspan="5" style="text-align: center; padding: 40px; color: #71717a;">Loading audit log...</td></tr>
+                  <tr><td colspan="6" style="text-align: center; padding: 40px; color: #71717a;">Loading audit log...</td></tr>
                 `}
               </tbody>
             </table>
@@ -5295,6 +5785,7 @@
                   <th>Selection</th>
                   <th>Compression</th>
                   <th>Mode</th>
+                  <th style="text-align: right; width: 180px;">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -5306,9 +5797,22 @@
                     <td>${j.vmid ? 'VMID: ' + j.vmid : (j.all ? 'All Guests' : 'Selected Guests')}</td>
                     <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px;">${j.compress || 'zstd'}</span></td>
                     <td style="text-transform: capitalize;">${j.mode || 'snapshot'}</td>
+                    <td style="text-align: right;">
+                      <div style="display: flex; gap: 6px; justify-content: flex-end;">
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: #10b981; color: #10b981;" onclick="Zesium.runBackupJob('${j.id}')">
+                          Run Now
+                        </button>
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openEditBackupScheduleWindow('${j.id}')">
+                          ${Icons.edit} Edit
+                        </button>
+                        <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteBackupJob('${j.id}')">
+                          ${Icons.deleteIcon} Delete
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 `).join('') : `
-                  <tr><td colspan="6" style="text-align: center; padding: 40px; color: #71717a;">No automated cluster backup schedules found. Click "+ Add Backup Schedule" to configure automated backups.</td></tr>
+                  <tr><td colspan="7" style="text-align: center; padding: 40px; color: #71717a;">No automated cluster backup schedules found. Click "+ Add Backup Schedule" to configure automated backups.</td></tr>
                 `}
               </tbody>
             </table>
@@ -5458,6 +5962,18 @@
     mountApp: function () {
       const existing = document.getElementById('zesium-app');
       if (existing) return;
+
+      if (window.Ext && Ext.state && Ext.state.Manager) {
+        try {
+          var caps = Ext.state.Manager.get('GuiCap') || {};
+          if (!caps.mapping) caps.mapping = {};
+          if (!caps.dc) caps.dc = {};
+          if (!caps.vms) caps.vms = {};
+          if (!caps.storage) caps.storage = {};
+          if (!caps.nodes) caps.nodes = {};
+          Ext.state.Manager.set('GuiCap', caps);
+        } catch (e) {}
+      }
 
       document.body.classList.add('zesium-active');
       applyWindowCenteringFix();

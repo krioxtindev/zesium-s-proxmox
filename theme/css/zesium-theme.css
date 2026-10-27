@@ -2676,3 +2676,39 @@ table .zes-action-btn svg {
   background-color: #ffffff !important;
 }
 
+
+/* COMPREHENSIVE ACTION BUTTONS & TABLE ALIGNMENTS */
+.zes-table-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap !important;
+  justify-content: flex-end !important;
+}
+.zes-btn-danger {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: #ef4444 !important;
+}
+.zes-btn-danger:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+.zes-btn-success {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #10b981 !important;
+}
+.zes-btn-success:hover {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+  color: #ffffff !important;
+}
+.zes-dropdown-item svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke: #a1a1aa !important;
+  flex-shrink: 0 !important;
+}
+.zes-dropdown-item:hover svg {
+  stroke: #ffffff !important;
+}
