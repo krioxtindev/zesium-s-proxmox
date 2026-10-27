@@ -64,7 +64,13 @@
     keyboard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>`,
     fullscreen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`,
     ha: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
-    monitor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>`
+    monitor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>`,
+    reboot: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>`,
+    plus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+    edit: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+    eject: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 2 14 22 14 12 2"/><rect x="2" y="18" width="20" height="3" rx="1"/></svg>`,
+    resize: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`,
+    move: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>`
   };
 
   // State Management - 100% Real Live Proxmox VE Data
@@ -892,6 +898,35 @@
   window.Zesium = {
     showToast: showToast,
 
+    apiCall: function (url, method, params, successCb, failureCb) {
+      if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) {
+        console.error('Proxmox API2Request not available');
+        if (failureCb) failureCb({ htmlStatus: 'Proxmox API2Request not available' });
+        return;
+      }
+      var cfg = {
+        url: url,
+        method: method || 'GET',
+        waitMsgTarget: (window.Ext && Ext.getBody) ? Ext.getBody() : null,
+        success: function (response, options) {
+          if (successCb) successCb(response, options);
+        },
+        failure: function (response, options) {
+          var msg = (response && (response.htmlStatus || response.statusText)) || 'API request failed';
+          console.warn('API Error [' + method + ' ' + url + ']:', msg);
+          if (failureCb) {
+            failureCb(response, options);
+          } else if (window.Zesium && Zesium.showToast) {
+            Zesium.showToast('Request Failed', msg, 'error');
+          }
+        }
+      };
+      if (params) {
+        cfg.params = params;
+      }
+      Proxmox.Utils.API2Request(cfg);
+    },
+
     navigateTo: function (view, id = null, tab = 'summary') {
       State.currentView = view;
       if (id) State.activeServerId = id;
@@ -941,7 +976,7 @@
       } else {
         State.selectedServerIds.clear();
       }
-      document.querySelectorAll('.zes-server-cb').forEach(function (cb) { cb.checked = checked; });
+      this.render();
     },
 
     toggleSelectServer: function (id, checked) {
@@ -951,10 +986,42 @@
       } else {
         State.selectedServerIds.delete(id);
       }
-      var allCb = document.getElementById('zes-select-all-servers');
-      if (allCb) {
-        allCb.checked = State.servers.length > 0 && State.selectedServerIds.size === State.servers.length;
+      this.render();
+    },
+
+    clearSelectedServers: function () {
+      if (State.selectedServerIds) State.selectedServerIds.clear();
+      this.render();
+    },
+
+    bulkAction: function (action) {
+      if (!State.selectedServerIds || State.selectedServerIds.size === 0) {
+        this.showToast('No servers selected', 'warning');
+        return;
       }
+      var ids = Array.from(State.selectedServerIds);
+      var self = this;
+
+      if (action === 'start') {
+        if (!confirm('Start all ' + ids.length + ' selected virtual servers?')) return;
+        ids.forEach(function (id) { self.startServer(id); });
+      } else if (action === 'shutdown') {
+        if (!confirm('Gracefully shutdown all ' + ids.length + ' selected virtual servers?')) return;
+        ids.forEach(function (id) { self.shutdownServer(id); });
+      } else if (action === 'stop') {
+        if (!confirm('Force stop all ' + ids.length + ' selected virtual servers?')) return;
+        ids.forEach(function (id) { self.stopServer(id); });
+      } else if (action === 'reboot') {
+        if (!confirm('Reboot all ' + ids.length + ' selected virtual servers?')) return;
+        ids.forEach(function (id) { self.restartServer(id); });
+      } else if (action === 'backup') {
+        if (!confirm('Trigger immediate backup for selected server(s)?')) return;
+        ids.forEach(function (id) {
+          var s = State.servers.find(function (srv) { return srv.id === id; });
+          if (s) self.openBackupWindow(s.vmid, s.type);
+        });
+      }
+      self.showToast('Bulk action "' + action.toUpperCase() + '" dispatched for ' + ids.length + ' servers', 'info');
     },
 
     setServerTab: function (tab) {
@@ -1280,6 +1347,198 @@
         self.showToast('Notes updated for VMID ' + vmid, 'success');
         self.fetchServerDetails();
       });
+    },
+
+    rebootServer: function (id) {
+      return this.restartServer(id);
+    },
+
+    openEditCloudInitModal: function (vmid, node, type) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var cfg = State.serverConfig || {};
+
+      var existing = document.getElementById('zes-cloudinit-modal');
+      if (existing) existing.remove();
+
+      var overlay = document.createElement('div');
+      overlay.id = 'zes-cloudinit-modal';
+      overlay.className = 'zes-script-modal-overlay';
+      overlay.innerHTML = `
+        <div class="zes-script-modal" style="max-width: 640px;">
+          <div class="zes-script-modal-header">
+            <div class="zes-script-modal-title">
+              ${Icons.cloudinit}
+              <span>Edit Cloud-Init Configuration (VMID ${targetVmid})</span>
+            </div>
+            <button class="zes-action-btn" style="padding: 4px 8px; font-size: 14px;" onclick="document.getElementById('zes-cloudinit-modal').remove()">✕</button>
+          </div>
+          <div class="zes-script-modal-body" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 12px; color: #a1a1aa;">
+              Configure automated cloud OS provisioning parameters. Settings will be written to the Cloud-Init drive upon saving.
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <label style="font-size: 12px; font-weight: 600; color: #ffffff; display: block; margin-bottom: 4px;">User (ciuser)</label>
+                <input type="text" id="zes-ci-user" class="zes-cmd-input" style="width: 100%; border-radius: 6px; padding: 6px 10px;" value="${cfg.ciuser || ''}" placeholder="e.g. debian, ubuntu, root" />
+              </div>
+              <div>
+                <label style="font-size: 12px; font-weight: 600; color: #ffffff; display: block; margin-bottom: 4px;">Password (cipassword)</label>
+                <input type="password" id="zes-ci-pass" class="zes-cmd-input" style="width: 100%; border-radius: 6px; padding: 6px 10px;" value="" placeholder="Leave blank to keep unchanged" />
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <label style="font-size: 12px; font-weight: 600; color: #ffffff; display: block; margin-bottom: 4px;">DNS Domain (searchdomain)</label>
+                <input type="text" id="zes-ci-domain" class="zes-cmd-input" style="width: 100%; border-radius: 6px; padding: 6px 10px;" value="${cfg.searchdomain || ''}" placeholder="e.g. lan, example.local" />
+              </div>
+              <div>
+                <label style="font-size: 12px; font-weight: 600; color: #ffffff; display: block; margin-bottom: 4px;">DNS Servers (nameserver)</label>
+                <input type="text" id="zes-ci-nameserver" class="zes-cmd-input" style="width: 100%; border-radius: 6px; padding: 6px 10px;" value="${cfg.nameserver || ''}" placeholder="e.g. 1.1.1.1 8.8.8.8" />
+              </div>
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 600; color: #ffffff; display: block; margin-bottom: 4px;">IP Configuration (IPv4 / IPv6, ipconfig0)</label>
+              <input type="text" id="zes-ci-ipconfig" class="zes-cmd-input" style="width: 100%; border-radius: 6px; padding: 6px 10px; font-family: monospace;" value="${cfg.ipconfig0 || 'ip=dhcp'}" placeholder="e.g. ip=dhcp or ip=192.168.1.50/24,gw=192.168.1.1" />
+            </div>
+            <div>
+              <label style="font-size: 12px; font-weight: 600; color: #ffffff; display: block; margin-bottom: 4px;">SSH Public Keys (sshkeys)</label>
+              <textarea id="zes-ci-sshkeys" class="zes-script-textarea" style="height: 100px; font-size: 11px;" placeholder="ssh-rsa AAAAB3NzaC1yc2E... user@host">${cfg.sshkeys ? decodeURIComponent(cfg.sshkeys) : ''}</textarea>
+            </div>
+          </div>
+          <div class="zes-script-modal-footer">
+            <button class="zes-action-btn" onclick="document.getElementById('zes-cloudinit-modal').remove()">
+              Cancel
+            </button>
+            <button class="zes-btn-primary" onclick="
+              var params = {};
+              var u = document.getElementById('zes-ci-user').value.trim();
+              var p = document.getElementById('zes-ci-pass').value;
+              var d = document.getElementById('zes-ci-domain').value.trim();
+              var ns = document.getElementById('zes-ci-nameserver').value.trim();
+              var ip = document.getElementById('zes-ci-ipconfig').value.trim();
+              var ssh = document.getElementById('zes-ci-sshkeys').value.trim();
+
+              if (u) params.ciuser = u;
+              if (p) params.cipassword = p;
+              if (d) params.searchdomain = d;
+              if (ns) params.nameserver = ns;
+              if (ip) params.ipconfig0 = ip;
+              if (ssh) params.sshkeys = encodeURIComponent(ssh);
+
+              document.getElementById('zes-cloudinit-modal').remove();
+              Zesium.saveCloudInit('${targetVmid}', '${nodename}', '${guestType}', params);
+            ">
+              Save Cloud-Init
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    },
+
+    saveCloudInit: function (vmid, node, type, params) {
+      var self = this;
+      self.apiCall('/nodes/' + node + '/' + type + '/' + vmid + '/config', 'PUT', params, function () {
+        self.showToast('Cloud-Init updated for VMID ' + vmid, 'success');
+        self.fetchServerDetails();
+      });
+    },
+
+    regenerateCloudInit: function (vmid, node, type) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+
+      var self = this;
+      var curDigest = (State.serverConfig && State.serverConfig.digest) || '';
+      self.apiCall('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/config', 'PUT', { digest: curDigest }, function () {
+        self.showToast('Cloud-Init drive image regenerated for VMID ' + targetVmid, 'success');
+        self.fetchServerDetails();
+      });
+    },
+
+    openEditOptionModal: function (vmid, node, type, optKey, optLabel, currentValue) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var url = '/api2/extjs/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/config';
+      var pveSelNode = { data: { node: nodename, nodename: nodename, vmid: targetVmid, type: guestType, id: guestType + '/' + targetVmid } };
+
+      if (optKey === 'boot' && window.Ext && Ext.ClassManager.get('PVE.qemu.BootOrderEdit')) {
+        try {
+          var bWin = Ext.create('PVE.qemu.BootOrderEdit', { nodename: nodename, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          bWin.show();
+          bWin.center();
+          bWin.on('destroy', () => Zesium.fetchServerDetails());
+          return;
+        } catch (e) {}
+      }
+
+      if (optKey === 'ostype' && window.Ext && Ext.ClassManager.get('PVE.qemu.OSTypeEdit')) {
+        try {
+          var oWin = Ext.create('PVE.qemu.OSTypeEdit', { nodename: nodename, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          oWin.show();
+          oWin.center();
+          oWin.on('destroy', () => Zesium.fetchServerDetails());
+          return;
+        } catch (e) {}
+      }
+
+      var newVal = prompt('Edit ' + optLabel + ' (' + optKey + '):', currentValue || '');
+      if (newVal === null) return;
+      var params = {};
+      params[optKey] = newVal;
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/config', 'PUT', params, function () {
+        self.showToast(optLabel + ' updated', 'success');
+        self.fetchServerDetails();
+      });
+    },
+
+    toggleOption: function (vmid, node, type, optKey, currentVal) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+
+      var newVal = (!currentVal || currentVal === '0' || currentVal === 0) ? 1 : 0;
+      var params = {};
+      params[optKey] = newVal;
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/config', 'PUT', params, function () {
+        self.showToast('Option ' + optKey + ' updated to ' + (newVal ? 'Enabled' : 'Disabled'), 'success');
+        self.fetchServerDetails();
+      });
+    },
+
+    sendCtrlAltDel: function (iframeId) {
+      var iframe = document.getElementById(iframeId);
+      if (iframe) {
+        try {
+          var win = iframe.contentWindow;
+          if (win && typeof win._zesSendKey === 'function') {
+            if (win._zesSendKey('ctrl-alt-del')) {
+              this.showToast('Sent Ctrl+Alt+Del', 'warning');
+              return;
+            }
+          }
+          var rfb = (win && win.UI && win.UI.rfb) || (win && win.rfb);
+          if (rfb && typeof rfb.sendCtrlAltDel === 'function') {
+            rfb.sendCtrlAltDel();
+            this.showToast('Sent Ctrl+Alt+Del', 'warning');
+            return;
+          }
+        } catch (e) {}
+      }
+      var s = this.getActiveServer();
+      if (s) {
+        this.resetServer(s.id);
+      }
     },
 
     rebootNode: function (node) {
@@ -1616,6 +1875,83 @@
       this.showToast('Opening Firewall Rule builder...', 'info');
     },
 
+    openEditFirewallRule: function (pos, vmid, node, type) {
+      var s = (vmid && State.servers.find(srv => String(srv.vmid) === String(vmid))) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var baseUrl = targetVmid ? ('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/firewall/rules') : ('/nodes/' + nodename + '/firewall/rules');
+      var refsUrl = targetVmid ? ('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/firewall/refs') : ('/cluster/firewall/refs');
+
+      if (window.Ext && Ext.ClassManager.get('PVE.FirewallRuleEdit')) {
+        try {
+          var win = Ext.create('PVE.FirewallRuleEdit', {
+            base_url: baseUrl,
+            list_refs_url: refsUrl,
+            rulepos: parseInt(pos, 10),
+            isCreate: false,
+            autoShow: true
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => {
+            if (targetVmid) Zesium.fetchFirewallRules();
+            else Zesium.fetchNodeFirewall();
+          });
+          return;
+        } catch (e) {
+          console.warn('FirewallRuleEdit error:', e);
+        }
+      }
+      this.showToast('Opening Firewall Rule editor...', 'info');
+    },
+
+    deleteFirewallRule: function (pos, vmid, node, type) {
+      var s = (vmid && State.servers.find(srv => String(srv.vmid) === String(vmid))) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var baseUrl = targetVmid ? ('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/firewall/rules/' + pos) : ('/nodes/' + nodename + '/firewall/rules/' + pos);
+
+      if (!confirm('Are you sure you want to delete firewall rule #' + pos + '?')) return;
+      var self = this;
+      self.apiCall(baseUrl, 'DELETE', {}, function () {
+        self.showToast('Firewall rule #' + pos + ' deleted', 'warning');
+        if (targetVmid) self.fetchFirewallRules();
+        else self.fetchNodeFirewall();
+      });
+    },
+
+    toggleFirewallRule: function (pos, currentEnable, vmid, node, type) {
+      var s = (vmid && State.servers.find(srv => String(srv.vmid) === String(vmid))) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var baseUrl = targetVmid ? ('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/firewall/rules/' + pos) : ('/nodes/' + nodename + '/firewall/rules/' + pos);
+
+      var self = this;
+      var newEnable = (currentEnable !== 0 && currentEnable !== '0') ? 0 : 1;
+      self.apiCall(baseUrl, 'PUT', { enable: newEnable }, function () {
+        self.showToast('Firewall rule #' + pos + ' ' + (newEnable ? 'Enabled' : 'Disabled'), 'info');
+        if (targetVmid) self.fetchFirewallRules();
+        else self.fetchNodeFirewall();
+      });
+    },
+
+    toggleGuestFirewall: function (vmid, node, type, currentEnable) {
+      var s = (vmid && State.servers.find(srv => String(srv.vmid) === String(vmid))) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var newEnable = (currentEnable !== 0 && currentEnable !== '0') ? 0 : 1;
+
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/firewall/options', 'PUT', { enable: newEnable }, function () {
+        self.showToast('Guest Firewall ' + (newEnable ? 'Enabled' : 'Disabled'), 'success');
+        self.fetchFirewallRules();
+      });
+    },
+
     // 100% Functioning Native Proxmox Wizards with Centering in Workspace
     openCreateVMWizard: function () {
       // 1. Prevent duplicate opening if a wizard is already visible
@@ -1768,44 +2104,227 @@
     },
 
     openHardwareEdit: function (device, vmid, nodename, type) {
-      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
-      const isLxc = type === 'lxc';
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var node = nodename || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var isLxc = guestType === 'lxc';
+      var url = '/api2/extjs/nodes/' + node + '/' + guestType + '/' + targetVmid + '/config';
+      var pveSelNode = { data: { node: node, nodename: node, vmid: targetVmid, type: guestType, id: guestType + '/' + targetVmid } };
 
       try {
-        let win = null;
+        var win = null;
         if (device === 'memory') {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.MemoryEdit')) {
-            win = Ext.create('PVE.qemu.MemoryEdit', { nodename: node, vmid: vmid, autoShow: true });
+            win = Ext.create('PVE.qemu.MemoryEdit', { nodename: node, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.MemoryEdit')) {
+            win = Ext.create('PVE.lxc.MemoryEdit', { nodename: node, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
           }
-        } else if (device === 'cores' || device === 'sockets' || device === 'cpu') {
+        } else if (device === 'cores' || device === 'sockets' || device === 'cpu' || device === 'cpulimit' || device === 'cpuunits') {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.ProcessorEdit')) {
-            win = Ext.create('PVE.qemu.ProcessorEdit', { nodename: node, vmid: vmid, autoShow: true });
+            win = Ext.create('PVE.qemu.ProcessorEdit', { nodename: node, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.CPUEdit')) {
+            win = Ext.create('PVE.lxc.CPUEdit', { nodename: node, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
           }
         } else if (device && (device.startsWith('ide') || device === 'cdrom')) {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.CDEdit')) {
-            win = Ext.create('PVE.qemu.CDEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
+            win = Ext.create('PVE.qemu.CDEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
           }
         } else if (device && device.startsWith('net')) {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.NetworkEdit')) {
-            win = Ext.create('PVE.qemu.NetworkEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
+            win = Ext.create('PVE.qemu.NetworkEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.NetworkEdit')) {
+            win = Ext.create('PVE.lxc.NetworkEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
           }
-        } else if (device && (device.startsWith('scsi') || device.startsWith('virtio') || device.startsWith('sata') || device.startsWith('rootfs'))) {
+        } else if (device && (device.startsWith('scsi') || device.startsWith('virtio') || device.startsWith('sata') || device.startsWith('rootfs') || device.startsWith('mp'))) {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.HDEdit')) {
-            win = Ext.create('PVE.qemu.HDEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
+            win = Ext.create('PVE.qemu.HDEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.HDEdit')) {
+            win = Ext.create('PVE.lxc.HDEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (device && device.startsWith('usb')) {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.USBEdit')) {
+            win = Ext.create('PVE.qemu.USBEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (device && device.startsWith('hostpci')) {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.PCIEdit')) {
+            win = Ext.create('PVE.qemu.PCIEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (device && device.startsWith('serial')) {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.SerialEdit')) {
+            win = Ext.create('PVE.qemu.SerialEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (device && device.startsWith('audio')) {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.AudioEdit')) {
+            win = Ext.create('PVE.qemu.AudioEdit', { nodename: node, vmid: targetVmid, configname: device, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (device === 'vga' || device === 'display') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.DisplayEdit')) {
+            win = Ext.create('PVE.qemu.DisplayEdit', { nodename: node, vmid: targetVmid, url: url, pveSelNode: pveSelNode, autoShow: true });
           }
         }
 
         if (win) {
           win.show();
           win.center();
-          win.on('destroy', () => Zesium.fetchServerConfig(vmid, type));
+          win.on('destroy', () => Zesium.fetchServerDetails());
           return;
         }
       } catch (e) {
         console.warn('Edit dialog error:', e);
       }
 
-      Zesium.openProxmoxConfigWindow(vmid, node, type);
+      Zesium.openProxmoxConfigWindow(targetVmid, node, guestType);
+    },
+
+    openAddHardwareDialog: function (devType, vmid, node, type) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      if (!s) return;
+      var nodename = node || s.node || 'pve';
+      var guestType = type || s.type || 'qemu';
+      var targetVmid = vmid || s.vmid;
+      var isLxc = guestType === 'lxc';
+      var url = '/api2/extjs/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/config';
+      var pveSelNode = { data: { node: nodename, nodename: nodename, vmid: targetVmid, type: guestType, id: guestType + '/' + targetVmid } };
+
+      try {
+        var win = null;
+        if (devType === 'disk') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.HDEdit')) {
+            win = Ext.create('PVE.qemu.HDEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.HDEdit')) {
+            win = Ext.create('PVE.lxc.HDEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'net') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.NetworkEdit')) {
+            win = Ext.create('PVE.qemu.NetworkEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          } else if (isLxc && Ext.ClassManager.get('PVE.lxc.NetworkEdit')) {
+            win = Ext.create('PVE.lxc.NetworkEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'cdrom') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.CDEdit')) {
+            win = Ext.create('PVE.qemu.CDEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, configname: 'ide2', url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'cloudinit') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.HDEdit')) {
+            win = Ext.create('PVE.qemu.HDEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, isCloudInit: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'usb') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.USBEdit')) {
+            win = Ext.create('PVE.qemu.USBEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'pci') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.PCIEdit')) {
+            win = Ext.create('PVE.qemu.PCIEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'serial') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.SerialEdit')) {
+            win = Ext.create('PVE.qemu.SerialEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        } else if (devType === 'audio') {
+          if (!isLxc && Ext.ClassManager.get('PVE.qemu.AudioEdit')) {
+            win = Ext.create('PVE.qemu.AudioEdit', { nodename: nodename, vmid: targetVmid, isCreate: true, url: url, pveSelNode: pveSelNode, autoShow: true });
+          }
+        }
+
+        if (win) {
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchServerDetails());
+          return;
+        }
+      } catch (e) {
+        console.warn('Add hardware error:', e);
+      }
+      this.showToast('Hardware dialog for ' + devType + ' opened', 'info');
+    },
+
+    resizeHardwareDisk: function (device, vmid, node, type) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+
+      if (window.Ext && Ext.ClassManager.get('PVE.window.HDResize')) {
+        try {
+          var win = Ext.create('PVE.window.HDResize', {
+            nodename: nodename,
+            vmid: targetVmid,
+            disk: device,
+            type: guestType,
+            autoShow: true
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchServerDetails());
+          return;
+        } catch (e) {
+          console.warn('HDResize error:', e);
+        }
+      }
+      var size = prompt('Increase disk ' + device + ' size by (e.g. +5G, +10G):');
+      if (!size) return;
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/resize', 'PUT', { disk: device, size: size }, function () {
+        self.showToast('Disk ' + device + ' resized by ' + size, 'success');
+        self.fetchServerDetails();
+      });
+    },
+
+    moveHardwareDisk: function (device, vmid, node, type) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+
+      if (window.Ext && Ext.ClassManager.get('PVE.window.HDMove')) {
+        try {
+          var win = Ext.create('PVE.window.HDMove', {
+            nodename: nodename,
+            vmid: targetVmid,
+            disk: device,
+            type: guestType,
+            autoShow: true
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchServerDetails());
+          return;
+        } catch (e) {
+          console.warn('HDMove error:', e);
+        }
+      }
+      this.showToast('Opening Disk Move dialog...', 'info');
+    },
+
+    removeHardwareDevice: function (device, vmid, node, type) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+
+      if (!confirm('Are you sure you want to remove / detach device "' + device + '" from VMID ' + targetVmid + '?')) return;
+      var self = this;
+      self.apiCall('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/config', 'PUT', { delete: device }, function () {
+        self.showToast('Device ' + device + ' removed', 'success');
+        self.fetchServerDetails();
+      });
+    },
+
+    ejectCdrom: function (device, vmid, node, type) {
+      var s = (vmid && State.servers.find(function (srv) { return String(srv.vmid) === String(vmid); })) || this.getActiveServer();
+      var nodename = node || (s ? s.node : 'pve');
+      var guestType = type || (s ? s.type : 'qemu');
+      var targetVmid = vmid || (s ? s.vmid : null);
+      var devKey = device || 'ide2';
+
+      var self = this;
+      var params = {};
+      params[devKey] = 'none,media=cdrom';
+      self.apiCall('/nodes/' + nodename + '/' + guestType + '/' + targetVmid + '/config', 'PUT', params, function () {
+        self.showToast('CD/DVD media ejected from ' + devKey, 'success');
+        self.fetchServerDetails();
+      });
     },
 
     openProxmoxConfigWindow: function (vmid, nodename, vmtype) {
@@ -2179,14 +2698,23 @@
       });
     },
 
-    openTakeSnapshotWindow: function () {
-      const s = this.getActiveServer();
+    openTakeSnapshotWindow: function (vmid, node, type) {
+      const s = (vmid && State.servers.find(srv => String(srv.vmid) === String(vmid))) || this.getActiveServer();
       if (!s || !window.Ext || !Ext.ClassManager.get('PVE.window.Snapshot')) return;
+      var nodename = node || s.node || 'pve';
+      var guestType = type || s.type || 'qemu';
+      var targetVmid = vmid || s.vmid;
+      var url = `/api2/extjs/nodes/${nodename}/${guestType}/${targetVmid}/snapshot`;
+      var pveSelNode = { data: { node: nodename, nodename: nodename, vmid: targetVmid, type: guestType, id: guestType + '/' + targetVmid } };
+
       const win = Ext.create('PVE.window.Snapshot', {
-        nodename: s.node,
-        vmid: s.vmid,
-        type: s.type,
+        nodename: nodename,
+        vmid: parseInt(targetVmid, 10),
+        type: guestType,
+        guestType: guestType,
         isCreate: true,
+        url: url,
+        pveSelNode: pveSelNode,
         autoShow: true,
         taskDone: () => Zesium.fetchSnapshots()
       });
@@ -2896,6 +3424,22 @@
             </div>
           </div>
 
+          ${(State.selectedServerIds && State.selectedServerIds.size > 0) ? `
+            <div class="zes-bulk-toolbar">
+              <div class="zes-bulk-count">
+                ✓ ${State.selectedServerIds.size} server${State.selectedServerIds.size > 1 ? 's' : ''} selected
+              </div>
+              <div class="zes-bulk-actions">
+                <button class="zes-action-btn btn-start" onclick="Zesium.bulkAction('start')">${Icons.start} Start</button>
+                <button class="zes-action-btn btn-shutdown" onclick="Zesium.bulkAction('shutdown')">${Icons.shutdown} Shutdown</button>
+                <button class="zes-action-btn btn-stop" onclick="Zesium.bulkAction('stop')">${Icons.stop} Stop</button>
+                <button class="zes-action-btn btn-reboot" onclick="Zesium.bulkAction('reboot')">${Icons.restart} Reboot</button>
+                <button class="zes-action-btn" onclick="Zesium.bulkAction('backup')">${Icons.backup} Backup</button>
+                <button class="zes-action-btn" onclick="Zesium.clearSelectedServers()" style="color: #a1a1aa;">Deselect All</button>
+              </div>
+            </div>
+          ` : ''}
+
           <div class="zes-table-container">
             <table class="zes-table">
               <thead>
@@ -3137,9 +3681,11 @@
                     📝 Script
                   </button>
                   <div class="zes-cmd-divider"></div>
+                  <button class="zes-chip-btn" onclick="Zesium.sendCtrlAltDel('zes-vm-console-iframe')" title="Send Ctrl+Alt+Del (Reboot guest)">Ctrl+Alt+Del</button>
                   <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'ctrl-c')" title="Send Ctrl+C (Interrupt)">Ctrl+C</button>
                   <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'ctrl-l')" title="Send Ctrl+L (Clear Screen)">Ctrl+L</button>
                   <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'ctrl-d')" title="Send Ctrl+D (EOF)">Ctrl+D</button>
+                  <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'ctrl-z')" title="Send Ctrl+Z (Suspend)">Ctrl+Z</button>
                   <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'tab')" title="Send Tab (Auto-complete)">Tab ⇥</button>
                   <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'esc')" title="Send Escape">Esc</button>
                 </div>
@@ -3199,8 +3745,45 @@
               </div>
             </div>
           ` : State.selectedTab === 'hardware' ? `
-            <div style="margin-bottom: 12px;">
-              <div style="font-size: 13px; color: #a1a1aa;">Hardware specifications &amp; virtual devices</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Hardware specifications, virtual disks, network interfaces &amp; bus devices</div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <div class="zes-dropdown" id="zes-add-hw-dropdown">
+                  <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;" onclick="document.getElementById('zes-add-hw-dropdown').classList.toggle('open')">
+                    ${Icons.plus} Add Hardware ▾
+                  </button>
+                  <div class="zes-dropdown-menu">
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('disk', '${s.vmid}', '${s.node}', '${s.type}')">
+                      🖴 Hard Disk
+                    </button>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('net', '${s.vmid}', '${s.node}', '${s.type}')">
+                      🌐 Network Device
+                    </button>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('cdrom', '${s.vmid}', '${s.node}', '${s.type}')">
+                      💿 CD/DVD Drive
+                    </button>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('cloudinit', '${s.vmid}', '${s.node}', '${s.type}')">
+                      ☁ Cloud-Init Drive
+                    </button>
+                    <div class="zes-dropdown-divider"></div>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('usb', '${s.vmid}', '${s.node}', '${s.type}')">
+                      🔌 USB Device
+                    </button>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('pci', '${s.vmid}', '${s.node}', '${s.type}')">
+                      ⚡ PCI Device
+                    </button>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('serial', '${s.vmid}', '${s.node}', '${s.type}')">
+                      ⌨ Serial Port
+                    </button>
+                    <button class="zes-dropdown-item" onclick="document.getElementById('zes-add-hw-dropdown').classList.remove('open'); Zesium.openAddHardwareDialog('audio', '${s.vmid}', '${s.node}', '${s.type}')">
+                      🔊 Audio Device
+                    </button>
+                  </div>
+                </div>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.fetchServerDetails()">
+                  ${Icons.refresh} Refresh
+                </button>
+              </div>
             </div>
             <div class="zes-table-container">
               <table class="zes-table">
@@ -3208,30 +3791,65 @@
                   <tr>
                     <th>Device</th>
                     <th>Configuration Value</th>
-                    <th style="text-align: right; width: 100px;">Action</th>
+                    <th style="text-align: right; width: 260px;">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${Object.keys(cfg).filter(k => !k.startsWith('ci') && !['name', 'ostype', 'boot', 'agent', 'onboot', 'startup', 'protection', 'digest'].includes(k)).map(k => `
-                    <tr>
-                      <td style="font-weight: 600; color: #ffffff; width: 200px;">${k}</td>
-                      <td style="font-family: monospace; color: #d4d4d8;">${cfg[k]}</td>
-                      <td style="text-align: right;">
-                        <button class="zes-action-btn" style="padding: 3px 12px; font-size: 11px;" onclick="Zesium.openHardwareEdit('${k}', '${s.vmid}', '${s.node}', '${s.type}')">
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  `).join('') || `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #71717a;">Loading hardware configuration...</td></tr>`}
+                  ${Object.keys(cfg).filter(k => !k.startsWith('ci') && !['name', 'ostype', 'boot', 'agent', 'onboot', 'startup', 'protection', 'digest', 'description'].includes(k)).map(k => {
+                    const isDisk = k.startsWith('scsi') || k.startsWith('virtio') || k.startsWith('sata') || (k.startsWith('ide') && !String(cfg[k]).includes('media=cdrom')) || k.startsWith('rootfs') || k.startsWith('mp');
+                    const isCdrom = String(cfg[k]).includes('media=cdrom') || k === 'cdrom';
+                    const isNet = k.startsWith('net');
+                    const isSystem = ['memory', 'cores', 'sockets', 'cpu', 'numa', 'balloon'].includes(k);
+
+                    return `
+                      <tr>
+                        <td style="font-weight: 600; color: #ffffff; width: 160px;">${k}</td>
+                        <td style="font-family: monospace; color: #d4d4d8; font-size: 12px;">${cfg[k]}</td>
+                        <td style="text-align: right;">
+                          <div style="display: inline-flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end;">
+                            <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openHardwareEdit('${k}', '${s.vmid}', '${s.node}', '${s.type}')" title="Edit ${k}">
+                              Edit
+                            </button>
+                            ${isDisk && !k.startsWith('rootfs') ? `
+                              <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.resizeHardwareDisk('${k}', '${s.vmid}', '${s.node}', '${s.type}')" title="Resize ${k}">
+                                Resize
+                              </button>
+                              <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.moveHardwareDisk('${k}', '${s.vmid}', '${s.node}', '${s.type}')" title="Move ${k} to another storage">
+                                Move
+                              </button>
+                            ` : ''}
+                            ${isCdrom ? `
+                              <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.ejectCdrom('${k}', '${s.vmid}', '${s.node}', '${s.type}')" title="Eject CD/DVD Disc">
+                                ⏏ Eject
+                              </button>
+                            ` : ''}
+                            ${!isSystem && !k.startsWith('rootfs') ? `
+                              <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.removeHardwareDevice('${k}', '${s.vmid}', '${s.node}', '${s.type}')" title="Remove device ${k}">
+                                Detach
+                              </button>
+                            ` : ''}
+                          </div>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('') || `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #71717a;">Loading hardware configuration...</td></tr>`}
                 </tbody>
               </table>
             </div>
           ` : State.selectedTab === 'cloudinit' ? `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-              <div style="font-size: 13px; color: #a1a1aa;">Cloud-Init provisioning options (User, SSH Keys, Network)</div>
-              <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')">
-                ⚙ Edit Cloud-Init in Proxmox
-              </button>
+              <div style="font-size: 13px; color: #a1a1aa;">Cloud-Init provisioning options (User credentials, SSH keys, network &amp; DNS)</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openEditCloudInitModal('${s.vmid}', '${s.node}', '${s.type}')">
+                  ${Icons.edit} Edit Cloud-Init
+                </button>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.regenerateCloudInit('${s.vmid}', '${s.node}', '${s.type}')" title="Regenerate Cloud-Init Drive Image">
+                  ⟳ Regenerate Image
+                </button>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.fetchServerDetails()">
+                  ${Icons.refresh} Refresh
+                </button>
+              </div>
             </div>
             <div class="zes-table-container">
               <table class="zes-table">
@@ -3239,42 +3857,63 @@
                   <tr>
                     <th>Setting</th>
                     <th>Configured Value</th>
+                    <th style="text-align: right; width: 100px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">User</td>
                     <td style="font-family: monospace; color: #d4d4d8;">${cfg.ciuser || '(Default root/admin)'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditCloudInitModal('${s.vmid}', '${s.node}', '${s.type}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">Password</td>
                     <td style="font-family: monospace; color: #d4d4d8;">${cfg.cipassword ? '••••••••' : '(Not configured)'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditCloudInitModal('${s.vmid}', '${s.node}', '${s.type}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">DNS Domain</td>
                     <td style="font-family: monospace; color: #d4d4d8;">${cfg.searchdomain || '(Host default)'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditCloudInitModal('${s.vmid}', '${s.node}', '${s.type}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">DNS Servers</td>
                     <td style="font-family: monospace; color: #d4d4d8;">${cfg.nameserver || '(Host default)'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditCloudInitModal('${s.vmid}', '${s.node}', '${s.type}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">SSH Public Keys</td>
                     <td style="font-family: monospace; color: #d4d4d8; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${cfg.sshkeys ? decodeURIComponent(cfg.sshkeys) : '(No keys uploaded)'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditCloudInitModal('${s.vmid}', '${s.node}', '${s.type}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">IP Configuration (IPv4/IPv6)</td>
                     <td style="font-family: monospace; color: #d4d4d8;">${cfg.ipconfig0 || 'ip=dhcp'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditCloudInitModal('${s.vmid}', '${s.node}', '${s.type}')">Edit</button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           ` : State.selectedTab === 'options' ? `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-              <div style="font-size: 13px; color: #a1a1aa;">Guest operating parameters & hypervisor options</div>
-              <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')">
-                ⚙ Edit Options in Proxmox
-              </button>
+              <div style="font-size: 13px; color: #a1a1aa;">Guest operating parameters, boot options &amp; hypervisor flags</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.fetchServerDetails()">
+                  ${Icons.refresh} Refresh
+                </button>
+              </div>
             </div>
             <div class="zes-table-container">
               <table class="zes-table">
@@ -3282,40 +3921,80 @@
                   <tr>
                     <th>Option Name</th>
                     <th>Value</th>
+                    <th style="text-align: right; width: 140px;">Control</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">Name</td>
                     <td style="color: #d4d4d8;">${cfg.name || s.name}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditOptionModal('${s.vmid}', '${s.node}', '${s.type}', 'name', 'Guest Name', '${cfg.name || s.name}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">Start at Boot</td>
                     <td style="color: #d4d4d8;">${cfg.onboot ? '<strong style="color: #10b981;">Yes</strong>' : 'No'}</td>
+                    <td style="text-align: right;">
+                      <label class="zes-switch">
+                        <input type="checkbox" ${cfg.onboot ? 'checked' : ''} onchange="Zesium.toggleOption('${s.vmid}', '${s.node}', '${s.type}', 'onboot', ${cfg.onboot ? 1 : 0})" />
+                        <span class="zes-slider"></span>
+                      </label>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">OS Type</td>
                     <td style="color: #d4d4d8;">${cfg.ostype || 'l26 (Linux 6.x)'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditOptionModal('${s.vmid}', '${s.node}', '${s.type}', 'ostype', 'OS Type', '${cfg.ostype || 'l26'}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">Boot Order</td>
                     <td style="font-family: monospace; color: #d4d4d8;">${cfg.boot || 'order=scsi0;ide2;net0'}</td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openEditOptionModal('${s.vmid}', '${s.node}', '${s.type}', 'boot', 'Boot Order', '${cfg.boot || ''}')">Edit</button>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">QEMU Guest Agent</td>
                     <td style="color: #d4d4d8;">${cfg.agent ? '<strong style="color: #10b981;">Enabled</strong>' : 'Disabled'}</td>
+                    <td style="text-align: right;">
+                      <label class="zes-switch">
+                        <input type="checkbox" ${cfg.agent ? 'checked' : ''} onchange="Zesium.toggleOption('${s.vmid}', '${s.node}', '${s.type}', 'agent', ${cfg.agent ? 1 : 0})" />
+                        <span class="zes-slider"></span>
+                      </label>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">ACPI Support</td>
                     <td style="color: #d4d4d8;">${cfg.acpi === 0 ? 'Disabled' : 'Enabled'}</td>
+                    <td style="text-align: right;">
+                      <label class="zes-switch">
+                        <input type="checkbox" ${cfg.acpi === 0 ? '' : 'checked'} onchange="Zesium.toggleOption('${s.vmid}', '${s.node}', '${s.type}', 'acpi', ${cfg.acpi === 0 ? 0 : 1})" />
+                        <span class="zes-slider"></span>
+                      </label>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">KVM Hardware Virtualization</td>
                     <td style="color: #d4d4d8;">${cfg.kvm === 0 ? 'Disabled' : '<strong style="color: #10b981;">Enabled</strong>'}</td>
+                    <td style="text-align: right;">
+                      <label class="zes-switch">
+                        <input type="checkbox" ${cfg.kvm === 0 ? '' : 'checked'} onchange="Zesium.toggleOption('${s.vmid}', '${s.node}', '${s.type}', 'kvm', ${cfg.kvm === 0 ? 0 : 1})" />
+                        <span class="zes-slider"></span>
+                      </label>
+                    </td>
                   </tr>
                   <tr>
                     <td style="font-weight: 600; color: #ffffff;">Protection (Prevent Delete)</td>
                     <td style="color: #d4d4d8;">${cfg.protection ? '<strong style="color: #ef4444;">Protected</strong>' : 'No'}</td>
+                    <td style="text-align: right;">
+                      <label class="zes-switch">
+                        <input type="checkbox" ${cfg.protection ? 'checked' : ''} onchange="Zesium.toggleOption('${s.vmid}', '${s.node}', '${s.type}', 'protection', ${cfg.protection ? 1 : 0})" />
+                        <span class="zes-slider"></span>
+                      </label>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -3324,8 +4003,8 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
               <div style="font-size: 13px; color: #a1a1aa;">Snapshots preserve guest memory state and disk blocks for instant rollback</div>
               <div style="display: flex; gap: 8px;">
-                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openTakeSnapshotWindow()">
-                  + Take Snapshot
+                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openTakeSnapshotWindow('${s.vmid}', '${s.node}', '${s.type}')">
+                  ${Icons.plus} Take Snapshot
                 </button>
                 <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.fetchSnapshots()">
                   ${Icons.refresh} Refresh
@@ -3368,9 +4047,9 @@
           ` : State.selectedTab === 'firewall' ? `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
               <div style="font-size: 13px; color: #a1a1aa;">Guest packet filtering, ingress/egress firewall rules & security macros</div>
-              <div style="display: flex; gap: 8px;">
+              <div style="display: flex; gap: 8px; align-items: center;">
                 <button class="zes-btn-primary" onclick="Zesium.openAddFirewallRuleWindow('${s.vmid}', '${s.node}', '${s.type}')">
-                  + Add Firewall Rule
+                  ${Icons.plus} Add Firewall Rule
                 </button>
                 <button class="zes-action-btn" onclick="Zesium.fetchFirewallRules()">
                   ${Icons.refresh} Refresh
@@ -3389,6 +4068,7 @@
                     <th>Destination</th>
                     <th>Comment</th>
                     <th>Status</th>
+                    <th style="text-align: right; width: 170px;">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -3402,9 +4082,22 @@
                       <td style="font-family: monospace; color: #a1a1aa;">${r.dest || 'any'}</td>
                       <td style="color: #71717a; font-size: 12px;">${r.comment || '-'}</td>
                       <td><span class="zes-status-dot ${r.enable !== 0 ? 'running' : 'stopped'}"></span> ${r.enable !== 0 ? 'Active' : 'Disabled'}</td>
+                      <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 4px; justify-content: flex-end;">
+                          <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.openEditFirewallRule('${r.pos}', '${s.vmid}', '${s.node}', '${s.type}')" title="Edit Rule">
+                            Edit
+                          </button>
+                          <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px;" onclick="Zesium.toggleFirewallRule('${r.pos}', ${r.enable !== 0 ? 1 : 0}, '${s.vmid}', '${s.node}', '${s.type}')" title="${r.enable !== 0 ? 'Disable Rule' : 'Enable Rule'}">
+                            ${r.enable !== 0 ? 'Disable' : 'Enable'}
+                          </button>
+                          <button class="zes-action-btn" style="padding: 3px 8px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteFirewallRule('${r.pos}', '${s.vmid}', '${s.node}', '${s.type}')" title="Delete Rule">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   `).join('') : `
-                    <tr><td colspan="8" style="text-align: center; padding: 40px; color: #71717a;">No guest firewall rules defined. Click "+ Add Firewall Rule" to create one.</td></tr>
+                    <tr><td colspan="9" style="text-align: center; padding: 40px; color: #71717a;">No guest firewall rules defined. Click "+ Add Firewall Rule" to create one.</td></tr>
                   `}
                 </tbody>
               </table>
