@@ -157,30 +157,30 @@
   function applyWindowCenteringFix() {
     if (window.Ext && Ext.window && Ext.window.Window) {
       try {
-        Ext.define('Zesium.WindowFix', {
-          override: 'Ext.window.Window',
-          center: function () {
+        if (!Ext.window.Window.prototype.__zesShowPatched) {
+          Ext.window.Window.prototype.__zesShowPatched = true;
+          var origShow = Ext.window.Window.prototype.show;
+          Ext.window.Window.prototype.show = function () {
+            var ret = origShow.apply(this, arguments);
+            var me = this;
+            setTimeout(function () {
+              if (!me.x_userMoved) centerWindowInWorkspace(me);
+            }, 0);
+            setTimeout(function () {
+              if (!me.x_userMoved) centerWindowInWorkspace(me);
+            }, 60);
+            return ret;
+          };
+
+          Ext.window.Window.prototype.center = function () {
             var me = this;
             var w = me.getWidth() || 780;
             var h = me.getHeight() || 550;
             var pos = calculateWindowWorkspaceCenter(w, h);
             me.setPagePosition(pos.x, pos.y);
             return me;
-          },
-          afterShow: function () {
-            this.callParent(arguments);
-            var me = this;
-            if (!me.x_userMoved) {
-              me.center();
-            }
-            setTimeout(function () {
-              if (!me.x_userMoved) me.center();
-            }, 40);
-            setTimeout(function () {
-              if (!me.x_userMoved) me.center();
-            }, 180);
-          }
-        });
+          };
+        }
       } catch (e) {}
     }
 
@@ -632,50 +632,78 @@
 
     // 100% Functioning Native Proxmox Wizards with Centering in Workspace
     openCreateVMWizard: function () {
-      try {
-        const btn = Ext.ComponentQuery.query('button[itemId=createvm]')[0] ||
-                    Ext.ComponentQuery.query('button[text*=' + (window.gettext ? gettext('Create VM') : 'Create VM') + ']')[0];
-        if (btn && typeof btn.handler === 'function') {
-          btn.handler.call(btn);
-          setTimeout(() => {
-            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
-            wins.forEach(w => centerWindowInWorkspace(w));
-          }, 30);
-          setTimeout(() => {
-            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
-            wins.forEach(w => centerWindowInWorkspace(w));
-          }, 150);
+      // 1. Prevent duplicate opening if a wizard is already visible
+      if (window.Ext) {
+        var existing = Ext.ComponentQuery.query('window').find(function (w) {
+          var t = (w.title || '').toLowerCase();
+          return t.includes('virtual machine') || t.includes('vm');
+        });
+        if (existing && !existing.isDestroyed && existing.isVisible()) {
+          existing.toFront();
+          centerWindowInWorkspace(existing);
           return;
         }
-      } catch (e) {}
+      }
 
+      // 2. Open via native Proxmox button
+      var btn = Ext.ComponentQuery.query('button[text*=Create VM]')[0] ||
+                Ext.ComponentQuery.query('button[itemId=createvm]')[0];
+      if (btn && typeof btn.handler === 'function') {
+        try {
+          btn.handler.call(btn);
+          setTimeout(function () {
+            var wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            wins.forEach(function (w) { centerWindowInWorkspace(w); });
+          }, 30);
+          return;
+        } catch (e) {
+          console.warn('Native VM button handler warning:', e);
+        }
+      }
+
+      // 3. Fallback only if no wizard exists
       if (window.Ext && Ext.ClassManager.get('PVE.qemu.CreateWizard')) {
-        const wiz = Ext.create('PVE.qemu.CreateWizard', {});
+        var nodename = (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+        var wiz = Ext.create('PVE.qemu.CreateWizard', { nodename: nodename });
         wiz.show();
         centerWindowInWorkspace(wiz);
       }
     },
 
     openCreateCTWizard: function () {
-      try {
-        const btn = Ext.ComponentQuery.query('button[itemId=createct]')[0] ||
-                    Ext.ComponentQuery.query('button[text*=' + (window.gettext ? gettext('Create CT') : 'Create CT') + ']')[0];
-        if (btn && typeof btn.handler === 'function') {
-          btn.handler.call(btn);
-          setTimeout(() => {
-            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
-            wins.forEach(w => centerWindowInWorkspace(w));
-          }, 30);
-          setTimeout(() => {
-            const wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
-            wins.forEach(w => centerWindowInWorkspace(w));
-          }, 150);
+      // 1. Prevent duplicate opening if a wizard is already visible
+      if (window.Ext) {
+        var existing = Ext.ComponentQuery.query('window').find(function (w) {
+          var t = (w.title || '').toLowerCase();
+          return t.includes('container') || t.includes('ct');
+        });
+        if (existing && !existing.isDestroyed && existing.isVisible()) {
+          existing.toFront();
+          centerWindowInWorkspace(existing);
           return;
         }
-      } catch (e) {}
+      }
 
+      // 2. Open via native Proxmox button
+      var btn = Ext.ComponentQuery.query('button[text*=Create CT]')[0] ||
+                Ext.ComponentQuery.query('button[itemId=createct]')[0];
+      if (btn && typeof btn.handler === 'function') {
+        try {
+          btn.handler.call(btn);
+          setTimeout(function () {
+            var wins = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
+            wins.forEach(function (w) { centerWindowInWorkspace(w); });
+          }, 30);
+          return;
+        } catch (e) {
+          console.warn('Native CT button handler warning:', e);
+        }
+      }
+
+      // 3. Fallback only if no wizard exists
       if (window.Ext && Ext.ClassManager.get('PVE.lxc.CreateWizard')) {
-        const wiz = Ext.create('PVE.lxc.CreateWizard', {});
+        var nodename = (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+        var wiz = Ext.create('PVE.lxc.CreateWizard', { nodename: nodename });
         wiz.show();
         centerWindowInWorkspace(wiz);
       }
