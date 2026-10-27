@@ -990,26 +990,29 @@ input.x-form-text-default {
   vertical-align: middle !important;
 }
 
-/* Hide native input completely so it never creates double circles/boxes or shifts labels */
+/* Position native input precisely over the 16x16 box with opacity 0 so it catches all user clicks */
 .x-form-cb-input,
 input.x-form-cb-input,
 .x-form-type-radio input,
 .x-form-type-checkbox input,
 .x-form-cb-wrap input {
   position: absolute !important;
-  opacity: 0 !important;
-  width: 0 !important;
-  height: 0 !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  max-width: 0 !important;
-  max-height: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
   margin: 0 !important;
   padding: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  pointer-events: none !important;
+  opacity: 0 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
   outline: none !important;
+  border: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
 }
 
 /* COMPLETE KILL OF EXTJS PSEUDO-ELEMENTS (Eliminates secondary blue circles, fontawesome duplicates, offcenter icons) */
@@ -1091,7 +1094,10 @@ input.x-form-cb-input,
 .x-form-radio.x-form-cb-checked,
 .x-form-cb-checked .x-form-radio,
 .x-form-radio-default.x-form-cb-checked,
-.x-form-cb-wrap.x-form-cb-checked .x-form-radio {
+.x-form-cb-wrap.x-form-cb-checked .x-form-radio,
+.x-form-radio:has(input:checked),
+.x-form-cb-wrap:has(input:checked) .x-form-radio,
+.x-field:has(input:checked) .x-form-radio {
   border-color: #ffffff !important;
   background-color: #18181c !important;
   background-image: radial-gradient(circle, #ffffff 40%, transparent 45%) !important;
@@ -1140,7 +1146,10 @@ input.x-form-cb-input,
 .x-form-checkbox.x-form-cb-checked,
 .x-form-cb-checked .x-form-checkbox,
 .x-form-checkbox-default.x-form-cb-checked,
-.x-form-cb-wrap.x-form-cb-checked .x-form-checkbox {
+.x-form-cb-wrap.x-form-cb-checked .x-form-checkbox,
+.x-form-checkbox:has(input:checked),
+.x-form-cb-wrap:has(input:checked) .x-form-checkbox,
+.x-field:has(input:checked) .x-form-checkbox {
   border-color: #ffffff !important;
   background-color: #ffffff !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3E%3Cpath d='M13.485 3.515a1 1 0 0 1 0 1.414l-6.364 6.364a1 1 0 0 1-1.414 0l-3.182-3.182a1 1 0 1 1 1.414-1.414L6.414 9.172l5.657-5.657a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;

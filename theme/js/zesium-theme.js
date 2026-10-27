@@ -104,7 +104,8 @@
     consoleMode: 'auto',
     nodeConsoleMode: 'xtermjs',
     guestIPs: [],
-    serverNotes: ''
+    serverNotes: '',
+    selectedServerIds: new Set()
   };
 
   // Suppress "No valid subscription" nag
@@ -555,26 +556,29 @@
           vertical-align: middle !important;
         }
 
-        /* Hide native input completely so it never creates double circles/boxes or shifts labels */
+        /* Position native input precisely over the 16x16 box with opacity 0 so it catches all user clicks */
         .x-form-cb-input,
         input.x-form-cb-input,
         .x-form-type-radio input,
         .x-form-type-checkbox input,
         .x-form-cb-wrap input {
           position: absolute !important;
-          opacity: 0 !important;
-          width: 0 !important;
-          height: 0 !important;
-          min-width: 0 !important;
-          min-height: 0 !important;
-          max-width: 0 !important;
-          max-height: 0 !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 16px !important;
+          height: 16px !important;
+          min-width: 16px !important;
+          min-height: 16px !important;
           margin: 0 !important;
           padding: 0 !important;
-          border: none !important;
-          background: transparent !important;
-          pointer-events: none !important;
+          opacity: 0 !important;
+          pointer-events: auto !important;
+          cursor: pointer !important;
+          z-index: 10 !important;
           outline: none !important;
+          border: none !important;
+          -webkit-appearance: none !important;
+          appearance: none !important;
         }
 
         /* COMPLETE KILL OF EXTJS PSEUDO-ELEMENTS (Eliminates secondary blue circles, fontawesome duplicates, offcenter icons) */
@@ -656,7 +660,10 @@
         .x-form-radio.x-form-cb-checked,
         .x-form-cb-checked .x-form-radio,
         .x-form-radio-default.x-form-cb-checked,
-        .x-form-cb-wrap.x-form-cb-checked .x-form-radio {
+        .x-form-cb-wrap.x-form-cb-checked .x-form-radio,
+        .x-form-radio:has(input:checked),
+        .x-form-cb-wrap:has(input:checked) .x-form-radio,
+        .x-field:has(input:checked) .x-form-radio {
           border-color: #ffffff !important;
           background-color: #18181c !important;
           background-image: radial-gradient(circle, #ffffff 40%, transparent 45%) !important;
@@ -705,7 +712,10 @@
         .x-form-checkbox.x-form-cb-checked,
         .x-form-cb-checked .x-form-checkbox,
         .x-form-checkbox-default.x-form-cb-checked,
-        .x-form-cb-wrap.x-form-cb-checked .x-form-checkbox {
+        .x-form-cb-wrap.x-form-cb-checked .x-form-checkbox,
+        .x-form-checkbox:has(input:checked),
+        .x-form-cb-wrap:has(input:checked) .x-form-checkbox,
+        .x-field:has(input:checked) .x-form-checkbox {
           border-color: #ffffff !important;
           background-color: #ffffff !important;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3E%3Cpath d='M13.485 3.515a1 1 0 0 1 0 1.414l-6.364 6.364a1 1 0 0 1-1.414 0l-3.182-3.182a1 1 0 1 1 1.414-1.414L6.414 9.172l5.657-5.657a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;
@@ -831,6 +841,18 @@
         }
       });
 
+      // Direct fallback click handler for ExtJS checkboxes and radio buttons
+      document.addEventListener('click', (e) => {
+        const t = e.target;
+        if (!t) return;
+        if (t.classList && (t.classList.contains('x-form-checkbox') || t.classList.contains('x-form-radio') || t.classList.contains('x-form-cb-wrap') || t.classList.contains('x-form-cb-wrap-inner'))) {
+          const inp = t.querySelector('input.x-form-cb-input') || (t.parentElement ? t.parentElement.querySelector('input.x-form-cb-input') : null);
+          if (inp && t !== inp) {
+            inp.click();
+          }
+        }
+      }, true);
+
       window.addEventListener('resize', () => {
         const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
         activeWindows.forEach(w => {
@@ -910,6 +932,29 @@
       else if (view === 'node-firewall') this.fetchNodeFirewall();
       else if (view === 'ha') this.fetchHA();
       else if (view === 'backup-jobs') this.fetchBackupJobs();
+    },
+
+    toggleSelectAllServers: function (checked) {
+      if (!State.selectedServerIds) State.selectedServerIds = new Set();
+      if (checked) {
+        State.servers.forEach(function (s) { State.selectedServerIds.add(s.id); });
+      } else {
+        State.selectedServerIds.clear();
+      }
+      document.querySelectorAll('.zes-server-cb').forEach(function (cb) { cb.checked = checked; });
+    },
+
+    toggleSelectServer: function (id, checked) {
+      if (!State.selectedServerIds) State.selectedServerIds = new Set();
+      if (checked) {
+        State.selectedServerIds.add(id);
+      } else {
+        State.selectedServerIds.delete(id);
+      }
+      var allCb = document.getElementById('zes-select-all-servers');
+      if (allCb) {
+        allCb.checked = State.servers.length > 0 && State.selectedServerIds.size === State.servers.length;
+      }
     },
 
     setServerTab: function (tab) {
@@ -2855,7 +2900,9 @@
             <table class="zes-table">
               <thead>
                 <tr>
-                  <th style="width: 40px;"><input type="checkbox" style="accent-color: #fff;" /></th>
+                  <th style="width: 40px;">
+                    <input type="checkbox" id="zes-select-all-servers" style="accent-color: #fff; cursor: pointer;" onchange="Zesium.toggleSelectAllServers(this.checked)" ${hasServers && State.selectedServerIds && State.selectedServerIds.size === State.servers.length ? 'checked' : ''} />
+                  </th>
                   <th>VMID</th>
                   <th>Server Name</th>
                   <th>Type</th>
@@ -2870,7 +2917,9 @@
               <tbody>
                 ${hasServers ? State.servers.map(s => `
                   <tr style="cursor: pointer;" onclick="Zesium.navigateTo('server-detail', '${s.id}')">
-                    <td onclick="event.stopPropagation()"><input type="checkbox" style="accent-color: #fff;" /></td>
+                    <td onclick="event.stopPropagation()">
+                      <input type="checkbox" class="zes-server-cb" data-id="${s.id}" style="accent-color: #fff; cursor: pointer;" onchange="Zesium.toggleSelectServer('${s.id}', this.checked)" ${State.selectedServerIds && State.selectedServerIds.has(s.id) ? 'checked' : ''} />
+                    </td>
                     <td style="font-family: monospace; font-weight: 700; color: #ffffff;">${s.vmid}</td>
                     <td>
                       <div style="font-weight: 600; color: #fff;">${s.name}</div>
