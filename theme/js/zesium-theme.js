@@ -189,16 +189,125 @@
       const s = document.createElement('style');
       s.id = 'zes-runtime-font-force';
       s.innerHTML = `
-        *, *::before, *::after,
-        .x-window, .x-window *,
-        .x-window-default, .x-window-default *,
-        .x-title-text, .x-title-text-default,
-        .x-form-item-label, .x-form-item-label-default,
-        .x-form-text, .x-form-text-default,
-        .x-btn-inner, .x-btn-inner-default-small,
-        .pmx-hint, .pmx-hint * {
+        .x-window,
+        .x-window-default,
+        .x-window-header-title,
+        .x-title-text,
+        .x-title-text-default,
+        .x-form-item-label,
+        .x-form-item-label-default,
+        .x-form-text,
+        .x-form-text-default,
+        .x-btn-inner,
+        .x-btn-inner-default-small,
+        .pmx-hint {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         }
+
+        /* PROTECT FONTAWESOME & FONT-LOGOS RUNTIME */
+        .fa,
+        .fa:before,
+        .fa:after,
+        .x-tree-icon,
+        .x-tree-icon:before,
+        .x-tree-icon:after,
+        .x-tree-icon-custom,
+        .x-tree-icon-custom:before,
+        .x-tree-icon-custom:after,
+        .x-tree-icon-parent,
+        .x-tree-icon-parent:before,
+        .x-tree-icon-parent:after,
+        .x-tree-icon-parent-expanded,
+        .x-tree-icon-parent-expanded:before,
+        .x-tree-icon-parent-expanded:after,
+        .x-tree-icon-leaf,
+        .x-tree-icon-leaf:before,
+        .x-tree-icon-leaf:after,
+        .x-grid-icon-custom,
+        .x-grid-icon-custom:before,
+        .x-grid-icon-custom:after,
+        [class*="fa-"],
+        [class*="fa-"]:before,
+        [class*="fa-"]:after,
+        [class*="fl-"],
+        [class*="fl-"]:before,
+        [class*="fl-"]:after,
+        .x-btn-icon-el,
+        .x-btn-icon-el:before,
+        .x-btn-icon-el:after,
+        .x-btn-icon-el[class*="fa-"],
+        .x-btn-icon-el[class*="fa-"]:before,
+        .x-tool-img,
+        .x-tool-img:before,
+        .x-tool-img:after {
+          font-family: FontAwesome, "Font Awesome 5 Free", "Font Awesome 5 Pro", "font-logos" !important;
+        }
+
+        /* COMBO DROPDOWN ARROW - CRISP MODERN SVG */
+        .x-form-arrow-trigger,
+        .x-form-arrow-trigger-default,
+        .x-window .x-form-arrow-trigger,
+        .x-window-default .x-form-arrow-trigger {
+          background-color: transparent !important;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+          background-repeat: no-repeat !important;
+          background-position: center center !important;
+          background-size: 14px 14px !important;
+          cursor: pointer !important;
+          width: 30px !important;
+          min-width: 30px !important;
+          border: none !important;
+          border-left: none !important;
+        }
+        .x-form-arrow-trigger:hover,
+        .x-form-arrow-trigger-default:hover,
+        .x-window .x-form-arrow-trigger:hover,
+        .x-window-default .x-form-arrow-trigger:hover {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        }
+        .x-form-arrow-trigger:before,
+        .x-form-arrow-trigger:after,
+        .x-form-arrow-trigger-default:before,
+        .x-form-arrow-trigger-default:after {
+          display: none !important;
+          content: none !important;
+        }
+
+        /* SPINNERS - NUMBER FIELDS */
+        .x-form-spinner-up,
+        .x-form-spinner-up-default {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E") !important;
+          background-repeat: no-repeat !important;
+          background-position: center center !important;
+          background-size: 10px 10px !important;
+          cursor: pointer !important;
+          border: none !important;
+        }
+        .x-form-spinner-up:hover,
+        .x-form-spinner-up-default:hover {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        }
+        .x-form-spinner-down,
+        .x-form-spinner-down-default {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+          background-repeat: no-repeat !important;
+          background-position: center center !important;
+          background-size: 10px 10px !important;
+          cursor: pointer !important;
+          border: none !important;
+        }
+        .x-form-spinner-down:hover,
+        .x-form-spinner-down-default:hover {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+        }
+        .x-form-spinner-up:before,
+        .x-form-spinner-down:before,
+        .x-form-spinner-up:after,
+        .x-form-spinner-down:after {
+          display: none !important;
+          content: none !important;
+        }
+
 
         /* WIZARD & MODAL FOOTER BUTTONS & SPACING */
         .x-window .x-toolbar [itemId="help"],

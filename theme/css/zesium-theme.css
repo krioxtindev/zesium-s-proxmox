@@ -43,7 +43,6 @@
 }
 
 /* 1. Global Reset and Viewport */
-*, *::before, *::after,
 body, html, input, select, textarea, button, label,
 .x-body, .x-panel, .x-panel-body,
 .x-window, .x-window-default, .x-window-body,
@@ -63,6 +62,64 @@ body, html, input, select, textarea, button, label,
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
 }
+
+/* ==============================================================================
+   ICON FONT PROTECTION (FontAwesome & font-logos)
+   Ensures all tree icons, toolbar buttons, tabs, and status glyphs in Native
+   View and Modals render properly and NEVER show hollow boxes [].
+   ============================================================================== */
+.fa,
+.fa:before,
+.fa:after,
+.x-tree-icon,
+.x-tree-icon:before,
+.x-tree-icon:after,
+.x-tree-icon-custom,
+.x-tree-icon-custom:before,
+.x-tree-icon-custom:after,
+.x-tree-icon-parent,
+.x-tree-icon-parent:before,
+.x-tree-icon-parent:after,
+.x-tree-icon-parent-expanded,
+.x-tree-icon-parent-expanded:before,
+.x-tree-icon-parent-expanded:after,
+.x-tree-icon-leaf,
+.x-tree-icon-leaf:before,
+.x-tree-icon-leaf:after,
+.x-grid-icon-custom,
+.x-grid-icon-custom:before,
+.x-grid-icon-custom:after,
+[class*="fa-"],
+[class*="fa-"]:before,
+[class*="fa-"]:after,
+[class*="fl-"],
+[class*="fl-"]:before,
+[class*="fl-"]:after,
+.x-btn-icon-el,
+.x-btn-icon-el:before,
+.x-btn-icon-el:after,
+.x-btn-icon-el[class*="fa-"],
+.x-btn-icon-el[class*="fa-"]:before,
+.x-tool-img,
+.x-tool-img:before,
+.x-tool-img:after {
+  font-family: FontAwesome, "Font Awesome 5 Free", "Font Awesome 5 Pro", "font-logos" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  line-height: 1 !important;
+  speak: never !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+[class*="fl-"],
+[class*="fl-"]:before,
+[class*="fl-"]:after {
+  font-family: "font-logos", FontAwesome !important;
+}
+
 
 body, html {
   margin: 0;
@@ -1142,39 +1199,139 @@ input.x-form-checkbox {
   line-height: 30px !important;
 }
 
-/* COMBO DROPDOWN & SPINNER TRIGGERS - Seamless, no boxy borders */
-.x-window-default .x-form-trigger,
-.x-window-default .x-form-trigger-default,
+/* ==============================================================================
+   COMBO DROPDOWN & SPINNER TRIGGERS
+   Crisp modern SVG chevrons, explicit 30px width, fully visible & clickable
+   ============================================================================== */
 .x-form-trigger,
-.x-form-trigger-default {
-  background: transparent !important;
+.x-form-trigger-default,
+.x-form-arrow-trigger,
+.x-form-arrow-trigger-default,
+.x-window .x-form-trigger,
+.x-window .x-form-arrow-trigger,
+.x-window-default .x-form-trigger,
+.x-window-default .x-form-arrow-trigger {
+  background-color: transparent !important;
   border: none !important;
   border-left: none !important;
   box-shadow: none !important;
-  color: #a1a1aa !important;
-  width: 26px !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  cursor: pointer !important;
 }
-.x-window-default .x-form-trigger:before,
-.x-window-default .x-form-trigger:after,
-.x-form-trigger:before,
-.x-form-trigger:after {
-  color: #a1a1aa !important;
-  transition: color 0.15s ease !important;
+
+/* COMBO DROPDOWN ARROW - CRISP MODERN SVG */
+.x-form-arrow-trigger,
+.x-form-arrow-trigger-default,
+.x-window .x-form-arrow-trigger,
+.x-window-default .x-form-arrow-trigger {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 14px 14px !important;
+  cursor: pointer !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  opacity: 0.9 !important;
+  transition: opacity 0.15s ease, filter 0.15s ease !important;
 }
-.x-window-default .x-form-trigger:hover:before,
-.x-window-default .x-form-trigger:hover:after,
-.x-form-trigger:hover:before {
+
+.x-form-arrow-trigger:hover,
+.x-form-arrow-trigger-default:hover,
+.x-window .x-form-arrow-trigger:hover,
+.x-window-default .x-form-arrow-trigger:hover {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  opacity: 1 !important;
+}
+
+.x-form-arrow-trigger:before,
+.x-form-arrow-trigger:after,
+.x-form-arrow-trigger-default:before,
+.x-form-arrow-trigger-default:after {
+  display: none !important;
+  content: none !important;
+}
+
+/* SPINNERS - NUMBER FIELDS (VM ID, Memory, Disk Size, Cores) */
+.x-form-spinner-up,
+.x-form-spinner-up-default {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 10px 10px !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  border: none !important;
+  opacity: 0.85 !important;
+}
+.x-form-spinner-up:hover,
+.x-form-spinner-up-default:hover {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  opacity: 1 !important;
+}
+
+.x-form-spinner-down,
+.x-form-spinner-down-default {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 10px 10px !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+  border: none !important;
+  opacity: 0.85 !important;
+}
+.x-form-spinner-down:hover,
+.x-form-spinner-down-default:hover {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  opacity: 1 !important;
+}
+
+.x-form-spinner-up:before,
+.x-form-spinner-down:before,
+.x-form-spinner-up:after,
+.x-form-spinner-down:after {
+  display: none !important;
+  content: none !important;
+}
+
+/* COMBO POPUP BOUNDLIST (Dropdown Options Menu) */
+.x-boundlist,
+.x-boundlist-default {
+  background-color: #18181c !important;
+  border: 1px solid #282832 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75) !important;
+  padding: 4px !important;
+  z-index: 100000 !important;
+}
+
+.x-boundlist-item,
+.x-boundlist-item-default {
+  font-family: var(--font-sans) !important;
+  color: #f4f4f5 !important;
+  font-size: 13px !important;
+  padding: 8px 12px !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  border: none !important;
+  margin: 1px 0 !important;
+  transition: background-color 0.1s ease !important;
+}
+
+.x-boundlist-item:hover,
+.x-boundlist-item-over {
+  background-color: #272732 !important;
   color: #ffffff !important;
 }
-.x-form-spinner-up,
-.x-form-spinner-down {
-  background: transparent !important;
-  border: none !important;
+
+.x-boundlist-selected,
+.x-boundlist-item-selected {
+  background-color: #323242 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
 }
-.x-form-spinner-up:before,
-.x-form-spinner-down:before {
-  color: #a1a1aa !important;
-}
+
 
 /* HORIZONTAL DIVIDERS IN MODALS (Replaces harsh inset double lines) */
 .x-window hr,
