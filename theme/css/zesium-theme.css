@@ -1816,3 +1816,153 @@ div.pmx-hint,
   display: block !important;
 }
 
+/* ==========================================================================
+   DYNAMIC BUTTON STATES, SPINNERS & CLUSTER HERO STYLING
+   ========================================================================== */
+.zes-spinner {
+  display: inline-block !important;
+  width: 13px !important;
+  height: 13px !important;
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  border-top-color: #ffffff !important;
+  border-radius: 50% !important;
+  animation: zes-spin 0.6s linear infinite !important;
+  vertical-align: middle !important;
+  margin-right: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+@keyframes zes-spin {
+  to { transform: rotate(360deg); }
+}
+
+.zes-btn-loading {
+  opacity: 0.85 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* Button color themes */
+.zes-action-btn.btn-start {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+.zes-action-btn.btn-start:hover {
+  background-color: #059669 !important;
+  border-color: #059669 !important;
+}
+
+.zes-action-btn.btn-shutdown {
+  background-color: #f59e0b !important;
+  border-color: #f59e0b !important;
+  color: #09090b !important;
+  font-weight: 600 !important;
+}
+.zes-action-btn.btn-shutdown:hover {
+  background-color: #d97706 !important;
+  border-color: #d97706 !important;
+}
+
+.zes-action-btn.btn-stop {
+  background-color: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+.zes-action-btn.btn-stop:hover {
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+
+.zes-action-btn.btn-destroy {
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+.zes-action-btn.btn-destroy:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Pulsing Status Dots */
+.zes-status-dot.starting,
+.zes-status-dot.stopping,
+.zes-status-dot.rebooting {
+  background-color: #f59e0b !important;
+  box-shadow: 0 0 10px #f59e0b !important;
+  animation: zes-pulse 0.9s infinite alternate ease-in-out !important;
+}
+
+@keyframes zes-pulse {
+  0% { opacity: 0.35; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1.15); }
+}
+
+/* Cluster Hero & Cards */
+.zes-cluster-hero {
+  background: linear-gradient(135deg, #18181c 0%, #111115 100%) !important;
+  border: 1px solid #272732 !important;
+  border-radius: 14px !important;
+  padding: 28px !important;
+  margin-bottom: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  flex-wrap: wrap !important;
+}
+
+.zes-cluster-hero-info {
+  max-width: 650px !important;
+}
+
+.zes-cluster-hero-title {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-bottom: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.zes-cluster-hero-icon {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  background: #22222a !important;
+  border: 1px solid #32323f !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.zes-cluster-hero-icon svg,
+.zes-cluster-hero-title svg,
+.zes-cluster-hero svg {
+  width: 22px !important;
+  height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
+  flex-shrink: 0 !important;
+}
+
+.zes-cluster-hero-desc {
+  font-size: 13px !important;
+  color: #a1a1aa !important;
+  line-height: 1.6 !important;
+}
+
+.zes-cluster-hero-actions {
+  display: flex !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+
+

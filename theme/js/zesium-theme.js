@@ -50,7 +50,12 @@
     upload: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
     download: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
     refresh: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>`,
-    logout: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`
+    logout: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+    shutdown: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>`,
+    snapshot: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    firewall: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    cloudinit: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`,
+    options: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`
   };
 
   // State Management - 100% Real Live Proxmox VE Data
@@ -77,7 +82,9 @@
     hostsInfo: null,
     timeInfo: null,
     users: [],
-    tasks: []
+    tasks: [],
+    snapshots: [],
+    firewallRules: []
   };
 
   // Suppress "No valid subscription" nag
@@ -884,8 +891,14 @@
     setServerTab: function (tab) {
       State.selectedTab = tab;
       this.render();
-      if (tab === 'hardware' || tab === 'backup') {
+      if (tab === 'hardware' || tab === 'options' || tab === 'cloudinit') {
         this.fetchServerDetails();
+      } else if (tab === 'snapshots') {
+        this.fetchSnapshots();
+      } else if (tab === 'backup') {
+        this.fetchBackups();
+      } else if (tab === 'firewall') {
+        this.fetchFirewallRules();
       }
     },
 
@@ -1198,55 +1211,219 @@
       this.navigateTo('server-detail', server.id, 'console');
     },
 
-    // Server Power & Lifecycle Handlers
+    formatUptime: function (sec) {
+      if (!sec || isNaN(sec) || sec <= 0) return '-';
+      const d = Math.floor(sec / 86400);
+      const h = Math.floor((sec % 86400) / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = Math.floor(sec % 60);
+      if (d > 0) return `${d}d ${h}h ${m}m`;
+      if (h > 0) return `${h}h ${m}m`;
+      if (m > 0) return `${m}m ${s}s`;
+      return `${s}s`;
+    },
+
+    // Server Power & Lifecycle Handlers with Immediate State Feedback and Active Polling
     startServer: function (id) {
       const server = State.servers.find(s => String(s.id) === String(id)) || this.getActiveServer();
       if (!server) return;
+      server.actionPending = 'Starting';
+      this.render();
+
       Proxmox.Utils.API2Request({
         url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/start`,
         method: 'POST',
         success: () => {
           showToast('Server Starting', `Power-on signal dispatched to ${server.name} (VMID ${server.vmid}).`);
-          setTimeout(() => this.fetchLiveServers(), 1500);
+          let count = 0;
+          const poll = setInterval(() => {
+            count++;
+            Proxmox.Utils.API2Request({
+              url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/current`,
+              method: 'GET',
+              success: (res) => {
+                const cur = (res && res.result && res.result.data) ? res.result.data : {};
+                if (cur.status === 'running' || count >= 20) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  server.state = cur.status || 'running';
+                  server.uptime = cur.uptime ? Zesium.formatUptime(cur.uptime) : '< 1 min';
+                  showToast('Server Online', `${server.name} (VMID ${server.vmid}) is now running.`);
+                  Zesium.fetchLiveServers();
+                  if (State.currentView === 'server-detail') Zesium.fetchServerDetails();
+                }
+              },
+              failure: () => {
+                if (count >= 20) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  Zesium.fetchLiveServers();
+                }
+              }
+            });
+          }, 1200);
         },
-        failure: (err) => showToast('Action Failed', err.htmlStatus || 'Could not start server')
+        failure: (err) => {
+          server.actionPending = null;
+          this.render();
+          showToast('Action Failed', err.htmlStatus || 'Could not start server');
+        }
+      });
+    },
+
+    shutdownServer: function (id) {
+      const server = State.servers.find(s => String(s.id) === String(id)) || this.getActiveServer();
+      if (!server) return;
+      server.actionPending = 'Shutting down';
+      this.render();
+
+      Proxmox.Utils.API2Request({
+        url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/shutdown`,
+        method: 'POST',
+        success: () => {
+          showToast('Server Shutting Down', `Graceful shutdown signal dispatched to ${server.name} (VMID ${server.vmid}).`);
+          let count = 0;
+          const poll = setInterval(() => {
+            count++;
+            Proxmox.Utils.API2Request({
+              url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/current`,
+              method: 'GET',
+              success: (res) => {
+                const cur = (res && res.result && res.result.data) ? res.result.data : {};
+                if (cur.status === 'stopped' || count >= 25) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  server.state = 'stopped';
+                  server.uptime = '-';
+                  showToast('Server Stopped', `${server.name} (VMID ${server.vmid}) has powered down.`);
+                  Zesium.fetchLiveServers();
+                  if (State.currentView === 'server-detail') Zesium.fetchServerDetails();
+                }
+              },
+              failure: () => {
+                if (count >= 25) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  Zesium.fetchLiveServers();
+                }
+              }
+            });
+          }, 1200);
+        },
+        failure: (err) => {
+          server.actionPending = null;
+          this.render();
+          showToast('Action Failed', err.htmlStatus || 'Could not shutdown server');
+        }
       });
     },
 
     stopServer: function (id) {
       const server = State.servers.find(s => String(s.id) === String(id)) || this.getActiveServer();
       if (!server) return;
+      server.actionPending = 'Stopping';
+      this.render();
+
       Proxmox.Utils.API2Request({
         url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/stop`,
         method: 'POST',
         success: () => {
-          showToast('Server Stopped', `Shutdown signal dispatched to ${server.name} (VMID ${server.vmid}).`);
-          setTimeout(() => this.fetchLiveServers(), 1500);
+          showToast('Force Stop Dispatched', `Force stop dispatched to ${server.name} (VMID ${server.vmid}).`);
+          let count = 0;
+          const poll = setInterval(() => {
+            count++;
+            Proxmox.Utils.API2Request({
+              url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/current`,
+              method: 'GET',
+              success: (res) => {
+                const cur = (res && res.result && res.result.data) ? res.result.data : {};
+                if (cur.status === 'stopped' || count >= 15) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  server.state = 'stopped';
+                  server.uptime = '-';
+                  showToast('Server Stopped', `${server.name} is offline.`);
+                  Zesium.fetchLiveServers();
+                  if (State.currentView === 'server-detail') Zesium.fetchServerDetails();
+                }
+              },
+              failure: () => {
+                if (count >= 15) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  Zesium.fetchLiveServers();
+                }
+              }
+            });
+          }, 1000);
         },
-        failure: (err) => showToast('Action Failed', err.htmlStatus || 'Could not stop server')
+        failure: (err) => {
+          server.actionPending = null;
+          this.render();
+          showToast('Action Failed', err.htmlStatus || 'Could not stop server');
+        }
       });
     },
 
     restartServer: function (id) {
       const server = State.servers.find(s => String(s.id) === String(id)) || this.getActiveServer();
       if (!server) return;
+      server.actionPending = 'Rebooting';
+      this.render();
+
       Proxmox.Utils.API2Request({
         url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/reboot`,
         method: 'POST',
         success: () => {
           showToast('Server Rebooting', `Reboot signal dispatched to ${server.name} (VMID ${server.vmid}).`);
-          setTimeout(() => this.fetchLiveServers(), 1500);
+          let count = 0;
+          const poll = setInterval(() => {
+            count++;
+            Proxmox.Utils.API2Request({
+              url: `/nodes/${server.node}/${server.type}/${server.vmid}/status/current`,
+              method: 'GET',
+              success: (res) => {
+                const cur = (res && res.result && res.result.data) ? res.result.data : {};
+                if (cur.status === 'running' || count >= 20) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  server.state = 'running';
+                  server.uptime = cur.uptime ? Zesium.formatUptime(cur.uptime) : '< 1 min';
+                  showToast('Reboot Complete', `${server.name} is online and running.`);
+                  Zesium.fetchLiveServers();
+                  if (State.currentView === 'server-detail') Zesium.fetchServerDetails();
+                }
+              },
+              failure: () => {
+                if (count >= 20) {
+                  clearInterval(poll);
+                  server.actionPending = null;
+                  Zesium.fetchLiveServers();
+                }
+              }
+            });
+          }, 1500);
         },
-        failure: (err) => showToast('Action Failed', err.htmlStatus || 'Could not reboot server')
+        failure: (err) => {
+          server.actionPending = null;
+          this.render();
+          showToast('Action Failed', err.htmlStatus || 'Could not reboot server');
+        }
       });
     },
 
     deleteServer: function (id) {
       const server = State.servers.find(s => String(s.id) === String(id)) || this.getActiveServer();
       if (!server) return;
+      if (server.state === 'running') {
+        alert(`Cannot destroy ${server.name} while it is RUNNING. Please shutdown or stop the guest first.`);
+        return;
+      }
       if (!confirm(`Are you sure you want to PERMANENTLY DESTROY ${server.name} (VMID ${server.vmid})? This cannot be undone.`)) {
         return;
       }
+      server.actionPending = 'Destroying';
+      this.render();
       Proxmox.Utils.API2Request({
         url: `/nodes/${server.node}/${server.type}/${server.vmid}`,
         method: 'DELETE',
@@ -1255,8 +1432,185 @@
           showToast('Server Destroyed', `VMID ${server.vmid} purged.`);
           this.navigateTo('servers');
         },
-        failure: (err) => showToast('Delete Failed', err.htmlStatus || 'Could not delete server')
+        failure: (err) => {
+          server.actionPending = null;
+          this.render();
+          showToast('Delete Failed', err.htmlStatus || 'Could not delete server');
+        }
       });
+    },
+
+    // Cluster Wizards
+    openCreateClusterWindow: function () {
+      if (window.Ext && Ext.ClassManager.get('PVE.ClusterCreateWindow')) {
+        const win = Ext.create('PVE.ClusterCreateWindow', {
+          autoShow: true,
+          taskDone: () => Zesium.fetchCluster()
+        });
+        win.show();
+        win.center();
+      }
+    },
+
+    openJoinClusterWindow: function () {
+      if (window.Ext && Ext.ClassManager.get('PVE.ClusterJoinNodeWindow')) {
+        const win = Ext.create('PVE.ClusterJoinNodeWindow', {
+          autoShow: true,
+          taskDone: () => Zesium.fetchCluster()
+        });
+        win.show();
+        win.center();
+      }
+    },
+
+    openClusterInfoWindow: function () {
+      if (window.Ext && Ext.ClassManager.get('PVE.ClusterInfoWindow')) {
+        const win = Ext.create('PVE.ClusterInfoWindow', {
+          autoShow: true
+        });
+        win.show();
+        win.center();
+      }
+    },
+
+    // Snapshot Management
+    fetchSnapshots: function () {
+      const s = this.getActiveServer();
+      if (!s || !window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      Proxmox.Utils.API2Request({
+        url: `/nodes/${s.node}/${s.type}/${s.vmid}/snapshot`,
+        method: 'GET',
+        success: (res) => {
+          State.snapshots = (res && res.result && res.result.data) ? res.result.data : [];
+          this.render();
+        }
+      });
+    },
+
+    openTakeSnapshotWindow: function () {
+      const s = this.getActiveServer();
+      if (!s || !window.Ext || !Ext.ClassManager.get('PVE.window.Snapshot')) return;
+      const win = Ext.create('PVE.window.Snapshot', {
+        nodename: s.node,
+        vmid: s.vmid,
+        type: s.type,
+        isCreate: true,
+        autoShow: true,
+        taskDone: () => Zesium.fetchSnapshots()
+      });
+      win.show();
+      win.center();
+    },
+
+    rollbackSnapshot: function (snapname) {
+      const s = this.getActiveServer();
+      if (!s || !snapname) return;
+      if (!confirm(`Are you sure you want to rollback ${s.name} to snapshot "${snapname}"? Current unsaved state will be lost.`)) return;
+      Proxmox.Utils.API2Request({
+        url: `/nodes/${s.node}/${s.type}/${s.vmid}/snapshot/${encodeURIComponent(snapname)}/rollback`,
+        method: 'POST',
+        waitMsgTarget: Ext.getBody ? Ext.getBody() : null,
+        success: () => {
+          showToast('Rollback Complete', `Reverted ${s.name} to "${snapname}".`);
+          Zesium.fetchServerDetails();
+          Zesium.fetchSnapshots();
+        },
+        failure: (err) => showToast('Rollback Failed', err.htmlStatus || 'Could not rollback snapshot')
+      });
+    },
+
+    deleteSnapshot: function (snapname) {
+      const s = this.getActiveServer();
+      if (!s || !snapname) return;
+      if (!confirm(`Permanently delete snapshot "${snapname}"?`)) return;
+      Proxmox.Utils.API2Request({
+        url: `/nodes/${s.node}/${s.type}/${s.vmid}/snapshot/${encodeURIComponent(snapname)}`,
+        method: 'DELETE',
+        success: () => {
+          showToast('Snapshot Deleted', `Snapshot "${snapname}" removed.`);
+          Zesium.fetchSnapshots();
+        },
+        failure: (err) => showToast('Delete Failed', err.htmlStatus || 'Could not delete snapshot')
+      });
+    },
+
+    // Backup & Restore Dialogs
+    openRestoreBackupWindow: function (volid) {
+      if (!volid) return;
+      const s = this.getActiveServer();
+      const node = s ? s.node : 'pve';
+      const isLxc = volid.includes('vztmpl') || volid.includes('subvol') || volid.includes('tar.zst') || (s && s.type === 'lxc');
+      const type = isLxc ? 'lxc' : 'qemu';
+      if (window.Ext && Ext.ClassManager.get('PVE.window.Restore')) {
+        const win = Ext.create('PVE.window.Restore', {
+          nodename: node,
+          volid: volid,
+          vmtype: type,
+          autoShow: true,
+          taskDone: () => {
+            Zesium.fetchLiveServers();
+            Zesium.fetchBackups();
+          }
+        });
+        win.show();
+        win.center();
+      }
+    },
+
+    restoreBackup: function (volid) {
+      this.openRestoreBackupWindow(volid);
+    },
+
+    // User & Token Dialogs
+    openAddUserWindow: function () {
+      if (window.Ext && Ext.ClassManager.get('PVE.dc.UserEdit')) {
+        const win = Ext.create('PVE.dc.UserEdit', {
+          isCreate: true,
+          autoShow: true,
+          taskDone: () => Zesium.fetchUsers()
+        });
+        win.show();
+        win.center();
+      }
+    },
+
+    openAddTokenWindow: function () {
+      if (window.Ext && Ext.ClassManager.get('PVE.dc.TokenEdit')) {
+        const win = Ext.create('PVE.dc.TokenEdit', {
+          isCreate: true,
+          autoShow: true,
+          taskDone: () => Zesium.fetchUsers()
+        });
+        win.show();
+        win.center();
+      }
+    },
+
+    // Network & Disk Tools
+    openCreateBridgeWindow: function () {
+      if (window.Ext && Ext.ClassManager.get('Proxmox.node.NetworkEdit')) {
+        const win = Ext.create('Proxmox.node.NetworkEdit', {
+          nodename: 'pve',
+          iftype: 'bridge',
+          isCreate: true,
+          autoShow: true,
+          taskDone: () => Zesium.fetchNetworks()
+        });
+        win.show();
+        win.center();
+      }
+    },
+
+    openDiskSmartWindow: function (disk) {
+      if (window.Ext && Ext.ClassManager.get('Proxmox.window.DiskSmart')) {
+        const win = Ext.create('Proxmox.window.DiskSmart', {
+          nodename: 'pve',
+          disk: disk,
+          autoShow: true
+        });
+        win.show();
+        win.center();
+      }
     },
 
     rebootNode: function () {
@@ -1304,7 +1658,7 @@
     },
 
     // Live Proxmox VE API Fetchers
-    fetchLiveServers: function () {
+    fetchLiveServers: function (silent = false) {
       if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
       Proxmox.Utils.API2Request({
         url: '/cluster/resources',
@@ -1313,54 +1667,87 @@
           const list = response.result.data || [];
           const vms = list.filter(item => item.type === 'qemu' || item.type === 'lxc');
 
+          const existingPending = {};
+          State.servers.forEach(s => {
+            if (s.actionPending) existingPending[s.id] = s.actionPending;
+          });
+
           State.servers = vms.map(item => {
             const isLxc = item.type === 'lxc';
             const ramMb = item.maxmem ? Math.round(item.maxmem / (1024 * 1024)) : 0;
             const diskGb = item.maxdisk ? (item.maxdisk / (1024 * 1024 * 1024)).toFixed(1) : '0';
             const vcpu = item.maxcpu || (isLxc ? 1 : 2);
+            const id = String(item.vmid);
 
             return {
-              id: String(item.vmid),
+              id: id,
               vmid: item.vmid,
               name: item.name || (isLxc ? `CT ${item.vmid}` : `VM ${item.vmid}`),
               type: item.type,
               node: item.node || 'pve',
               os: isLxc ? 'LXC Linux Container' : 'QEMU Virtual Machine',
               state: item.status || 'stopped',
+              actionPending: existingPending[id] || null,
               vcpu: `${vcpu} vCPU`,
               ram: `${ramMb} MB`,
               disk: `${diskGb} GB`,
-              uptime: item.uptime ? `${Math.round(item.uptime / 60)} min` : '-'
+              uptime: item.uptime ? Zesium.formatUptime(item.uptime) : (item.status === 'running' ? '< 1 min' : '-')
             };
           });
 
-          this.render();
+          if (!silent) this.render();
         }
       });
     },
 
-    fetchNodeStatus: function () {
+    fetchNodeStatus: function (silent = false) {
       if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
       Proxmox.Utils.API2Request({
         url: '/nodes/pve/status',
         method: 'GET',
         success: (response) => {
           State.nodeStatus = response.result.data || {};
-          this.render();
+          if (!silent) this.render();
         }
       });
     },
 
-    fetchServerDetails: function () {
+    fetchServerDetails: function (silent = false) {
       const s = this.getActiveServer();
       if (!s || !window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
 
+      // 1. Fetch live status & uptime for the active server
       Proxmox.Utils.API2Request({
-        url: `/nodes/${s.node}/${s.type}/${s.vmid}/config`,
+        url: `/nodes/${s.node}/${s.type}/${s.vmid}/status/current`,
         method: 'GET',
-        success: (response) => {
-          State.serverConfig = response.result.data || {};
-          this.render();
+        success: (curRes) => {
+          const cur = (curRes && curRes.result && curRes.result.data) ? curRes.result.data : {};
+          if (!s.actionPending) {
+            s.state = cur.status || s.state;
+            s.uptime = cur.uptime ? Zesium.formatUptime(cur.uptime) : (cur.status === 'running' ? '< 1 min' : '-');
+            s.cpuUsage = cur.cpu ? (cur.cpu * 100).toFixed(1) + '%' : '0%';
+            s.memUsage = cur.mem ? Math.round(cur.mem / (1024 * 1024)) + ' MB' : s.ram;
+          }
+
+          // 2. Fetch config
+          Proxmox.Utils.API2Request({
+            url: `/nodes/${s.node}/${s.type}/${s.vmid}/config`,
+            method: 'GET',
+            success: (response) => {
+              State.serverConfig = response.result.data || {};
+              if (!silent) this.render();
+            }
+          });
+        },
+        failure: () => {
+          Proxmox.Utils.API2Request({
+            url: `/nodes/${s.node}/${s.type}/${s.vmid}/config`,
+            method: 'GET',
+            success: (response) => {
+              State.serverConfig = response.result.data || {};
+              if (!silent) this.render();
+            }
+          });
         }
       });
     },
@@ -1674,9 +2061,22 @@
                         <button class="zes-action-btn" style="padding: 4px 8px; font-size: 11px;" onclick="Zesium.openVNC('${s.id}')">
                           Console
                         </button>
-                        <button class="zes-action-btn" style="padding: 4px 8px; font-size: 11px;" onclick="${s.state === 'running' ? `Zesium.stopServer('${s.id}')` : `Zesium.startServer('${s.id}')`}">
-                          ${s.state === 'running' ? 'Stop' : 'Start'}
-                        </button>
+                        ${s.actionPending ? `
+                          <button class="zes-action-btn zes-btn-loading" style="padding: 4px 8px; font-size: 11px;" disabled>
+                            <span class="zes-spinner"></span> ${s.actionPending}...
+                          </button>
+                        ` : s.state === 'running' ? `
+                          <button class="zes-action-btn btn-shutdown" style="padding: 4px 8px; font-size: 11px;" onclick="Zesium.shutdownServer('${s.id}')">
+                            Shutdown
+                          </button>
+                          <button class="zes-action-btn btn-stop" style="padding: 4px 8px; font-size: 11px;" onclick="Zesium.stopServer('${s.id}')">
+                            Stop
+                          </button>
+                        ` : `
+                          <button class="zes-action-btn btn-start" style="padding: 4px 8px; font-size: 11px;" onclick="Zesium.startServer('${s.id}')">
+                            Start
+                          </button>
+                        `}
                       </div>
                     </td>
                   </tr>
@@ -1707,6 +2107,7 @@
         }
 
         const isRunning = s.state === 'running';
+        const isPending = !!s.actionPending;
         const cfg = State.serverConfig || {};
 
         container.innerHTML = `
@@ -1717,32 +2118,52 @@
               </div>
               <div>
                 <div class="zes-server-title-row">
-                  <span class="zes-status-dot ${s.state}"></span>
+                  <span class="zes-status-dot ${isPending ? 'starting' : s.state}"></span>
                   <span class="zes-server-name">${s.name} (VMID: ${s.vmid})</span>
+                  ${isPending ? `<span style="font-size: 12px; color: #f59e0b; font-weight: 600; margin-left: 6px;">[${s.actionPending}...]</span>` : ''}
                 </div>
                 <div class="zes-server-specs-line">
                   <span>Type: <strong style="color: #ffffff; text-transform: uppercase;">${s.type}</strong></span>
                   <span>Node: <strong style="color: #ffffff;">${s.node}</strong></span>
-                  <span>Uptime: ${s.uptime}</span>
+                  <span>Status: <strong style="color: ${isRunning ? '#10b981' : '#a1a1aa'}; text-transform: capitalize;">${s.state}</strong></span>
+                  <span>Uptime: <strong style="color: #ffffff;">${s.uptime || '-'}</strong></span>
                 </div>
               </div>
             </div>
 
             <div class="zes-server-actions">
-              <button class="zes-action-btn" onclick="Zesium.openVNC('${s.id}')">
+              <button class="zes-action-btn" onclick="Zesium.setServerTab('console')">
                 ${Icons.vnc} Console
               </button>
-              <button class="zes-action-btn" onclick="Zesium.restartServer('${s.id}')">
-                ${Icons.restart} Reboot
-              </button>
-              <button class="zes-action-btn ${isRunning ? 'btn-stop' : ''}" style="${!isRunning ? 'background-color: #10b981; border-color: #10b981;' : ''}" onclick="${isRunning ? `Zesium.stopServer('${s.id}')` : `Zesium.startServer('${s.id}')`}">
-                ${isRunning ? `${Icons.stop} Stop` : `${Icons.start} Start`}
-              </button>
+              ${isPending ? `
+                <button class="zes-action-btn zes-btn-loading" disabled>
+                  <span class="zes-spinner"></span> ${s.actionPending}...
+                </button>
+              ` : isRunning ? `
+                <button class="zes-action-btn btn-shutdown" onclick="Zesium.shutdownServer('${s.id}')">
+                  ${Icons.shutdown} Shutdown
+                </button>
+                <button class="zes-action-btn btn-stop" onclick="Zesium.stopServer('${s.id}')">
+                  ${Icons.stop} Stop
+                </button>
+                <button class="zes-action-btn" onclick="Zesium.restartServer('${s.id}')">
+                  ${Icons.restart} Reboot
+                </button>
+              ` : `
+                <button class="zes-action-btn btn-start" onclick="Zesium.startServer('${s.id}')">
+                  ${Icons.start} Start
+                </button>
+              `}
               <button class="zes-action-btn" onclick="Zesium.openBackupWindow('${s.vmid}', '${s.type}')">
                 ${Icons.backup} Backup Now
               </button>
-              <button class="zes-action-btn" style="border-color: #ef4444; color: #ef4444;" onclick="Zesium.deleteServer('${s.id}')">
-                ${Icons.deleteIcon} Destroy
+              ${!isRunning && !isPending ? `
+                <button class="zes-action-btn btn-destroy" onclick="Zesium.deleteServer('${s.id}')">
+                  ${Icons.deleteIcon} Destroy
+                </button>
+              ` : ''}
+              <button class="zes-action-btn" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')" title="Open full native Proxmox hardware & options configuration dialog">
+                ⚙ Native Config
               </button>
             </div>
           </div>
@@ -1751,6 +2172,9 @@
             <button class="zes-nav-tab ${State.selectedTab === 'summary' ? 'active' : ''}" onclick="Zesium.setServerTab('summary')">Summary</button>
             <button class="zes-nav-tab ${State.selectedTab === 'console' ? 'active' : ''}" onclick="Zesium.setServerTab('console')">Console</button>
             <button class="zes-nav-tab ${State.selectedTab === 'hardware' ? 'active' : ''}" onclick="Zesium.setServerTab('hardware')">Hardware</button>
+            <button class="zes-nav-tab ${State.selectedTab === 'cloudinit' ? 'active' : ''}" onclick="Zesium.setServerTab('cloudinit')">Cloud-Init</button>
+            <button class="zes-nav-tab ${State.selectedTab === 'options' ? 'active' : ''}" onclick="Zesium.setServerTab('options')">Options</button>
+            <button class="zes-nav-tab ${State.selectedTab === 'snapshots' ? 'active' : ''}" onclick="Zesium.setServerTab('snapshots')">Snapshots</button>
             <button class="zes-nav-tab ${State.selectedTab === 'backup' ? 'active' : ''}" onclick="Zesium.setServerTab('backup')">Backups</button>
           </div>
 
@@ -1780,17 +2204,17 @@
               <div class="zes-plan-card">
                 <div style="font-size: 12px; color: #a1a1aa;">Assigned vCPU</div>
                 <div style="font-size: 24px; font-weight: 700; color: #fff; margin: 8px 0;">${s.vcpu}</div>
-                <div style="font-size: 11px; color: #71717a;">QEMU / KVM Host Scheduler</div>
+                <div style="font-size: 11px; color: #71717a;">CPU Usage: ${s.cpuUsage || '0%'}</div>
               </div>
               <div class="zes-plan-card">
                 <div style="font-size: 12px; color: #a1a1aa;">Memory Allocation</div>
                 <div style="font-size: 24px; font-weight: 700; color: #fff; margin: 8px 0;">${s.ram}</div>
-                <div style="font-size: 11px; color: #71717a;">Dedicated RAM Pool</div>
+                <div style="font-size: 11px; color: #71717a;">RAM Used: ${s.memUsage || '0 MB'}</div>
               </div>
               <div class="zes-plan-card">
                 <div style="font-size: 12px; color: #a1a1aa;">Disk Size</div>
                 <div style="font-size: 24px; font-weight: 700; color: #fff; margin: 8px 0;">${s.disk}</div>
-                <div style="font-size: 11px; color: #71717a;">Storage Pool on ${s.node}</div>
+                <div style="font-size: 11px; color: #71717a;">Storage on ${s.node}</div>
               </div>
             </div>
           ` : State.selectedTab === 'hardware' ? `
@@ -1798,7 +2222,7 @@
               <div style="font-size: 13px; color: #a1a1aa;">Hardware specifications & virtual devices</div>
               <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')">
-                  ${Icons.server} Full Proxmox Hardware & Config
+                  ⚙ Full Proxmox Config
                 </button>
                 <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.openAddHardwareWindow('disk', '${s.vmid}', '${s.node}', '${s.type}')">
                   + Add Disk
@@ -1821,23 +2245,171 @@
                   </tr>
                 </thead>
                 <tbody>
-                  ${Object.keys(cfg).length > 0 ? Object.entries(cfg).map(([k, v]) => `
+                  ${Object.keys(cfg).filter(k => !k.startsWith('ci') && !['name', 'ostype', 'boot', 'agent', 'onboot', 'startup', 'protection', 'digest'].includes(k)).map(k => `
                     <tr>
                       <td style="font-weight: 600; color: #ffffff; width: 200px;">${k}</td>
-                      <td style="font-family: monospace; color: #d4d4d8;">${v}</td>
+                      <td style="font-family: monospace; color: #d4d4d8;">${cfg[k]}</td>
                       <td style="text-align: right;">
                         <button class="zes-action-btn" style="padding: 3px 12px; font-size: 11px;" onclick="Zesium.openHardwareEdit('${k}', '${s.vmid}', '${s.node}', '${s.type}')">
                           Edit
                         </button>
                       </td>
                     </tr>
-                  `).join('') : `
-                    <tr><td colspan="3" style="text-align: center; padding: 30px; color: #71717a;">Loading hardware configuration...</td></tr>
-                  `}
+                  `).join('') || `<tr><td colspan="3" style="text-align: center; padding: 30px; color: #71717a;">Loading hardware configuration...</td></tr>`}
+                </tbody>
+              </table>
+            </div>
+          ` : State.selectedTab === 'cloudinit' ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Cloud-Init provisioning options (User, SSH Keys, Network)</div>
+              <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')">
+                ⚙ Edit Cloud-Init in Proxmox
+              </button>
+            </div>
+            <div class="zes-table-container">
+              <table class="zes-table">
+                <thead>
+                  <tr>
+                    <th>Setting</th>
+                    <th>Configured Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">User</td>
+                    <td style="font-family: monospace; color: #d4d4d8;">${cfg.ciuser || '(Default root/admin)'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">Password</td>
+                    <td style="font-family: monospace; color: #d4d4d8;">${cfg.cipassword ? '••••••••' : '(Not configured)'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">DNS Domain</td>
+                    <td style="font-family: monospace; color: #d4d4d8;">${cfg.searchdomain || '(Host default)'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">DNS Servers</td>
+                    <td style="font-family: monospace; color: #d4d4d8;">${cfg.nameserver || '(Host default)'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">SSH Public Keys</td>
+                    <td style="font-family: monospace; color: #d4d4d8; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${cfg.sshkeys ? decodeURIComponent(cfg.sshkeys) : '(No keys uploaded)'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">IP Configuration (IPv4/IPv6)</td>
+                    <td style="font-family: monospace; color: #d4d4d8;">${cfg.ipconfig0 || 'ip=dhcp'}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ` : State.selectedTab === 'options' ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Guest operating parameters & hypervisor options</div>
+              <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openProxmoxConfigWindow('${s.vmid}', '${s.node}', '${s.type}')">
+                ⚙ Edit Options in Proxmox
+              </button>
+            </div>
+            <div class="zes-table-container">
+              <table class="zes-table">
+                <thead>
+                  <tr>
+                    <th>Option Name</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">Name</td>
+                    <td style="color: #d4d4d8;">${cfg.name || s.name}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">Start at Boot</td>
+                    <td style="color: #d4d4d8;">${cfg.onboot ? '<strong style="color: #10b981;">Yes</strong>' : 'No'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">OS Type</td>
+                    <td style="color: #d4d4d8;">${cfg.ostype || 'l26 (Linux 6.x)'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">Boot Order</td>
+                    <td style="font-family: monospace; color: #d4d4d8;">${cfg.boot || 'order=scsi0;ide2;net0'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">QEMU Guest Agent</td>
+                    <td style="color: #d4d4d8;">${cfg.agent ? '<strong style="color: #10b981;">Enabled</strong>' : 'Disabled'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">ACPI Support</td>
+                    <td style="color: #d4d4d8;">${cfg.acpi === 0 ? 'Disabled' : 'Enabled'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">KVM Hardware Virtualization</td>
+                    <td style="color: #d4d4d8;">${cfg.kvm === 0 ? 'Disabled' : '<strong style="color: #10b981;">Enabled</strong>'}</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">Protection (Prevent Delete)</td>
+                    <td style="color: #d4d4d8;">${cfg.protection ? '<strong style="color: #ef4444;">Protected</strong>' : 'No'}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          ` : State.selectedTab === 'snapshots' ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Snapshots preserve guest memory state and disk blocks for instant rollback</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openTakeSnapshotWindow()">
+                  + Take Snapshot
+                </button>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.fetchSnapshots()">
+                  ${Icons.refresh} Refresh
+                </button>
+              </div>
+            </div>
+            <div class="zes-table-container">
+              <table class="zes-table">
+                <thead>
+                  <tr>
+                    <th>Snapshot Name</th>
+                    <th>Date & Time</th>
+                    <th>RAM State</th>
+                    <th>Description</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(State.snapshots || []).filter(sn => sn.name !== 'current').map(sn => `
+                    <tr>
+                      <td style="font-weight: 700; color: #ffffff;">${sn.name}</td>
+                      <td style="font-size: 12px; color: #a1a1aa;">${sn.snaptime ? new Date(sn.snaptime * 1000).toLocaleString() : '-'}</td>
+                      <td>${sn.vmstate ? '<span class="zes-status-dot running"></span> Included' : 'Disk Only'}</td>
+                      <td style="font-size: 12px; color: #d4d4d8;">${sn.description || '-'}</td>
+                      <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 6px;">
+                          <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px;" onclick="Zesium.rollbackSnapshot('${sn.name}')">
+                            Rollback
+                          </button>
+                          <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px; border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.deleteSnapshot('${sn.name}')">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `).join('') || `<tr><td colspan="5" style="text-align: center; padding: 40px; color: #71717a;">No snapshots taken yet for this guest. Click "+ Take Snapshot" to capture current state.</td></tr>`}
                 </tbody>
               </table>
             </div>
           ` : `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Full disaster recovery backup archives stored on hypervisor storage pools</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="zes-btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="Zesium.openBackupWindow('${s.vmid}', '${s.type}')">
+                  ${Icons.backup} + Backup Now
+                </button>
+                <button class="zes-action-btn" style="padding: 6px 12px; font-size: 12px;" onclick="Zesium.fetchBackups()">
+                  ${Icons.refresh} Refresh
+                </button>
+              </div>
+            </div>
             <div class="zes-table-container">
               <table class="zes-table">
                 <thead>
@@ -1865,7 +2437,7 @@
                         </div>
                       </td>
                     </tr>
-                  `).join('') || `<tr><td colspan="4" style="text-align: center; padding: 40px; color: #71717a;">No backups found for VMID ${s.vmid}. Click "Backup Now" to create one.</td></tr>`}
+                  `).join('') || `<tr><td colspan="4" style="text-align: center; padding: 40px; color: #71717a;">No backups found for VMID ${s.vmid}. Click "+ Backup Now" to create one.</td></tr>`}
                 </tbody>
               </table>
             </div>
@@ -2195,6 +2767,7 @@
                   <th>Serial</th>
                   <th>SMART Health</th>
                   <th>Used By</th>
+                  <th style="text-align: right;">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -2206,9 +2779,14 @@
                     <td style="font-family: monospace; font-size: 12px;">${d.serial || '-'}</td>
                     <td><span class="zes-status-dot running"></span> <strong style="color: #10b981;">${d.health || 'OK'}</strong></td>
                     <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px;">${d.used || 'System'}</span></td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openDiskSmartWindow('${d.devpath || d.disk}')">
+                        View SMART
+                      </button>
+                    </td>
                   </tr>
                 `).join('') : `
-                  <tr><td colspan="6" style="text-align: center; padding: 40px; color: #71717a;">Loading physical disks...</td></tr>
+                  <tr><td colspan="7" style="text-align: center; padding: 40px; color: #71717a;">Loading physical disks...</td></tr>
                 `}
               </tbody>
             </table>
@@ -2292,9 +2870,14 @@
               <h1 class="zes-page-title">Network Bridges & Interfaces</h1>
               <p class="zes-page-subtitle">Linux Bridges (vmbr), physical adapters, and virtual switches</p>
             </div>
-            <button class="zes-btn-primary" onclick="Zesium.openNodeShell()">
-              ${Icons.network} Edit in Shell
-            </button>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openCreateBridgeWindow()">
+                + Create Linux Bridge
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openNodeShell()">
+                ${Icons.shell} Shell
+              </button>
+            </div>
           </div>
 
           <div class="zes-table-container">
@@ -2363,37 +2946,94 @@
           </div>
         `;
       } else if (State.currentView === 'cluster') {
-        const hasCl = State.clusterStatus.length > 0;
+        const clusterNodes = State.clusterStatus.filter(c => c.type === 'node' || !c.type);
+        const clusterItem = State.clusterStatus.find(c => c.type === 'cluster');
+        const hasCluster = !!clusterItem;
+
         container.innerHTML = `
           <div class="zes-page-header">
             <div>
-              <h1 class="zes-page-title">Cluster Management & Nodes</h1>
-              <p class="zes-page-subtitle">Cluster quorum, membership, and multi-node federation</p>
+              <h1 class="zes-page-title">Cluster Management & Federation</h1>
+              <p class="zes-page-subtitle">Multi-node high availability, shared storage, and unified cluster quorum</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-action-btn" onclick="Zesium.fetchCluster()">
+                ${Icons.refresh} Refresh Status
+              </button>
+            </div>
+          </div>
+
+          <div class="zes-cluster-hero">
+            <div class="zes-cluster-hero-info">
+              <div class="zes-cluster-hero-title">
+                <div class="zes-cluster-hero-icon">
+                  ${Icons.cluster}
+                </div>
+                <span>${hasCluster ? `Cluster: ${clusterItem.name}` : `Standalone Hypervisor Node ('pve')`}</span>
+                <span class="zes-status-dot ${hasCluster ? 'running' : 'stopped'}"></span>
+              </div>
+              <div class="zes-cluster-hero-desc">
+                ${hasCluster ? `
+                  This Proxmox node is a member of cluster <strong>${clusterItem.name}</strong> with <strong>${clusterItem.nodes || clusterNodes.length}</strong> nodes.
+                  Quorum status is <strong>${clusterItem.quorate ? 'Healthy (Quorate)' : 'Lost Quorum'}</strong>.
+                ` : `
+                  This host is currently operating independently in standalone mode. You can create a new Proxmox VE cluster with this node as the primary master, or join this node into an existing cluster via Join Information token.
+                `}
+              </div>
+            </div>
+            <div class="zes-cluster-hero-actions">
+              ${hasCluster ? `
+                <button class="zes-btn-primary" onclick="Zesium.openClusterInfoWindow()">
+                  ${Icons.cluster} Cluster Join Information ↗
+                </button>
+                <button class="zes-action-btn" onclick="Zesium.openJoinClusterWindow()">
+                  + Join Another Node
+                </button>
+              ` : `
+                <button class="zes-btn-primary" onclick="Zesium.openCreateClusterWindow()">
+                  ${Icons.cluster} Create Cluster
+                </button>
+                <button class="zes-action-btn" onclick="Zesium.openJoinClusterWindow()">
+                  → Join Existing Cluster
+                </button>
+              `}
             </div>
           </div>
 
           <div class="zes-table-container">
+            <div style="padding: 16px 20px; font-weight: 600; font-size: 14px; border-bottom: 1px solid #272732; color: #ffffff;">
+              ${hasCluster ? 'Cluster Member Nodes' : 'Local Node Information'}
+            </div>
             <table class="zes-table">
               <thead>
                 <tr>
-                  <th>Node</th>
+                  <th>Node Name</th>
                   <th>IP Address</th>
-                  <th>ID</th>
+                  <th>Node ID</th>
                   <th>Status</th>
-                  <th>Quorum</th>
+                  <th>Quorum Votes</th>
+                  <th style="text-align: right;">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                ${hasCl ? State.clusterStatus.map(c => `
+                ${clusterNodes.length > 0 ? clusterNodes.map(c => `
                   <tr>
                     <td style="font-weight: 700; color: #ffffff;">${c.name}</td>
-                    <td style="font-family: monospace;">${c.ip || '-'}</td>
+                    <td style="font-family: monospace; color: #a1a1aa;">${c.ip || '-'}</td>
                     <td>${c.nodeid || 0}</td>
-                    <td><span class="zes-status-dot ${c.online ? 'running' : 'stopped'}"></span> ${c.online ? 'Online' : 'Offline'}</td>
-                    <td><strong style="color: #10b981;">Yes</strong></td>
+                    <td>
+                      <span class="zes-status-dot ${c.online ? 'running' : 'stopped'}"></span>
+                      ${c.online ? 'Online' : 'Offline'}
+                    </td>
+                    <td><strong style="color: #10b981;">${c.votes || 1}</strong></td>
+                    <td style="text-align: right;">
+                      <button class="zes-action-btn" style="padding: 3px 10px; font-size: 11px;" onclick="Zesium.openNodeShell()">
+                        ${Icons.shell} Shell
+                      </button>
+                    </td>
                   </tr>
                 `).join('') : `
-                  <tr><td colspan="5" style="text-align: center; padding: 40px; color: #71717a;">Loading cluster status...</td></tr>
+                  <tr><td colspan="6" style="text-align: center; padding: 40px; color: #71717a;">Loading cluster nodes...</td></tr>
                 `}
               </tbody>
             </table>
@@ -2543,6 +3183,14 @@
             <div>
               <h1 class="zes-page-title">Access Control & Users</h1>
               <p class="zes-page-subtitle">Proxmox VE user accounts, API tokens, and realm permissions</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openAddUserWindow()">
+                + Add User
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openAddTokenWindow()">
+                + Add API Token
+              </button>
             </div>
           </div>
 
@@ -3019,6 +3667,21 @@
 
       this.render();
       this.fetchLiveServers();
+
+      // Live background polling timer (every 4 seconds) to keep status & uptime fresh
+      if (!window._zesiumLiveTimer) {
+        window._zesiumLiveTimer = setInterval(() => {
+          if (document.body.classList.contains('zesium-active')) {
+            if (State.currentView === 'servers') {
+              Zesium.fetchLiveServers(true);
+            } else if (State.currentView === 'server-detail') {
+              Zesium.fetchServerDetails(true);
+            } else if (State.currentView === 'node-summary') {
+              Zesium.fetchNodeStatus(true);
+            }
+          }
+        }, 4000);
+      }
     }
   };
 
