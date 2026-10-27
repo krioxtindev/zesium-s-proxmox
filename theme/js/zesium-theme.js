@@ -528,6 +528,28 @@
           vertical-align: middle !important;
         }
 
+        /* Hide native input completely so it never creates double circles/boxes or shifts labels */
+        .x-form-cb-input,
+        input.x-form-cb-input,
+        .x-form-type-radio input,
+        .x-form-type-checkbox input,
+        .x-form-cb-wrap input {
+          position: absolute !important;
+          opacity: 0 !important;
+          width: 0 !important;
+          height: 0 !important;
+          min-width: 0 !important;
+          min-height: 0 !important;
+          max-width: 0 !important;
+          max-height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
+          background: transparent !important;
+          pointer-events: none !important;
+          outline: none !important;
+        }
+
         /* COMPLETE KILL OF EXTJS PSEUDO-ELEMENTS (Eliminates secondary blue circles, fontawesome duplicates, offcenter icons) */
         .x-form-cb-label:before,
         .x-form-cb-label:after,
@@ -541,6 +563,8 @@
         .x-form-cb-wrap:after,
         .x-form-cb-wrap-default:before,
         .x-form-cb-wrap-default:after,
+        .x-form-cb-wrap-inner:before,
+        .x-form-cb-wrap-inner:after,
         .x-window .x-form-cb-wrap:before,
         .x-window .x-form-cb-wrap:after,
         .x-form-radio:before,
@@ -549,20 +573,12 @@
         .x-form-radio-default:after,
         .x-window .x-form-radio:before,
         .x-window .x-form-radio:after,
-        .x-window-default input.x-form-radio:before,
-        .x-window-default input.x-form-radio:after,
         .x-form-checkbox:before,
         .x-form-checkbox:after,
         .x-form-checkbox-default:before,
         .x-form-checkbox-default:after,
         .x-window .x-form-checkbox:before,
-        .x-window .x-form-checkbox:after,
-        .x-window-default input.x-form-checkbox:before,
-        .x-window-default input.x-form-checkbox:after,
-        .x-form-type-radio *:before,
-        .x-form-type-radio *:after,
-        .x-form-type-checkbox *:before,
-        .x-form-type-checkbox *:after {
+        .x-window .x-form-checkbox:after {
           display: none !important;
           content: none !important;
           opacity: 0 !important;
@@ -573,12 +589,10 @@
           box-shadow: none !important;
         }
 
+        /* Radio Button: SPAN visual element */
         .x-form-radio,
         .x-form-radio-default,
-        .x-window .x-form-radio,
-        .x-window-default input.x-form-radio,
-        .x-form-type-radio input,
-        input.x-form-radio {
+        .x-window .x-form-radio {
           -webkit-appearance: none !important;
           -moz-appearance: none !important;
           appearance: none !important;
@@ -601,37 +615,33 @@
           vertical-align: middle !important;
           position: relative !important;
           flex-shrink: 0 !important;
+          box-sizing: border-box !important;
           transition: all 0.15s ease !important;
         }
 
         .x-form-radio:hover,
-        .x-form-cb-wrap:hover .x-form-radio,
-        .x-form-type-radio:hover input {
+        .x-form-cb-wrap:hover .x-form-radio {
           border-color: #71717a !important;
           background-color: #222228 !important;
         }
 
+        /* Checked Radio Button: Clean modern white border with centered white dot */
         .x-form-radio.x-form-cb-checked,
         .x-form-cb-checked .x-form-radio,
         .x-form-radio-default.x-form-cb-checked,
-        .x-form-cb-wrap.x-form-cb-checked .x-form-radio,
-        .x-form-type-radio .x-form-cb-checked input,
-        .x-form-type-radio.x-form-cb-checked input,
-        .x-form-cb-checked input.x-form-radio {
+        .x-form-cb-wrap.x-form-cb-checked .x-form-radio {
           border-color: #ffffff !important;
           background-color: #18181c !important;
-          background-image: radial-gradient(circle, #ffffff 38%, transparent 44%) !important;
+          background-image: radial-gradient(circle, #ffffff 40%, transparent 45%) !important;
           background-repeat: no-repeat !important;
-          background-position: center !important;
+          background-position: center center !important;
           box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
         }
 
+        /* Checkbox: SPAN visual element */
         .x-form-checkbox,
         .x-form-checkbox-default,
-        .x-window .x-form-checkbox,
-        .x-window-default input.x-form-checkbox,
-        .x-form-type-checkbox input,
-        input.x-form-checkbox {
+        .x-window .x-form-checkbox {
           -webkit-appearance: none !important;
           -moz-appearance: none !important;
           appearance: none !important;
@@ -654,23 +664,21 @@
           vertical-align: middle !important;
           position: relative !important;
           flex-shrink: 0 !important;
+          box-sizing: border-box !important;
           transition: all 0.15s ease !important;
         }
 
         .x-form-checkbox:hover,
-        .x-form-cb-wrap:hover .x-form-checkbox,
-        .x-form-type-checkbox:hover input {
+        .x-form-cb-wrap:hover .x-form-checkbox {
           border-color: #71717a !important;
           background-color: #222228 !important;
         }
 
+        /* Checked Checkbox: Solid white square with clean black checkmark */
         .x-form-checkbox.x-form-cb-checked,
         .x-form-cb-checked .x-form-checkbox,
         .x-form-checkbox-default.x-form-cb-checked,
-        .x-form-cb-wrap.x-form-cb-checked .x-form-checkbox,
-        .x-form-type-checkbox .x-form-cb-checked input,
-        .x-form-type-checkbox.x-form-cb-checked input,
-        .x-form-cb-checked input.x-form-checkbox {
+        .x-form-cb-wrap.x-form-cb-checked .x-form-checkbox {
           border-color: #ffffff !important;
           background-color: #ffffff !important;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3E%3Cpath d='M13.485 3.515a1 1 0 0 1 0 1.414l-6.364 6.364a1 1 0 0 1-1.414 0l-3.182-3.182a1 1 0 1 1 1.414-1.414L6.414 9.172l5.657-5.657a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;
@@ -679,6 +687,7 @@
           background-size: 11px 11px !important;
         }
 
+        /* Checkbox & Radio Labels ("Use CD/DVD disc image", "Advanced", etc.) */
         .x-form-cb-label,
         .x-form-cb-label-default,
         .x-window .x-form-cb-label,
@@ -688,7 +697,7 @@
           font-size: 13px !important;
           font-weight: 400 !important;
           letter-spacing: -0.01em !important;
-          margin-left: 10px !important;
+          margin-left: 8px !important;
           padding: 0 !important;
           position: static !important;
           cursor: pointer !important;
@@ -1179,18 +1188,14 @@
     },
 
     openNodeShell: function () {
-      const node = (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
-      window.open(`/?console=shell&novnc=1&node=${node}`, 'pve_shell', 'width=1100,height=750,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes,resizable=yes');
+      this.navigateTo('shell');
     },
 
     openVNC: function (id) {
       const server = State.servers.find(s => String(s.id) === String(id)) || this.getActiveServer();
       if (!server) return;
-      const node = server.node || 'pve';
-      const vmid = server.vmid;
-      const type = server.type === 'lxc' ? 'lxc' : 'kvm';
-      const vncUrl = `/?console=${type}&novnc=1&node=${node}&vmid=${vmid}`;
-      window.open(vncUrl, `vnc_${vmid}`, 'width=1100,height=750,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes,resizable=yes');
+      State.selectedTab = 'console';
+      this.navigateTo('server-detail', server.id, 'console');
     },
 
     // Server Power & Lifecycle Handlers
@@ -1585,6 +1590,12 @@
           <span class="crumb-sep">›</span>
           <span class="crumb-current" style="text-transform: capitalize;">${State.selectedTab}</span>
         `;
+      } else if (State.currentView === 'shell' || State.currentView === 'node-shell') {
+        bc.innerHTML = `
+          <span class="crumb-link" onclick="Zesium.navigateTo('servers')">Home</span>
+          <span class="crumb-sep">›</span>
+          <span class="crumb-current">Node Shell</span>
+        `;
       } else {
         bc.innerHTML = `
           <span class="crumb-link" onclick="Zesium.navigateTo('servers')">Home</span>
@@ -1738,11 +1749,33 @@
 
           <div class="zes-nav-tabs">
             <button class="zes-nav-tab ${State.selectedTab === 'summary' ? 'active' : ''}" onclick="Zesium.setServerTab('summary')">Summary</button>
+            <button class="zes-nav-tab ${State.selectedTab === 'console' ? 'active' : ''}" onclick="Zesium.setServerTab('console')">Console</button>
             <button class="zes-nav-tab ${State.selectedTab === 'hardware' ? 'active' : ''}" onclick="Zesium.setServerTab('hardware')">Hardware</button>
             <button class="zes-nav-tab ${State.selectedTab === 'backup' ? 'active' : ''}" onclick="Zesium.setServerTab('backup')">Backups</button>
           </div>
 
-          ${State.selectedTab === 'summary' ? `
+          ${State.selectedTab === 'console' ? `
+            <div class="zes-embedded-terminal-wrapper">
+              <div class="zes-terminal-toolbar">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="zes-status-dot ${s.state}"></span>
+                  <span style="font-weight: 600; font-size: 13px; color: #ffffff;">${s.name} (VMID: ${s.vmid}) Console</span>
+                  <span style="font-size: 12px; color: #71717a;">• ${s.type === 'lxc' ? 'LXC Console' : 'noVNC'}</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px;" onclick="const ifr = document.getElementById('zes-vm-console-iframe'); if (ifr) ifr.src = ifr.src;">
+                    ${Icons.restart} Reload
+                  </button>
+                  <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px;" onclick="window.open('/?console=${s.type === 'lxc' ? 'lxc' : 'kvm'}&novnc=1&node=${s.node || 'pve'}&vmid=${s.vmid}', '_blank', 'width=1100,height=750')">
+                    Popout ↗
+                  </button>
+                </div>
+              </div>
+              <div class="zes-terminal-body">
+                <iframe id="zes-vm-console-iframe" src="/?console=${s.type === 'lxc' ? 'lxc' : 'kvm'}&novnc=1&node=${s.node || 'pve'}&vmid=${s.vmid}" class="zes-embedded-iframe" allowfullscreen></iframe>
+              </div>
+            </div>
+          ` : State.selectedTab === 'summary' ? `
             <div class="zes-cards-grid">
               <div class="zes-plan-card">
                 <div style="font-size: 12px; color: #a1a1aa;">Assigned vCPU</div>
@@ -1837,6 +1870,28 @@
               </table>
             </div>
           `}
+        `;
+      } else if (State.currentView === 'shell' || State.currentView === 'node-shell') {
+        const node = (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+        container.innerHTML = `
+          <div class="zes-page-header">
+            <div>
+              <h1 class="zes-page-title">Node Shell ('${node}')</h1>
+              <p class="zes-page-subtitle">Embedded interactive root shell terminal for host administration</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-action-btn" onclick="const ifr = document.getElementById('zes-node-shell-iframe'); if (ifr) ifr.src = ifr.src;">
+                ${Icons.restart} Reload Shell
+              </button>
+              <button class="zes-action-btn" onclick="window.open('/?console=shell&novnc=1&node=${node}', '_blank', 'width=1100,height=750')">
+                Popout ↗
+              </button>
+            </div>
+          </div>
+
+          <div class="zes-embedded-terminal-wrapper">
+            <iframe id="zes-node-shell-iframe" src="/?console=shell&novnc=1&node=${node}" class="zes-embedded-iframe" allowfullscreen></iframe>
+          </div>
         `;
       } else if (State.currentView === 'node-summary') {
         const st = State.nodeStatus || {};

@@ -990,6 +990,28 @@ input.x-form-text-default {
   vertical-align: middle !important;
 }
 
+/* Hide native input completely so it never creates double circles/boxes or shifts labels */
+.x-form-cb-input,
+input.x-form-cb-input,
+.x-form-type-radio input,
+.x-form-type-checkbox input,
+.x-form-cb-wrap input {
+  position: absolute !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  pointer-events: none !important;
+  outline: none !important;
+}
+
 /* COMPLETE KILL OF EXTJS PSEUDO-ELEMENTS (Eliminates secondary blue circles, fontawesome duplicates, offcenter icons) */
 .x-form-cb-label:before,
 .x-form-cb-label:after,
@@ -1003,6 +1025,8 @@ input.x-form-text-default {
 .x-form-cb-wrap:after,
 .x-form-cb-wrap-default:before,
 .x-form-cb-wrap-default:after,
+.x-form-cb-wrap-inner:before,
+.x-form-cb-wrap-inner:after,
 .x-window .x-form-cb-wrap:before,
 .x-window .x-form-cb-wrap:after,
 .x-form-radio:before,
@@ -1011,20 +1035,12 @@ input.x-form-text-default {
 .x-form-radio-default:after,
 .x-window .x-form-radio:before,
 .x-window .x-form-radio:after,
-.x-window-default input.x-form-radio:before,
-.x-window-default input.x-form-radio:after,
 .x-form-checkbox:before,
 .x-form-checkbox:after,
 .x-form-checkbox-default:before,
 .x-form-checkbox-default:after,
 .x-window .x-form-checkbox:before,
-.x-window .x-form-checkbox:after,
-.x-window-default input.x-form-checkbox:before,
-.x-window-default input.x-form-checkbox:after,
-.x-form-type-radio *:before,
-.x-form-type-radio *:after,
-.x-form-type-checkbox *:before,
-.x-form-type-checkbox *:after {
+.x-window .x-form-checkbox:after {
   display: none !important;
   content: none !important;
   opacity: 0 !important;
@@ -1035,13 +1051,10 @@ input.x-form-text-default {
   box-shadow: none !important;
 }
 
-/* Clean reset for radio input element */
+/* Radio Button: SPAN visual element */
 .x-form-radio,
 .x-form-radio-default,
-.x-window .x-form-radio,
-.x-window-default input.x-form-radio,
-.x-form-type-radio input,
-input.x-form-radio {
+.x-window .x-form-radio {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
@@ -1064,12 +1077,12 @@ input.x-form-radio {
   vertical-align: middle !important;
   position: relative !important;
   flex-shrink: 0 !important;
+  box-sizing: border-box !important;
   transition: all 0.15s ease !important;
 }
 
 .x-form-radio:hover,
-.x-form-cb-wrap:hover .x-form-radio,
-.x-form-type-radio:hover input {
+.x-form-cb-wrap:hover .x-form-radio {
   border-color: #71717a !important;
   background-color: #222228 !important;
 }
@@ -1078,25 +1091,19 @@ input.x-form-radio {
 .x-form-radio.x-form-cb-checked,
 .x-form-cb-checked .x-form-radio,
 .x-form-radio-default.x-form-cb-checked,
-.x-form-cb-wrap.x-form-cb-checked .x-form-radio,
-.x-form-type-radio .x-form-cb-checked input,
-.x-form-type-radio.x-form-cb-checked input,
-.x-form-cb-checked input.x-form-radio {
+.x-form-cb-wrap.x-form-cb-checked .x-form-radio {
   border-color: #ffffff !important;
   background-color: #18181c !important;
-  background-image: radial-gradient(circle, #ffffff 38%, transparent 44%) !important;
+  background-image: radial-gradient(circle, #ffffff 40%, transparent 45%) !important;
   background-repeat: no-repeat !important;
-  background-position: center !important;
+  background-position: center center !important;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
 }
 
-/* Clean reset for checkbox input element */
+/* Checkbox: SPAN visual element */
 .x-form-checkbox,
 .x-form-checkbox-default,
-.x-window .x-form-checkbox,
-.x-window-default input.x-form-checkbox,
-.x-form-type-checkbox input,
-input.x-form-checkbox {
+.x-window .x-form-checkbox {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
@@ -1119,12 +1126,12 @@ input.x-form-checkbox {
   vertical-align: middle !important;
   position: relative !important;
   flex-shrink: 0 !important;
+  box-sizing: border-box !important;
   transition: all 0.15s ease !important;
 }
 
 .x-form-checkbox:hover,
-.x-form-cb-wrap:hover .x-form-checkbox,
-.x-form-type-checkbox:hover input {
+.x-form-cb-wrap:hover .x-form-checkbox {
   border-color: #71717a !important;
   background-color: #222228 !important;
 }
@@ -1133,10 +1140,7 @@ input.x-form-checkbox {
 .x-form-checkbox.x-form-cb-checked,
 .x-form-cb-checked .x-form-checkbox,
 .x-form-checkbox-default.x-form-cb-checked,
-.x-form-cb-wrap.x-form-cb-checked .x-form-checkbox,
-.x-form-type-checkbox .x-form-cb-checked input,
-.x-form-type-checkbox.x-form-cb-checked input,
-.x-form-cb-checked input.x-form-checkbox {
+.x-form-cb-wrap.x-form-cb-checked .x-form-checkbox {
   border-color: #ffffff !important;
   background-color: #ffffff !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000000'%3E%3Cpath d='M13.485 3.515a1 1 0 0 1 0 1.414l-6.364 6.364a1 1 0 0 1-1.414 0l-3.182-3.182a1 1 0 1 1 1.414-1.414L6.414 9.172l5.657-5.657a1 1 0 0 1 1.414 0z'/%3E%3C/svg%3E") !important;
@@ -1145,7 +1149,7 @@ input.x-form-checkbox {
   background-size: 11px 11px !important;
 }
 
-/* Checkbox & Radio Labels ("Use CD/DVD disc image", etc.) */
+/* Checkbox & Radio Labels ("Use CD/DVD disc image", "Advanced", etc.) */
 .x-form-cb-label,
 .x-form-cb-label-default,
 .x-window .x-form-cb-label,
@@ -1155,7 +1159,7 @@ input.x-form-checkbox {
   font-size: 13px !important;
   font-weight: 400 !important;
   letter-spacing: -0.01em !important;
-  margin-left: 10px !important;
+  margin-left: 8px !important;
   padding: 0 !important;
   position: static !important;
   cursor: pointer !important;
@@ -1698,5 +1702,117 @@ div.pmx-hint,
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+/* ==========================================================================
+   VM / CT DETAIL HEADER & BADGE STYLING (Fixes oversized SVG icons)
+   ========================================================================== */
+.zes-server-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 24px !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+
+.zes-server-meta {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.zes-server-os-icon {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  background: #18181c !important;
+  border: 1px solid #272732 !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.zes-server-os-icon svg {
+  width: 24px !important;
+  height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  stroke: #ffffff !important;
+}
+
+.zes-server-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 4px !important;
+}
+
+.zes-server-name {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+.zes-server-specs-line {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  font-size: 13px !important;
+  color: #a1a1aa !important;
+}
+
+.zes-server-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+/* ==========================================================================
+   EMBEDDED TERMINAL & CONSOLE (In-app noVNC / Shell container)
+   ========================================================================== */
+.zes-embedded-terminal-wrapper {
+  background: #09090b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  height: calc(100vh - 200px) !important;
+  min-height: 540px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.zes-terminal-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 16px !important;
+  background: #141418 !important;
+  border-bottom: 1px solid #27272a !important;
+  flex-shrink: 0 !important;
+}
+
+.zes-terminal-body {
+  flex: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+  background: #000000 !important;
+}
+
+.zes-embedded-iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  background: #000000 !important;
+  display: block !important;
 }
 
