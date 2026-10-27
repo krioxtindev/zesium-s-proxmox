@@ -50,6 +50,13 @@ else
   sed -i '/<!-- ZESIUM-THEME-START -->/,/<!-- ZESIUM-THEME-END -->/d' "$TPL_FILE"
 fi
 
+NOVNC_TPL="/usr/share/novnc-pve/index.html.tpl"
+NOVNC_BACKUP="/usr/share/novnc-pve/index.html.tpl.zesium-backup"
+if [ -f "$NOVNC_BACKUP" ]; then
+  cp "$NOVNC_BACKUP" "$NOVNC_TPL"
+  rm -f "$NOVNC_BACKUP"
+fi
+
 # 2. Remove theme asset files
 echo -e "${GREEN}[2/3]${NC} Removing theme assets..."
 rm -f "${CSS_DIR}/fonts.css"

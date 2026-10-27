@@ -109,6 +109,18 @@ EOF
 sed -i "/<\/head>/i $(echo "$THEME_INJECTION" | sed 's/[\&/]/\\&/g' | tr '\n' '\a')" "$TPL_FILE"
 tr '\a' '\n' < "$TPL_FILE" > "${TPL_FILE}.tmp" && mv "${TPL_FILE}.tmp" "$TPL_FILE"
 
+# Patch noVNC template to expose UI and rfb instance for keystroke injection
+NOVNC_TPL="/usr/share/novnc-pve/index.html.tpl"
+NOVNC_BACKUP="/usr/share/novnc-pve/index.html.tpl.zesium-backup"
+if [ -f "$NOVNC_TPL" ]; then
+  if [ ! -f "$NOVNC_BACKUP" ]; then
+    cp "$NOVNC_TPL" "$NOVNC_BACKUP"
+  fi
+  if ! grep -q "window.UI = UI" "$NOVNC_TPL"; then
+    sed -i 's|import UI from "/novnc/app.js?ver=1.7.0-1";|import UI from "/novnc/app.js?ver=1.7.0-1"; window.UI = UI; setInterval(() => { if (UI \&\& UI.rfb) { window.rfb = UI.rfb; window.UI = UI; } }, 200);|' "$NOVNC_TPL"
+  fi
+fi
+
 # 5. Authorize local PC SSH key for passwordless direct deploy
 echo -e "${GREEN}[5/6]${NC} Configuring SSH access for local deploy..."
 mkdir -p /root/.ssh 2>/dev/null || true

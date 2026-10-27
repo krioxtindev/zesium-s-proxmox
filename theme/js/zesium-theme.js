@@ -980,14 +980,19 @@
         var win = iframe.contentWindow;
         var doc = iframe.contentDocument || (win && win.document);
 
-        // 1. Try xterm.js (Node Shell, LXC Console, Serial terminal)
-        if (win && win.term) {
-          if (typeof win.term.paste === 'function') {
+        // 1. Try injected noVNC bridge helper
+        if (win && typeof win._zesSendKeystrokes === 'function') {
+          success = win._zesSendKeystrokes(textToSend, withEnter);
+        }
+
+        // 2. Try xterm.js (Node Shell, LXC Console, Serial terminal)
+        if (!success && win && win.term) {
+          if (typeof win.term.send === 'function') {
+            win.term.send(textToSend + (withEnter ? '\r' : ''));
+            success = true;
+          } else if (typeof win.term.paste === 'function') {
             win.term.paste(textToSend);
             if (withEnter) win.term.send('\r');
-            success = true;
-          } else if (typeof win.term.send === 'function') {
-            win.term.send(textToSend + (withEnter ? '\r' : ''));
             success = true;
           } else if (typeof win.term.write === 'function') {
             win.term.write(textToSend + (withEnter ? '\r' : ''));
@@ -995,32 +1000,55 @@
           }
         }
 
-        // 2. Try noVNC RFB (QEMU / KVM console canvas)
+        // 3. Try direct noVNC RFB instance
         if (!success && win) {
-          var rfb = win.rfb || (win.UI && win.UI.rfb);
-          if (rfb) {
-            if (typeof rfb.sendString === 'function') {
-              rfb.sendString(textToSend + (withEnter ? '\n' : ''));
-              success = true;
-            } else if (typeof rfb.clipboardPasteFrom === 'function') {
-              rfb.clipboardPasteFrom(textToSend + (withEnter ? '\n' : ''));
-              success = true;
-            } else if (typeof rfb.sendKey === 'function') {
-              for (var i = 0; i < textToSend.length; i++) {
-                var code = textToSend.charCodeAt(i);
-                rfb.sendKey(code, null, 1);
-                rfb.sendKey(code, null, 0);
-              }
-              if (withEnter) {
-                rfb.sendKey(0xFF0D, null, 1);
-                rfb.sendKey(0xFF0D, null, 0);
-              }
-              success = true;
+          var rfb = (win.UI && win.UI.rfb) || win.rfb;
+          if (rfb && typeof rfb.sendKey === 'function') {
+            for (var i = 0; i < textToSend.length; i++) {
+              var code = textToSend.charCodeAt(i);
+              rfb.sendKey(code, null, true);
+              rfb.sendKey(code, null, false);
             }
+            if (withEnter) {
+              rfb.sendKey(0xFF0D, 'Enter', true);
+              rfb.sendKey(0xFF0D, 'Enter', false);
+            }
+            success = true;
           }
         }
 
-        // 3. Fallback: Dispatch to active xterm textarea
+        // 4. Try noVNC UI keyEvent or DOM dispatch on #noVNC_keyboardinput / canvas
+        if (!success && doc) {
+          var kbdInput = doc.getElementById('noVNC_keyboardinput');
+          if (win && win.UI && typeof win.UI.keyEvent === 'function') {
+            for (var j = 0; j < textToSend.length; j++) {
+              var chCode = textToSend.charCodeAt(j);
+              win.UI.keyEvent(chCode, null, true);
+              win.UI.keyEvent(chCode, null, false);
+            }
+            if (withEnter) {
+              win.UI.keyEvent(0xFF0D, 'Enter', true);
+              win.UI.keyEvent(0xFF0D, 'Enter', false);
+            }
+            success = true;
+          } else if (kbdInput) {
+            var target = doc.querySelector('canvas') || kbdInput;
+            for (var k = 0; k < textToSend.length; k++) {
+              var ch = textToSend[k];
+              var cCode = ch.charCodeAt(0);
+              target.dispatchEvent(new KeyboardEvent('keydown', { key: ch, charCode: cCode, keyCode: cCode, which: cCode, bubbles: true }));
+              target.dispatchEvent(new KeyboardEvent('keypress', { key: ch, charCode: cCode, keyCode: cCode, which: cCode, bubbles: true }));
+              target.dispatchEvent(new KeyboardEvent('keyup', { key: ch, charCode: cCode, keyCode: cCode, which: cCode, bubbles: true }));
+            }
+            if (withEnter) {
+              target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
+              target.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true }));
+            }
+            success = true;
+          }
+        }
+
+        // 5. Fallback: xterm helper textarea
         if (!success && doc) {
           var textarea = doc.querySelector('textarea.xterm-helper-textarea') || doc.querySelector('textarea');
           if (textarea) {
@@ -1032,17 +1060,9 @@
           }
         }
 
-        // 4. Fallback: noVNC clipboard widget input
-        if (doc) {
-          var noVncClip = doc.querySelector('#noVNC_clipboard_text');
-          if (noVncClip) {
-            noVncClip.value = textToSend + (withEnter ? '\n' : '');
-            noVncClip.dispatchEvent(new Event('change'));
-            if (win && win.UI && typeof win.UI.clipboardPaste === 'function') {
-              win.UI.clipboardPaste();
-              success = true;
-            }
-          }
+        // Ensure bridge is injected for noVNC if missing
+        if (doc && !doc.getElementById('zes-novnc-bridge') && (doc.getElementById('noVNC_container') || (doc.title && doc.title.includes('Console')))) {
+          Zesium.hookTerminalIframe(iframe);
         }
       } catch (err) {
         console.warn('[Zesium] Terminal command send note:', err);
@@ -1270,7 +1290,17 @@
       if (!iframe) return;
       try {
         var win = iframe.contentWindow;
-        // xterm.js keys
+        var doc = iframe.contentDocument || (win && win.document);
+
+        // 1. Try injected noVNC bridge helper
+        if (win && typeof win._zesSendKey === 'function') {
+          if (win._zesSendKey(keyName)) {
+            this.showToast('Sent ' + keyName.toUpperCase(), 'info');
+            return;
+          }
+        }
+
+        // 2. xterm.js keys (Node Shell, LXC, Serial)
         if (win && win.term && typeof win.term.send === 'function') {
           if (keyName === 'ctrl-c') win.term.send('\x03');
           else if (keyName === 'ctrl-l') win.term.send('\x0c');
@@ -1282,36 +1312,74 @@
           this.showToast('Sent ' + keyName.toUpperCase(), 'info');
           return;
         }
-        // noVNC keys
-        var rfb = win && (win.rfb || (win.UI && win.UI.rfb));
+
+        // 3. noVNC keys via live RFB instance
+        var rfb = (win && win.UI && win.UI.rfb) || (win && win.rfb);
         if (rfb && typeof rfb.sendKey === 'function') {
           if (keyName === 'ctrl-c') {
-            rfb.sendKey(0xFFE3, null, 1);
-            rfb.sendKey(0x0063, null, 1);
-            rfb.sendKey(0x0063, null, 0);
-            rfb.sendKey(0xFFE3, null, 0);
+            rfb.sendKey(0xFFE3, 'ControlLeft', true);
+            rfb.sendKey(0x0063, 'KeyC', true);
+            rfb.sendKey(0x0063, 'KeyC', false);
+            rfb.sendKey(0xFFE3, 'ControlLeft', false);
           } else if (keyName === 'ctrl-l') {
-            rfb.sendKey(0xFFE3, null, 1);
-            rfb.sendKey(0x006C, null, 1);
-            rfb.sendKey(0x006C, null, 0);
-            rfb.sendKey(0xFFE3, null, 0);
+            rfb.sendKey(0xFFE3, 'ControlLeft', true);
+            rfb.sendKey(0x006C, 'KeyL', true);
+            rfb.sendKey(0x006C, 'KeyL', false);
+            rfb.sendKey(0xFFE3, 'ControlLeft', false);
           } else if (keyName === 'ctrl-d') {
-            rfb.sendKey(0xFFE3, null, 1);
-            rfb.sendKey(0x0064, null, 1);
-            rfb.sendKey(0x0064, null, 0);
-            rfb.sendKey(0xFFE3, null, 0);
+            rfb.sendKey(0xFFE3, 'ControlLeft', true);
+            rfb.sendKey(0x0064, 'KeyD', true);
+            rfb.sendKey(0x0064, 'KeyD', false);
+            rfb.sendKey(0xFFE3, 'ControlLeft', false);
           } else if (keyName === 'tab') {
-            rfb.sendKey(0xFF09, null, 1);
-            rfb.sendKey(0xFF09, null, 0);
+            rfb.sendKey(0xFF09, 'Tab', true);
+            rfb.sendKey(0xFF09, 'Tab', false);
           } else if (keyName === 'esc') {
-            rfb.sendKey(0xFF1B, null, 1);
-            rfb.sendKey(0xFF1B, null, 0);
+            rfb.sendKey(0xFF1B, 'Escape', true);
+            rfb.sendKey(0xFF1B, 'Escape', false);
           } else if (keyName === 'enter') {
-            rfb.sendKey(0xFF0D, null, 1);
-            rfb.sendKey(0xFF0D, null, 0);
+            rfb.sendKey(0xFF0D, 'Enter', true);
+            rfb.sendKey(0xFF0D, 'Enter', false);
           }
           this.showToast('Sent ' + keyName.toUpperCase(), 'info');
           return;
+        }
+
+        // 4. Try noVNC UI keyEvent
+        if (win && win.UI && typeof win.UI.keyEvent === 'function') {
+          if (keyName === 'ctrl-c') {
+            win.UI.keyEvent(0xFFE3, 'ControlLeft', true);
+            win.UI.keyEvent(0x0063, 'KeyC', true);
+            win.UI.keyEvent(0x0063, 'KeyC', false);
+            win.UI.keyEvent(0xFFE3, 'ControlLeft', false);
+          } else if (keyName === 'tab') {
+            win.UI.keyEvent(0xFF09, 'Tab', true);
+            win.UI.keyEvent(0xFF09, 'Tab', false);
+          } else if (keyName === 'esc') {
+            win.UI.keyEvent(0xFF1B, 'Escape', true);
+            win.UI.keyEvent(0xFF1B, 'Escape', false);
+          }
+          this.showToast('Sent ' + keyName.toUpperCase(), 'info');
+          return;
+        }
+
+        // 5. DOM KeyboardEvent dispatch on canvas / input
+        if (doc) {
+          var target = doc.querySelector('canvas') || doc.getElementById('noVNC_keyboardinput');
+          if (target) {
+            if (keyName === 'ctrl-c') {
+              target.dispatchEvent(new KeyboardEvent('keydown', { key: 'c', ctrlKey: true, keyCode: 67, which: 67, bubbles: true }));
+              target.dispatchEvent(new KeyboardEvent('keyup', { key: 'c', ctrlKey: true, keyCode: 67, which: 67, bubbles: true }));
+            } else if (keyName === 'tab') {
+              target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', keyCode: 9, which: 9, bubbles: true }));
+              target.dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', keyCode: 9, which: 9, bubbles: true }));
+            } else if (keyName === 'esc') {
+              target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27, which: 27, bubbles: true }));
+              target.dispatchEvent(new KeyboardEvent('keyup', { key: 'Escape', keyCode: 27, which: 27, bubbles: true }));
+            }
+            this.showToast('Sent ' + keyName.toUpperCase(), 'info');
+            return;
+          }
         }
       } catch (e) {
         console.warn(e);
@@ -1377,49 +1445,155 @@
       }
     },
 
+    hookTerminalIframe: function (iframe) {
+      if (!iframe) return;
+      try {
+        var win = iframe.contentWindow;
+        var doc = iframe.contentDocument || (win && win.document);
+        if (!doc) return;
+        if (doc.getElementById('zes-novnc-bridge')) return;
+        var s = doc.createElement('script');
+        s.id = 'zes-novnc-bridge';
+        s.type = 'module';
+        s.textContent = `
+          try {
+            const scriptTag = Array.from(document.querySelectorAll('script[type="module"]')).find(el => el.src && el.src.includes('/novnc/'));
+            const src = scriptTag ? scriptTag.src : '/novnc/app.js?ver=1.7.0-1';
+            import(src).then(mod => {
+              const UI = mod.default || mod;
+              window.UI = UI;
+              window.rfb = UI.rfb;
+              setInterval(() => {
+                if (UI && UI.rfb) {
+                  window.rfb = UI.rfb;
+                  window.UI = UI;
+                }
+              }, 200);
+              window._zesSendKeystrokes = function(text, withEnter) {
+                const rfb = (window.UI && window.UI.rfb) || window.rfb;
+                if (!rfb) return false;
+                for (let i = 0; i < text.length; i++) {
+                  const code = text.charCodeAt(i);
+                  rfb.sendKey(code, null, true);
+                  rfb.sendKey(code, null, false);
+                }
+                if (withEnter) {
+                  rfb.sendKey(0xFF0D, 'Enter', true);
+                  rfb.sendKey(0xFF0D, 'Enter', false);
+                }
+                return true;
+              };
+              window._zesSendKey = function(keyName) {
+                const rfb = (window.UI && window.UI.rfb) || window.rfb;
+                if (!rfb) return false;
+                if (keyName === 'ctrl-c') {
+                  rfb.sendKey(0xFFE3, 'ControlLeft', true);
+                  rfb.sendKey(0x0063, 'KeyC', true);
+                  rfb.sendKey(0x0063, 'KeyC', false);
+                  rfb.sendKey(0xFFE3, 'ControlLeft', false);
+                } else if (keyName === 'ctrl-l') {
+                  rfb.sendKey(0xFFE3, 'ControlLeft', true);
+                  rfb.sendKey(0x006C, 'KeyL', true);
+                  rfb.sendKey(0x006C, 'KeyL', false);
+                  rfb.sendKey(0xFFE3, 'ControlLeft', false);
+                } else if (keyName === 'ctrl-d') {
+                  rfb.sendKey(0xFFE3, 'ControlLeft', true);
+                  rfb.sendKey(0x0064, 'KeyD', true);
+                  rfb.sendKey(0x0064, 'KeyD', false);
+                  rfb.sendKey(0xFFE3, 'ControlLeft', false);
+                } else if (keyName === 'tab') {
+                  rfb.sendKey(0xFF09, 'Tab', true);
+                  rfb.sendKey(0xFF09, 'Tab', false);
+                } else if (keyName === 'esc') {
+                  rfb.sendKey(0xFF1B, 'Escape', true);
+                  rfb.sendKey(0xFF1B, 'Escape', false);
+                } else if (keyName === 'enter') {
+                  rfb.sendKey(0xFF0D, 'Enter', true);
+                  rfb.sendKey(0xFF0D, 'Enter', false);
+                }
+                return true;
+              };
+            }).catch(e => {});
+          } catch(e) {}
+        `;
+        doc.head.appendChild(s);
+      } catch (e) {}
+    },
+
+    fetchServers: function (silent = false) {
+      return this.fetchLiveServers(silent);
+    },
+
+    fetchServerConfig: function (vmid, type) {
+      this.fetchServers();
+      if (State.currentView === 'server-detail') {
+        this.fetchServerDetails();
+      }
+    },
+
     openCloneWindow: function (vmid, node, type) {
-      if (window.Ext && Ext.create) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      var guestType = (type === 'lxc') ? 'lxc' : 'qemu';
+      if (window.Ext && Ext.ClassManager.get('PVE.window.Clone')) {
         try {
-          Ext.create('PVE.window.Clone', {
-            nodename: node || 'pve',
+          var win = Ext.create('PVE.window.Clone', {
+            nodename: nodename,
             vmid: parseInt(vmid, 10),
-            isLxc: type === 'lxc'
-          }).show();
+            guestType: guestType
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchServers());
           return;
         } catch (e) {
-          console.warn(e);
+          console.warn('Clone dialog error:', e);
         }
       }
       this.showToast('Opening Clone dialog...', 'info');
     },
 
     openMigrateWindow: function (vmid, node, type) {
-      if (window.Ext && Ext.create) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      var vmtype = (type === 'lxc') ? 'lxc' : 'qemu';
+      if (window.Ext && Ext.ClassManager.get('PVE.window.Migrate')) {
         try {
-          Ext.create('PVE.window.Migrate', {
-            nodename: node || 'pve',
+          var win = Ext.create('PVE.window.Migrate', {
+            nodename: nodename,
             vmid: parseInt(vmid, 10),
-            vmtype: type
-          }).show();
+            vmtype: vmtype
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchServers());
           return;
         } catch (e) {
-          console.warn(e);
+          console.warn('Migrate dialog error:', e);
         }
       }
       this.showToast('Opening Migration dialog...', 'info');
     },
 
     openAddFirewallRuleWindow: function (vmid, node, type) {
-      if (window.Ext && Ext.create) {
+      var nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      var guestType = (type === 'lxc') ? 'lxc' : 'qemu';
+      var baseUrl = vmid ? ('/nodes/' + nodename + '/' + guestType + '/' + vmid + '/firewall/rules') : ('/nodes/' + nodename + '/firewall/rules');
+      var refsUrl = vmid ? ('/nodes/' + nodename + '/' + guestType + '/' + vmid + '/firewall/refs') : ('/cluster/firewall/refs');
+      if (window.Ext && Ext.ClassManager.get('PVE.FirewallRuleEdit')) {
         try {
-          var baseUrl = vmid ? ('/nodes/' + node + '/' + type + '/' + vmid + '/firewall/rules') : ('/nodes/' + (node || 'pve') + '/firewall/rules');
-          Ext.create('PVE.FirewallRuleEdit', {
+          var win = Ext.create('PVE.FirewallRuleEdit', {
             base_url: baseUrl,
+            list_refs_url: refsUrl,
             isCreate: true
-          }).show();
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => {
+            if (vmid) Zesium.fetchFirewallRules();
+            else Zesium.fetchNodeFirewall();
+          });
           return;
         } catch (e) {
-          console.warn(e);
+          console.warn('FirewallRuleEdit error:', e);
         }
       }
       this.showToast('Opening Firewall Rule builder...', 'info');
@@ -1577,7 +1751,7 @@
     },
 
     openHardwareEdit: function (device, vmid, nodename, type) {
-      const node = nodename || (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
       const isLxc = type === 'lxc';
 
       try {
@@ -1590,15 +1764,15 @@
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.ProcessorEdit')) {
             win = Ext.create('PVE.qemu.ProcessorEdit', { nodename: node, vmid: vmid, autoShow: true });
           }
-        } else if (device.startsWith('ide') || device === 'cdrom') {
+        } else if (device && (device.startsWith('ide') || device === 'cdrom')) {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.CDEdit')) {
             win = Ext.create('PVE.qemu.CDEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
           }
-        } else if (device.startsWith('net')) {
+        } else if (device && device.startsWith('net')) {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.NetworkEdit')) {
             win = Ext.create('PVE.qemu.NetworkEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
           }
-        } else if (device.startsWith('scsi') || device.startsWith('virtio') || device.startsWith('sata') || device.startsWith('rootfs')) {
+        } else if (device && (device.startsWith('scsi') || device.startsWith('virtio') || device.startsWith('sata') || device.startsWith('rootfs'))) {
           if (!isLxc && Ext.ClassManager.get('PVE.qemu.HDEdit')) {
             win = Ext.create('PVE.qemu.HDEdit', { nodename: node, vmid: vmid, configname: device, autoShow: true });
           }
@@ -1614,11 +1788,11 @@
         console.warn('Edit dialog error:', e);
       }
 
-      Zesium.openProxmoxConfigWindow(vmid, node, type);
+      Zesium.openProxmoxHardwareWindow(vmid, node, type);
     },
 
     openAddHardwareWindow: function (type, vmid, nodename, vmtype) {
-      const node = nodename || (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
       const isLxc = vmtype === 'lxc';
       let win = null;
 
@@ -1640,23 +1814,65 @@
         console.warn('Add hardware error:', e);
       }
 
+      Zesium.openProxmoxHardwareWindow(vmid, node, vmtype);
+    },
+
+    openProxmoxHardwareWindow: function (vmid, nodename, vmtype) {
+      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      const isLxc = vmtype === 'lxc';
+      const hwCls = isLxc ? 'PVE.lxc.RessourceView' : 'PVE.qemu.HardwareView';
+
+      if (window.Ext && Ext.ClassManager.get(hwCls)) {
+        try {
+          const hwView = Ext.create(hwCls, {
+            nodename: node,
+            vmid: vmid
+          });
+          const wrap = Ext.create('Ext.window.Window', {
+            title: (isLxc ? 'LXC ' : 'VM ') + vmid + ' Hardware & Resources',
+            width: 900,
+            height: 520,
+            layout: 'fit',
+            modal: true,
+            items: [hwView]
+          });
+          wrap.show();
+          wrap.center();
+          wrap.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
+          return;
+        } catch (e) {
+          console.warn('Hardware window error:', e);
+        }
+      }
       Zesium.openProxmoxConfigWindow(vmid, node, vmtype);
     },
 
     openProxmoxConfigWindow: function (vmid, nodename, vmtype) {
-      const node = nodename || (window.Proxmox && Proxmox.NodeName) ? Proxmox.NodeName : 'pve';
+      const node = nodename || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
       const isLxc = vmtype === 'lxc';
       const clsName = isLxc ? 'PVE.lxc.Config' : 'PVE.qemu.Config';
 
       if (window.Ext && Ext.ClassManager.get(clsName)) {
-        const win = Ext.create(clsName, {
-          nodename: node,
-          vmid: vmid,
-          autoShow: true
-        });
-        win.show();
-        win.center();
-        win.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
+        try {
+          const panel = Ext.create(clsName, {
+            nodename: node,
+            vmid: vmid,
+            pveSelNode: { data: { nodename: node, vmid: vmid, type: isLxc ? 'lxc' : 'qemu' } }
+          });
+          const wrap = Ext.create('Ext.window.Window', {
+            title: (isLxc ? 'LXC ' : 'VM ') + vmid + ' Configuration',
+            width: 950,
+            height: 600,
+            layout: 'fit',
+            modal: true,
+            items: [panel]
+          });
+          wrap.show();
+          wrap.center();
+          wrap.on('destroy', () => Zesium.fetchServerConfig(vmid, vmtype));
+        } catch (e) {
+          console.warn('Proxmox config window error:', e);
+        }
       }
     },
 
@@ -2124,16 +2340,67 @@
       }
     },
 
-    openDiskSmartWindow: function (disk) {
+    openDiskSmartWindow: function (disk, node) {
+      const nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      const devName = (disk || '').replace('/dev/', '');
       if (window.Ext && Ext.ClassManager.get('Proxmox.window.DiskSmart')) {
-        const win = Ext.create('Proxmox.window.DiskSmart', {
-          nodename: 'pve',
-          disk: disk,
-          autoShow: true
-        });
-        win.show();
-        win.center();
+        try {
+          const win = Ext.create('Proxmox.window.DiskSmart', {
+            nodename: nodename,
+            dev: devName,
+            baseurl: '/nodes/' + nodename + '/disks/smart',
+            autoShow: true
+          });
+          win.show();
+          win.center();
+          return;
+        } catch (e) {
+          console.warn('DiskSmart error:', e);
+        }
       }
+      this.showToast('Unable to open SMART monitor for ' + disk, 'warning');
+    },
+
+    openCertificatesWindow: function (node) {
+      const nodename = node || (window.Proxmox && Proxmox.NodeName ? Proxmox.NodeName : 'pve');
+      if (window.Ext && Ext.ClassManager.get('PVE.node.Certificates')) {
+        try {
+          const certView = Ext.create('PVE.node.Certificates', {
+            nodename: nodename
+          });
+          const wrap = Ext.create('Ext.window.Window', {
+            title: 'Node Certificates & ACME (' + nodename + ')',
+            width: 900,
+            height: 550,
+            layout: 'fit',
+            modal: true,
+            items: [certView]
+          });
+          wrap.show();
+          wrap.center();
+          return;
+        } catch (e) {
+          console.warn('Certificates window error:', e);
+        }
+      }
+      this.showToast('Opening Certificates manager...', 'info');
+    },
+
+    openAddBackupScheduleWindow: function () {
+      if (window.Ext && Ext.ClassManager.get('PVE.dc.BackupEdit')) {
+        try {
+          const win = Ext.create('PVE.dc.BackupEdit', {
+            isCreate: true
+          });
+          win.show();
+          win.center();
+          win.on('destroy', () => Zesium.fetchBackupJobs());
+          return;
+        } catch (e) {
+          console.warn('BackupEdit error:', e);
+        }
+      }
+      this.showToast('Opening Backup Schedule builder...', 'info');
     },
 
     rebootNode: function () {
@@ -2936,7 +3203,8 @@
                 <iframe id="zes-vm-console-iframe"
                         src="/?console=${s.type === 'lxc' ? 'lxc' : 'kvm'}&${(State.consoleMode === 'xtermjs' || (!State.consoleMode && s.type === 'lxc')) ? 'xtermjs=1' : 'novnc=1'}&node=${s.node || 'pve'}&vmid=${s.vmid}"
                         class="zes-embedded-iframe"
-                        allowfullscreen></iframe>
+                        allowfullscreen
+                        onload="Zesium.hookTerminalIframe(this)"></iframe>
               </div>
             </div>
           `: State.selectedTab === 'summary' ? `
@@ -3388,7 +3656,7 @@
             </div>
 
             <div class="zes-terminal-body">
-              <iframe id="zes-node-shell-iframe" src="/?console=shell&${(State.nodeConsoleMode === 'novnc') ? 'novnc=1' : 'xtermjs=1'}&node=${node}" class="zes-embedded-iframe" allowfullscreen></iframe>
+              <iframe id="zes-node-shell-iframe" src="/?console=shell&${(State.nodeConsoleMode === 'novnc') ? 'novnc=1' : 'xtermjs=1'}&node=${node}" class="zes-embedded-iframe" allowfullscreen onload="Zesium.hookTerminalIframe(this)"></iframe>
             </div>
           </div>
         `;
@@ -4061,7 +4329,7 @@
                 Status: <span class="zes-status-dot running"></span> <strong style="color: #10b981;">Active</strong>
               </div>
               <div style="margin-top: 14px;">
-                <button class="zes-action-btn" onclick="Zesium.openNodeShell()">${Icons.certificates} Order ACME Cert</button>
+                <button class="zes-action-btn" onclick="Zesium.openCertificatesWindow()">${Icons.certificates} Order ACME Cert</button>
               </div>
             </div>
           </div>
@@ -4372,7 +4640,7 @@
               <p class="zes-page-subtitle">Automated hypervisor scheduled backup jobs (vzdump) for disaster recovery</p>
             </div>
             <div style="display: flex; gap: 8px;">
-              <button class="zes-btn-primary" onclick="if(window.Ext) Ext.create('PVE.dc.BackupEdit', {}).show();">
+              <button class="zes-btn-primary" onclick="Zesium.openAddBackupScheduleWindow()">
                 + Add Backup Schedule
               </button>
               <button class="zes-action-btn" onclick="Zesium.fetchBackupJobs()">
