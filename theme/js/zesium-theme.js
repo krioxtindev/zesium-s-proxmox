@@ -172,7 +172,7 @@
       } catch (e) {}
     }
 
-    // Hook Ext.form.field.ComboBox.prototype.expand so dropdown pickers are never hidden behind windows
+    // Hook Ext.form.field.ComboBox to guarantee dropdowns appear directly under arrows and auto-expand/auto-select
     if (window.Ext && Ext.form && Ext.form.field && Ext.form.field.ComboBox) {
       try {
         if (!Ext.form.field.ComboBox.prototype.__zesExpandPatched) {
@@ -181,8 +181,9 @@
           Ext.form.field.ComboBox.prototype.expand = function () {
             var ret = origExpand.apply(this, arguments);
             try {
-              var picker = this.getPicker();
-              var win = this.up('window');
+              var me = this;
+              var picker = me.getPicker();
+              var win = me.up('window');
               if (picker) {
                 var targetZ = 110050;
                 if (win && win.el && win.el.dom) {
@@ -195,16 +196,81 @@
                   layer.style.setProperty('display', 'block', 'important');
                   layer.style.setProperty('visibility', 'visible', 'important');
                   layer.style.setProperty('opacity', '1', 'important');
+
+                  // Align DIRECTLY below the combobox trigger wrap (input field + arrow trigger)
+                  var wrap = me.triggerWrap || me.inputEl || me.el;
+                  if (wrap && wrap.dom) {
+                    var wrapRect = wrap.dom.getBoundingClientRect();
+                    var pickerW = (picker.getWidth && picker.getWidth()) || layer.offsetWidth || 500;
+                    var pickerH = (picker.getHeight && picker.getHeight()) || layer.offsetHeight || 200;
+
+                    var left = wrapRect.left;
+                    if (left + pickerW > (window.innerWidth || 1920) - 10) {
+                      left = Math.max(10, (window.innerWidth || 1920) - pickerW - 10);
+                    }
+                    var top = wrapRect.bottom + 2;
+                    if (top + pickerH > (window.innerHeight || 1080) - 10 && wrapRect.top > pickerH + 10) {
+                      top = wrapRect.top - pickerH - 2;
+                    }
+
+                    layer.style.setProperty('position', 'fixed', 'important');
+                    layer.style.setProperty('left', Math.floor(left) + 'px', 'important');
+                    layer.style.setProperty('top', Math.floor(top) + 'px', 'important');
+                  }
                 }
                 if (picker.el && picker.el.dom) {
                   picker.el.dom.style.setProperty('z-index', targetZ.toString(), 'important');
                 }
               }
             } catch (e) {
-              console.warn('Picker z-index error:', e);
+              console.warn('Picker z-index/alignment error:', e);
             }
             return ret;
           };
+        }
+
+        // Auto-expand whenever clicking or focusing the field
+        if (!Ext.form.field.ComboBox.prototype.__zesFocusPatched) {
+          Ext.form.field.ComboBox.prototype.__zesFocusPatched = true;
+          Ext.form.field.ComboBox.prototype.onFocus = Ext.Function.createSequence(
+            Ext.form.field.ComboBox.prototype.onFocus,
+            function () {
+              var me = this;
+              if (!me.isExpanded && !me.readOnly && !me.disabled) {
+                setTimeout(function () {
+                  if (!me.isExpanded && !me.isDestroyed) me.expand();
+                }, 10);
+              }
+            }
+          );
+        }
+
+        // Auto-select first ISO image in Proxmox FileSelector
+        if (Ext.ClassManager && Ext.ClassManager.get('PVE.form.FileSelector')) {
+          var PVEFileSelector = Ext.ClassManager.get('PVE.form.FileSelector');
+          if (!PVEFileSelector.prototype.__zesAutoSelectPatched) {
+            PVEFileSelector.prototype.__zesAutoSelectPatched = true;
+            var origSetStorage = PVEFileSelector.prototype.setStorage;
+            PVEFileSelector.prototype.setStorage = function (storage, nodename) {
+              var ret = origSetStorage.apply(this, arguments);
+              var me = this;
+              if (me.store && !me.__zesAutoLoadHooked) {
+                me.__zesAutoLoadHooked = true;
+                me.store.on('load', function (s, records) {
+                  if (!me.getValue() && records && records.length > 0) {
+                    var first = records[0];
+                    var val = first.get('volid') || first.get(me.valueField);
+                    if (val) {
+                      me.setValue(val);
+                      me.fireEvent('select', me, first);
+                      if (me.validate) me.validate();
+                    }
+                  }
+                });
+              }
+              return ret;
+            };
+          }
         }
       } catch (e) {}
     }
@@ -669,6 +735,25 @@
             l.style.setProperty('z-index', '110000', 'important');
           }
         });
+
+        // Auto-select ISO image if storage is loaded and ISO is empty
+        if (window.Ext && Ext.ComponentQuery) {
+          const isoCombos = Ext.ComponentQuery.query('pveFileSelector');
+          isoCombos.forEach(c => {
+            if (c.isVisible && c.isVisible() && !c.getValue()) {
+              const store = c.getStore && c.getStore();
+              if (store && store.getCount() > 0) {
+                const rec = store.getAt(0);
+                const val = rec.get('volid') || rec.get(c.valueField);
+                if (val) {
+                  c.setValue(val);
+                  c.fireEvent('select', c, rec);
+                  if (c.validate) c.validate();
+                }
+              }
+            }
+          });
+        }
 
         // Center any newly displayed ExtJS windows in the workspace
         const activeWindows = document.querySelectorAll('.x-window:not([data-user-moved="true"])');
