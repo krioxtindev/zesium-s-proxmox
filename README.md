@@ -88,4 +88,4 @@ zesium-s-proxmox/
 
 ---
 
-© 2026 Zesium / Martin Šintler. All rights reserved.
+© 2026 Zesium / Krioxtin. All rights reserved.
