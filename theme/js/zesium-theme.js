@@ -52,10 +52,19 @@
     refresh: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>`,
     logout: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
     shutdown: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>`,
-    snapshot: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-    firewall: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
-    cloudinit: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`,
-    options: `<svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`
+    snapshot: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    firewall: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    cloudinit: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>`,
+    options: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    clone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`,
+    migrate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>`,
+    services: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    sendCmd: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`,
+    paste: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>`,
+    keyboard: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>`,
+    fullscreen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`,
+    ha: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+    monitor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>`
   };
 
   // State Management - 100% Real Live Proxmox VE Data
@@ -84,7 +93,18 @@
     users: [],
     tasks: [],
     snapshots: [],
-    firewallRules: []
+    firewallRules: [],
+    services: [],
+    nodeFirewall: [],
+    haStatus: null,
+    replicationJobs: [],
+    backupJobs: [],
+    vmTasks: [],
+    qemuMonitorLog: [],
+    consoleMode: 'auto',
+    nodeConsoleMode: 'xtermjs',
+    guestIPs: [],
+    serverNotes: ''
   };
 
   // Suppress "No valid subscription" nag
@@ -886,6 +906,10 @@
       else if (view === 'time') this.fetchTime();
       else if (view === 'users') this.fetchUsers();
       else if (view === 'tasks') this.fetchTasks();
+      else if (view === 'services') this.fetchServices();
+      else if (view === 'node-firewall') this.fetchNodeFirewall();
+      else if (view === 'ha') this.fetchHA();
+      else if (view === 'backup-jobs') this.fetchBackupJobs();
     },
 
     setServerTab: function (tab) {
@@ -899,7 +923,506 @@
         this.fetchBackups();
       } else if (tab === 'firewall') {
         this.fetchFirewallRules();
+      } else if (tab === 'tasks') {
+        this.fetchVMTasks();
       }
+    },
+
+    // Interactive Terminal Paste & Command Automation Bar
+    sendTerminalCommand: function (iframeId, cmd, withEnter) {
+      if (withEnter === undefined) withEnter = true;
+      var input = document.getElementById(iframeId + '-cmd-input');
+      var textToSend = cmd !== undefined ? cmd : (input ? input.value : '');
+      if (textToSend === undefined || textToSend === null || textToSend === '') {
+        return false;
+      }
+
+      // If multi-line, run sequentially line-by-line with safe pacing
+      var lines = textToSend.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(function (l) { return l.trim().length > 0; });
+      if (lines.length > 1) {
+        var self = this;
+        var idx = 0;
+        self.showToast('Executing ' + lines.length + ' commands...', 'info');
+        function sendLine() {
+          if (idx >= lines.length) {
+            self.showToast('Multi-line script execution finished (' + lines.length + ' lines)', 'success');
+            return;
+          }
+          self.sendTerminalSingleCommand(iframeId, lines[idx], true);
+          idx++;
+          setTimeout(sendLine, 120);
+        }
+        sendLine();
+        if (input) input.value = '';
+        return true;
+      }
+
+      return this.sendTerminalSingleCommand(iframeId, textToSend, withEnter);
+    },
+
+    sendTerminalSingleCommand: function (iframeId, textToSend, withEnter) {
+      var iframe = document.getElementById(iframeId);
+      if (!iframe) {
+        this.showToast('Terminal session not found', 'error');
+        return false;
+      }
+      var input = document.getElementById(iframeId + '-cmd-input');
+
+      // Maintain session history
+      window._zesCmdHistory = window._zesCmdHistory || [];
+      if (textToSend.trim() && window._zesCmdHistory[window._zesCmdHistory.length - 1] !== textToSend) {
+        window._zesCmdHistory.push(textToSend);
+      }
+      window._zesCmdHistoryIndex = window._zesCmdHistory.length;
+
+      var success = false;
+      try {
+        var win = iframe.contentWindow;
+        var doc = iframe.contentDocument || (win && win.document);
+
+        // 1. Try xterm.js (Node Shell, LXC Console, Serial terminal)
+        if (win && win.term) {
+          if (typeof win.term.paste === 'function') {
+            win.term.paste(textToSend);
+            if (withEnter) win.term.send('\r');
+            success = true;
+          } else if (typeof win.term.send === 'function') {
+            win.term.send(textToSend + (withEnter ? '\r' : ''));
+            success = true;
+          } else if (typeof win.term.write === 'function') {
+            win.term.write(textToSend + (withEnter ? '\r' : ''));
+            success = true;
+          }
+        }
+
+        // 2. Try noVNC RFB (QEMU / KVM console canvas)
+        if (!success && win) {
+          var rfb = win.rfb || (win.UI && win.UI.rfb);
+          if (rfb) {
+            if (typeof rfb.sendString === 'function') {
+              rfb.sendString(textToSend + (withEnter ? '\n' : ''));
+              success = true;
+            } else if (typeof rfb.clipboardPasteFrom === 'function') {
+              rfb.clipboardPasteFrom(textToSend + (withEnter ? '\n' : ''));
+              success = true;
+            } else if (typeof rfb.sendKey === 'function') {
+              for (var i = 0; i < textToSend.length; i++) {
+                var code = textToSend.charCodeAt(i);
+                rfb.sendKey(code, null, 1);
+                rfb.sendKey(code, null, 0);
+              }
+              if (withEnter) {
+                rfb.sendKey(0xFF0D, null, 1);
+                rfb.sendKey(0xFF0D, null, 0);
+              }
+              success = true;
+            }
+          }
+        }
+
+        // 3. Fallback: Dispatch to active xterm textarea
+        if (!success && doc) {
+          var textarea = doc.querySelector('textarea.xterm-helper-textarea') || doc.querySelector('textarea');
+          if (textarea) {
+            textarea.focus();
+            if (doc.execCommand) {
+              doc.execCommand('insertText', false, textToSend + (withEnter ? '\n' : ''));
+              success = true;
+            }
+          }
+        }
+
+        // 4. Fallback: noVNC clipboard widget input
+        if (doc) {
+          var noVncClip = doc.querySelector('#noVNC_clipboard_text');
+          if (noVncClip) {
+            noVncClip.value = textToSend + (withEnter ? '\n' : '');
+            noVncClip.dispatchEvent(new Event('change'));
+            if (win && win.UI && typeof win.UI.clipboardPaste === 'function') {
+              win.UI.clipboardPaste();
+              success = true;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[Zesium] Terminal command send note:', err);
+      }
+
+      if (input && input.value === textToSend) input.value = '';
+      this.showToast('Sent: ' + (textToSend.length > 25 ? textToSend.substring(0, 25) + '...' : textToSend), 'success');
+      return true;
+    },
+
+    openScriptRunnerModal: function (iframeId) {
+      var existing = document.getElementById('zes-script-runner-modal');
+      if (existing) existing.remove();
+
+      var overlay = document.createElement('div');
+      overlay.id = 'zes-script-runner-modal';
+      overlay.className = 'zes-script-modal-overlay';
+      overlay.innerHTML = `
+        <div class="zes-script-modal">
+          <div class="zes-script-modal-header">
+            <div class="zes-script-modal-title">
+              ${Icons.keyboard || Icons.shell}
+              <span>Run Script &amp; Multi-line Commands in Console</span>
+            </div>
+            <button class="zes-action-btn" style="padding: 4px 8px; font-size: 14px;" onclick="document.getElementById('zes-script-runner-modal').remove()">✕</button>
+          </div>
+          <div class="zes-script-modal-body">
+            <div style="font-size: 13px; color: #a1a1aa;">
+              Paste multi-line bash commands, deployment snippets, or configuration scripts below. Each command will be executed sequentially with safe delay.
+            </div>
+            <div class="zes-preset-chips-wrap">
+              <span style="font-size: 11px; color: #71717a; text-transform: uppercase; font-weight: 600;">Presets:</span>
+              <button class="zes-preset-chip" onclick="document.getElementById('zes-script-textarea').value = 'apt update && apt upgrade -y'">apt update &amp; upgrade</button>
+              <button class="zes-preset-chip" onclick="document.getElementById('zes-script-textarea').value = 'ip a\nip route\ncat /etc/resolv.conf'">Network Info</button>
+              <button class="zes-preset-chip" onclick="document.getElementById('zes-script-textarea').value = 'df -h\nfree -m\nuptime'">Disk &amp; RAM Check</button>
+              <button class="zes-preset-chip" onclick="document.getElementById('zes-script-textarea').value = 'systemctl status\njournalctl -xe -n 30'">Service Health</button>
+              <button class="zes-preset-chip" onclick="document.getElementById('zes-script-textarea').value = 'curl -fsSL https://get.docker.com | sh'">Install Docker</button>
+              <button class="zes-preset-chip" onclick="document.getElementById('zes-script-textarea').value = 'apt autoremove -y && apt clean'">Clean System</button>
+            </div>
+            <textarea id="zes-script-textarea"
+                      class="zes-script-textarea"
+                      placeholder="#!/usr/bin/env bash&#10;# Paste your multi-line shell commands here&#10;apt update -y&#10;systemctl status pveproxy&#10;df -h"></textarea>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 12px; color: #a1a1aa;">Sequential pacing active (120ms delay per line)</span>
+              <button class="zes-action-btn" style="font-size: 11px; padding: 3px 8px;" onclick="document.getElementById('zes-script-textarea').value = ''">
+                Clear Text
+              </button>
+            </div>
+          </div>
+          <div class="zes-script-modal-footer">
+            <button class="zes-action-btn" onclick="document.getElementById('zes-script-runner-modal').remove()">
+              Cancel
+            </button>
+            <button class="zes-btn-primary" onclick="
+              var txt = document.getElementById('zes-script-textarea').value;
+              if (txt && txt.trim()) {
+                document.getElementById('zes-script-runner-modal').remove();
+                Zesium.sendTerminalCommand('${iframeId}', txt, true);
+              } else {
+                Zesium.showToast('Please paste a script first', 'warning');
+              }
+            ">
+              ${Icons.start} 🚀 Run Script in Console
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    },
+
+    setConsoleMode: function (mode) {
+      State.consoleMode = mode;
+      this.render();
+      this.showToast('Console mode switched to ' + mode, 'info');
+    },
+
+    setNodeConsoleMode: function (mode) {
+      State.nodeConsoleMode = mode;
+      this.render();
+      this.showToast('Node shell switched to ' + mode, 'info');
+    },
+
+    resetServer: function (id) {
+      var s = State.servers.find(function (srv) { return srv.id === id; });
+      if (!s) return;
+      if (!confirm('Force reset ' + s.name + ' (' + s.vmid + ')?\nGuest operating system will restart immediately.')) return;
+      var self = this;
+      self.apiCall('/nodes/' + s.node + '/' + s.type + '/' + s.vmid + '/status/reset', 'POST', {}, function () {
+        self.showToast('Reset signal sent to ' + s.name, 'warning');
+        self.fetchServers();
+      });
+    },
+
+    suspendServer: function (id) {
+      var s = State.servers.find(function (srv) { return srv.id === id; });
+      if (!s) return;
+      var self = this;
+      self.apiCall('/nodes/' + s.node + '/' + s.type + '/' + s.vmid + '/status/suspend', 'POST', {}, function () {
+        self.showToast('Suspending ' + s.name + '...', 'info');
+        self.fetchServers();
+      });
+    },
+
+    resumeServer: function (id) {
+      var s = State.servers.find(function (srv) { return srv.id === id; });
+      if (!s) return;
+      var self = this;
+      self.apiCall('/nodes/' + s.node + '/' + s.type + '/' + s.vmid + '/status/resume', 'POST', {}, function () {
+        self.showToast('Resuming ' + s.name + '...', 'success');
+        self.fetchServers();
+      });
+    },
+
+    convertToTemplate: function (vmid, node, type) {
+      if (!confirm('Are you sure you want to convert ' + (type || 'guest').toUpperCase() + ' ' + vmid + ' into a Template?\n\nThis guest will be locked as a read-only template and cannot be powered on directly.')) {
+        return;
+      }
+      var self = this;
+      self.apiCall('/nodes/' + (node || 'pve') + '/' + (type || 'qemu') + '/' + vmid + '/template', 'POST', {}, function () {
+        self.showToast('Converted guest ' + vmid + ' to Template', 'success');
+        self.fetchServers();
+      });
+    },
+
+    openAddHardwareWindow: function (deviceType, vmid, node, type) {
+      if (window.Ext && Ext.create) {
+        try {
+          if (deviceType === 'disk') {
+            if (type === 'lxc') {
+              Ext.create('PVE.lxc.MPAdd', { nodename: node || 'pve', vmid: parseInt(vmid, 10) }).show();
+            } else {
+              Ext.create('PVE.qemu.HDAdd', { nodename: node || 'pve', vmid: parseInt(vmid, 10) }).show();
+            }
+            return;
+          } else if (deviceType === 'network') {
+            if (type === 'lxc') {
+              Ext.create('PVE.lxc.NetworkEdit', { nodename: node || 'pve', vmid: parseInt(vmid, 10), isCreate: true }).show();
+            } else {
+              Ext.create('PVE.qemu.NetworkEdit', { nodename: node || 'pve', vmid: parseInt(vmid, 10), isCreate: true }).show();
+            }
+            return;
+          } else if (deviceType === 'cdrom') {
+            Ext.create('PVE.qemu.CDEdit', { nodename: node || 'pve', vmid: parseInt(vmid, 10), isCreate: true }).show();
+            return;
+          }
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      this.openProxmoxConfigWindow(vmid, node, type);
+    },
+
+    openEditNotesWindow: function (vmid, node, type, currentNotes) {
+      var existing = document.getElementById('zes-notes-modal');
+      if (existing) existing.remove();
+
+      var overlay = document.createElement('div');
+      overlay.id = 'zes-notes-modal';
+      overlay.className = 'zes-script-modal-overlay';
+      overlay.innerHTML = `
+        <div class="zes-script-modal" style="max-width: 600px;">
+          <div class="zes-script-modal-header">
+            <div class="zes-script-modal-title">
+              ${Icons.server}
+              <span>Edit Notes for VMID ${vmid}</span>
+            </div>
+            <button class="zes-action-btn" style="padding: 4px 8px; font-size: 14px;" onclick="document.getElementById('zes-notes-modal').remove()">✕</button>
+          </div>
+          <div class="zes-script-modal-body">
+            <div style="font-size: 13px; color: #a1a1aa;">
+              Enter documentation, IP addresses, credentials, or administrative comments for this virtual server.
+            </div>
+            <textarea id="zes-notes-input"
+                      class="zes-script-textarea"
+                      style="height: 160px;"
+                      placeholder="e.g. Production Web Server | IP: 192.168.1.100 | Contact: admin@zesium.xyz">${currentNotes || (State.serverConfig && State.serverConfig.description) || ''}</textarea>
+          </div>
+          <div class="zes-script-modal-footer">
+            <button class="zes-action-btn" onclick="document.getElementById('zes-notes-modal').remove()">
+              Cancel
+            </button>
+            <button class="zes-btn-primary" onclick="
+              var notes = document.getElementById('zes-notes-input').value;
+              document.getElementById('zes-notes-modal').remove();
+              Zesium.saveNotes('${vmid}', '${node}', '${type}', notes);
+            ">
+              Save Notes
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    },
+
+    saveNotes: function (vmid, node, type, notes) {
+      var self = this;
+      self.apiCall('/nodes/' + (node || 'pve') + '/' + (type || 'qemu') + '/' + vmid + '/config', 'PUT', { description: notes }, function () {
+        self.showToast('Notes updated for VMID ' + vmid, 'success');
+        self.fetchServerDetails();
+      });
+    },
+
+    rebootNode: function (node) {
+      if (!confirm('Are you sure you want to REBOOT hypervisor host ' + (node || 'pve') + '?\nAll running guests on this host will restart.')) {
+        return;
+      }
+      var self = this;
+      self.apiCall('/nodes/' + (node || 'pve') + '/status/reboot', 'POST', {}, function () {
+        self.showToast('Reboot initiated for node ' + (node || 'pve'), 'warning');
+      });
+    },
+
+    shutdownNode: function (node) {
+      if (!confirm('Are you sure you want to SHUTDOWN hypervisor host ' + (node || 'pve') + '?\nAll virtual servers will power off.')) {
+        return;
+      }
+      var self = this;
+      self.apiCall('/nodes/' + (node || 'pve') + '/status/shutdown', 'POST', {}, function () {
+        self.showToast('Shutdown initiated for node ' + (node || 'pve'), 'error');
+      });
+    },
+
+    sendTerminalKey: function (iframeId, keyName) {
+      var iframe = document.getElementById(iframeId);
+      if (!iframe) return;
+      try {
+        var win = iframe.contentWindow;
+        // xterm.js keys
+        if (win && win.term && typeof win.term.send === 'function') {
+          if (keyName === 'ctrl-c') win.term.send('\x03');
+          else if (keyName === 'ctrl-l') win.term.send('\x0c');
+          else if (keyName === 'ctrl-d') win.term.send('\x04');
+          else if (keyName === 'ctrl-z') win.term.send('\x1a');
+          else if (keyName === 'tab') win.term.send('\t');
+          else if (keyName === 'enter') win.term.send('\r');
+          else if (keyName === 'esc') win.term.send('\x1b');
+          this.showToast('Sent ' + keyName.toUpperCase(), 'info');
+          return;
+        }
+        // noVNC keys
+        var rfb = win && (win.rfb || (win.UI && win.UI.rfb));
+        if (rfb && typeof rfb.sendKey === 'function') {
+          if (keyName === 'ctrl-c') {
+            rfb.sendKey(0xFFE3, null, 1);
+            rfb.sendKey(0x0063, null, 1);
+            rfb.sendKey(0x0063, null, 0);
+            rfb.sendKey(0xFFE3, null, 0);
+          } else if (keyName === 'ctrl-l') {
+            rfb.sendKey(0xFFE3, null, 1);
+            rfb.sendKey(0x006C, null, 1);
+            rfb.sendKey(0x006C, null, 0);
+            rfb.sendKey(0xFFE3, null, 0);
+          } else if (keyName === 'ctrl-d') {
+            rfb.sendKey(0xFFE3, null, 1);
+            rfb.sendKey(0x0064, null, 1);
+            rfb.sendKey(0x0064, null, 0);
+            rfb.sendKey(0xFFE3, null, 0);
+          } else if (keyName === 'tab') {
+            rfb.sendKey(0xFF09, null, 1);
+            rfb.sendKey(0xFF09, null, 0);
+          } else if (keyName === 'esc') {
+            rfb.sendKey(0xFF1B, null, 1);
+            rfb.sendKey(0xFF1B, null, 0);
+          } else if (keyName === 'enter') {
+            rfb.sendKey(0xFF0D, null, 1);
+            rfb.sendKey(0xFF0D, null, 0);
+          }
+          this.showToast('Sent ' + keyName.toUpperCase(), 'info');
+          return;
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    },
+
+    pasteFromClipboardToTerminal: async function (iframeId, autoRun) {
+      try {
+        var text = await navigator.clipboard.readText();
+        if (!text) {
+          this.showToast('Clipboard is empty', 'warning');
+          return;
+        }
+        if (autoRun) {
+          this.sendTerminalCommand(iframeId, text, true);
+        } else {
+          var input = document.getElementById(iframeId + '-cmd-input');
+          if (input) {
+            input.value = text;
+            input.focus();
+            this.showToast('Clipboard text ready in input bar. Press Enter to send.', 'info');
+          } else {
+            this.sendTerminalCommand(iframeId, text, false);
+          }
+        }
+      } catch (err) {
+        var promptCmd = prompt('Paste your command below to send to terminal:');
+        if (promptCmd !== null && promptCmd !== '') {
+          if (autoRun) {
+            this.sendTerminalCommand(iframeId, promptCmd, true);
+          } else {
+            var inp = document.getElementById(iframeId + '-cmd-input');
+            if (inp) {
+              inp.value = promptCmd;
+              inp.focus();
+            }
+          }
+        }
+      }
+    },
+
+    toggleTerminalFullscreen: function (wrapperId) {
+      var wrapper = document.getElementById(wrapperId);
+      if (!wrapper) return;
+      wrapper.classList.toggle('is-fullscreen');
+    },
+
+    navigateCmdHistory: function (iframeId, direction) {
+      var hist = window._zesCmdHistory || [];
+      if (!hist.length) return;
+      window._zesCmdHistoryIndex = (window._zesCmdHistoryIndex !== undefined) ? window._zesCmdHistoryIndex + direction : hist.length - 1;
+      if (window._zesCmdHistoryIndex < 0) window._zesCmdHistoryIndex = 0;
+      if (window._zesCmdHistoryIndex >= hist.length) {
+        window._zesCmdHistoryIndex = hist.length;
+        var inp = document.getElementById(iframeId + '-cmd-input');
+        if (inp) inp.value = '';
+        return;
+      }
+      var target = hist[window._zesCmdHistoryIndex];
+      var inputEl = document.getElementById(iframeId + '-cmd-input');
+      if (inputEl && target !== undefined) {
+        inputEl.value = target;
+      }
+    },
+
+    openCloneWindow: function (vmid, node, type) {
+      if (window.Ext && Ext.create) {
+        try {
+          Ext.create('PVE.window.Clone', {
+            nodename: node || 'pve',
+            vmid: parseInt(vmid, 10),
+            isLxc: type === 'lxc'
+          }).show();
+          return;
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      this.showToast('Opening Clone dialog...', 'info');
+    },
+
+    openMigrateWindow: function (vmid, node, type) {
+      if (window.Ext && Ext.create) {
+        try {
+          Ext.create('PVE.window.Migrate', {
+            nodename: node || 'pve',
+            vmid: parseInt(vmid, 10),
+            vmtype: type
+          }).show();
+          return;
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      this.showToast('Opening Migration dialog...', 'info');
+    },
+
+    openAddFirewallRuleWindow: function (vmid, node, type) {
+      if (window.Ext && Ext.create) {
+        try {
+          var baseUrl = vmid ? ('/nodes/' + node + '/' + type + '/' + vmid + '/firewall/rules') : ('/nodes/' + (node || 'pve') + '/firewall/rules');
+          Ext.create('PVE.FirewallRuleEdit', {
+            base_url: baseUrl,
+            isCreate: true
+          }).show();
+          return;
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      this.showToast('Opening Firewall Rule builder...', 'info');
     },
 
     // 100% Functioning Native Proxmox Wizards with Centering in Workspace
@@ -1958,6 +2481,137 @@
       });
     },
 
+    fetchServices: function () {
+      if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      Proxmox.Utils.API2Request({
+        url: '/nodes/pve/services',
+        method: 'GET',
+        success: (response) => {
+          State.services = response.result.data || [];
+          this.render();
+        }
+      });
+    },
+
+    serviceAction: function (service, action) {
+      if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      this.showToast('Triggering service ' + action + ' on ' + service + '...', 'info');
+      Proxmox.Utils.API2Request({
+        url: '/nodes/pve/services/' + service + '/' + action,
+        method: 'POST',
+        success: () => {
+          this.showToast('Service ' + service + ' ' + action + ' initiated successfully', 'success');
+          setTimeout(() => this.fetchServices(), 1500);
+        },
+        failure: (resp) => {
+          this.showToast('Failed to ' + action + ' service: ' + (resp.htmlStatus || 'Unknown error'), 'error');
+        }
+      });
+    },
+
+    fetchHA: function () {
+      if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      Proxmox.Utils.API2Request({
+        url: '/cluster/ha/status/current',
+        method: 'GET',
+        success: (response) => {
+          State.haStatus = response.result.data || [];
+          this.render();
+        }
+      });
+      Proxmox.Utils.API2Request({
+        url: '/cluster/replication',
+        method: 'GET',
+        success: (response) => {
+          State.replicationJobs = response.result.data || [];
+          this.render();
+        }
+      });
+    },
+
+    fetchBackupJobs: function () {
+      if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      Proxmox.Utils.API2Request({
+        url: '/cluster/backup',
+        method: 'GET',
+        success: (response) => {
+          State.backupJobs = response.result.data || [];
+          this.render();
+        }
+      });
+    },
+
+    fetchNodeFirewall: function () {
+      if (!window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      Proxmox.Utils.API2Request({
+        url: '/nodes/pve/firewall/rules',
+        method: 'GET',
+        success: (response) => {
+          State.nodeFirewall = response.result.data || [];
+          this.render();
+        }
+      });
+    },
+
+    fetchFirewallRules: function () {
+      const s = this.getActiveServer();
+      if (!s || !window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      Proxmox.Utils.API2Request({
+        url: '/nodes/' + (s.node || 'pve') + '/' + s.type + '/' + s.vmid + '/firewall/rules',
+        method: 'GET',
+        success: (response) => {
+          State.firewallRules = response.result.data || [];
+          this.render();
+        }
+      });
+    },
+
+    fetchVMTasks: function () {
+      const s = this.getActiveServer();
+      if (!s || !window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      Proxmox.Utils.API2Request({
+        url: '/cluster/tasks',
+        method: 'GET',
+        success: (response) => {
+          const allTasks = response.result.data || [];
+          State.vmTasks = allTasks.filter(t => String(t.id) === String(s.vmid) || String(t.vmid) === String(s.vmid));
+          this.render();
+        }
+      });
+    },
+
+    sendQemuMonitor: function (cmd) {
+      const s = this.getActiveServer();
+      if (!s || s.type !== 'qemu' || !window.Proxmox || !Proxmox.Utils || !Proxmox.Utils.API2Request) return;
+      const input = document.getElementById('zes-qemu-monitor-input');
+      const command = cmd || (input ? input.value : '');
+      if (!command) return;
+      if (input) input.value = '';
+
+      State.qemuMonitorLog = State.qemuMonitorLog || [];
+      State.qemuMonitorLog.push({ type: 'cmd', text: '> ' + command });
+      this.render();
+
+      Proxmox.Utils.API2Request({
+        url: '/nodes/' + (s.node || 'pve') + '/qemu/' + s.vmid + '/monitor',
+        params: { command: command },
+        method: 'POST',
+        success: (resp) => {
+          const output = resp.result.data || '(OK)';
+          State.qemuMonitorLog.push({ type: 'res', text: output });
+          this.render();
+          setTimeout(() => {
+            const term = document.getElementById('zes-qemu-monitor-log');
+            if (term) term.scrollTop = term.scrollHeight;
+          }, 50);
+        },
+        failure: (resp) => {
+          State.qemuMonitorLog.push({ type: 'err', text: 'Error: ' + (resp.htmlStatus || 'Failed to execute monitor command') });
+          this.render();
+        }
+      });
+    },
+
     updateBreadcrumbs: function () {
       const bc = document.getElementById('zes-breadcrumbs');
       if (!bc) return;
@@ -2146,7 +2800,7 @@
                 <button class="zes-action-btn btn-stop" onclick="Zesium.stopServer('${s.id}')">
                   ${Icons.stop} Stop
                 </button>
-                <button class="zes-action-btn" onclick="Zesium.restartServer('${s.id}')">
+                <button class="zes-action-btn btn-reboot" onclick="Zesium.restartServer('${s.id}')">
                   ${Icons.restart} Reboot
                 </button>
               ` : `
@@ -2156,6 +2810,27 @@
               `}
               <button class="zes-action-btn" onclick="Zesium.openBackupWindow('${s.vmid}', '${s.type}')">
                 ${Icons.backup} Backup Now
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openCloneWindow('${s.vmid}', '${s.node}', '${s.type}')" title="Clone guest into new VM/CT">
+                ${Icons.clone} Clone
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.openMigrateWindow('${s.vmid}', '${s.node}', '${s.type}')" title="Migrate guest to another node">
+                ${Icons.migrate} Migrate
+              </button>
+              ${isRunning ? `
+                <button class="zes-action-btn" onclick="Zesium.resetServer('${s.id}')" title="Force Reset Guest">
+                  ⟳ Reset
+                </button>
+                <button class="zes-action-btn" onclick="Zesium.suspendServer('${s.id}')" title="Suspend Guest to RAM">
+                  ⏸ Suspend
+                </button>
+              ` : `
+                <button class="zes-action-btn" onclick="Zesium.resumeServer('${s.id}')" title="Resume Suspended Guest">
+                  ▶ Resume
+                </button>
+              `}
+              <button class="zes-action-btn" onclick="Zesium.convertToTemplate('${s.vmid}', '${s.node}', '${s.type}')" title="Convert to Proxmox Template">
+                📄 Template
               </button>
               ${!isRunning && !isPending ? `
                 <button class="zes-action-btn btn-destroy" onclick="Zesium.deleteServer('${s.id}')">
@@ -2176,30 +2851,95 @@
             <button class="zes-nav-tab ${State.selectedTab === 'options' ? 'active' : ''}" onclick="Zesium.setServerTab('options')">Options</button>
             <button class="zes-nav-tab ${State.selectedTab === 'snapshots' ? 'active' : ''}" onclick="Zesium.setServerTab('snapshots')">Snapshots</button>
             <button class="zes-nav-tab ${State.selectedTab === 'backup' ? 'active' : ''}" onclick="Zesium.setServerTab('backup')">Backups</button>
+            <button class="zes-nav-tab ${State.selectedTab === 'firewall' ? 'active' : ''}" onclick="Zesium.setServerTab('firewall')">Firewall</button>
+            <button class="zes-nav-tab ${State.selectedTab === 'tasks' ? 'active' : ''}" onclick="Zesium.setServerTab('tasks')">Task History</button>
+            ${s.type === 'qemu' ? `
+              <button class="zes-nav-tab ${State.selectedTab === 'monitor' ? 'active' : ''}" onclick="Zesium.setServerTab('monitor')">Monitor</button>
+            ` : ''}
           </div>
 
           ${State.selectedTab === 'console' ? `
-            <div class="zes-embedded-terminal-wrapper">
+            <div id="zes-vm-terminal-wrapper" class="zes-embedded-terminal-wrapper">
               <div class="zes-terminal-toolbar">
-                <div style="display: flex; align-items: center; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                   <span class="zes-status-dot ${s.state}"></span>
                   <span style="font-weight: 600; font-size: 13px; color: #ffffff;">${s.name} (VMID: ${s.vmid}) Console</span>
-                  <span style="font-size: 12px; color: #71717a;">• ${s.type === 'lxc' ? 'LXC Console' : 'noVNC'}</span>
+                  <div style="display: inline-flex; gap: 4px; margin-left: 6px;">
+                    <button class="zes-mode-pill ${(State.consoleMode === 'xtermjs' || (!State.consoleMode && s.type === 'lxc')) ? 'active' : ''}" onclick="Zesium.setConsoleMode('xtermjs')" title="Switch to xterm.js serial / shell">
+                      xterm.js (Shell)
+                    </button>
+                    <button class="zes-mode-pill ${(State.consoleMode === 'novnc' || (!State.consoleMode && s.type !== 'lxc')) ? 'active' : ''}" onclick="Zesium.setConsoleMode('novnc')" title="Switch to noVNC graphical display">
+                      noVNC (GUI)
+                    </button>
+                  </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
-                  <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px;" onclick="const ifr = document.getElementById('zes-vm-console-iframe'); if (ifr) ifr.src = ifr.src;">
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                  <button class="zes-chip-btn" onclick="Zesium.openScriptRunnerModal('zes-vm-console-iframe')" title="Open Multi-Line Script Runner">
+                    📝 Script Runner
+                  </button>
+                  <button class="zes-chip-btn" onclick="Zesium.toggleTerminalFullscreen('zes-vm-terminal-wrapper')" title="Toggle Fullscreen">
+                    ${Icons.fullscreen} Fullscreen
+                  </button>
+                  <button class="zes-chip-btn" onclick="const ifr = document.getElementById('zes-vm-console-iframe'); if (ifr) ifr.src = ifr.src;" title="Reload Console">
                     ${Icons.restart} Reload
                   </button>
-                  <button class="zes-action-btn" style="padding: 4px 10px; font-size: 11px;" onclick="window.open('/?console=${s.type === 'lxc' ? 'lxc' : 'kvm'}&novnc=1&node=${s.node || 'pve'}&vmid=${s.vmid}', '_blank', 'width=1100,height=750')">
+                  <button class="zes-chip-btn" onclick="window.open('/?console=' + (s.type === 'lxc' ? 'lxc' : 'kvm') + '&' + ((State.consoleMode === 'xtermjs' || (!State.consoleMode && s.type === 'lxc')) ? 'xtermjs=1' : 'novnc=1') + '&node=' + (s.node || 'pve') + '&vmid=' + s.vmid, '_blank', 'width=1100,height=750')" title="Popout to Window">
                     Popout ↗
                   </button>
                 </div>
               </div>
+
+              <!-- COMMAND INPUT & CLIPBOARD QUICKBAR -->
+              <div class="zes-terminal-quickbar">
+                <div class="zes-cmd-input-group">
+                  <div class="zes-cmd-input-icon">${Icons.keyboard}</div>
+                  <input type="text"
+                         id="zes-vm-console-iframe-cmd-input"
+                         class="zes-cmd-input"
+                         placeholder="Type or paste bash / shell command into ${s.name} (e.g. apt update && apt upgrade -y, ip a)..."
+                         onkeydown="if(event.key === 'Enter') { Zesium.sendTerminalCommand('zes-vm-console-iframe'); } else if (event.key === 'ArrowUp') { Zesium.navigateCmdHistory('zes-vm-console-iframe', -1); } else if (event.key === 'ArrowDown') { Zesium.navigateCmdHistory('zes-vm-console-iframe', 1); }" />
+                  <button class="zes-action-btn btn-send-cmd" onclick="Zesium.sendTerminalCommand('zes-vm-console-iframe')" title="Send Command + Enter">
+                    ${Icons.sendCmd} Send ↵
+                  </button>
+                </div>
+                <div class="zes-cmd-buttons-group">
+                  <button class="zes-action-btn btn-paste-run" onclick="Zesium.pasteFromClipboardToTerminal('zes-vm-console-iframe', true)" title="Paste from clipboard and run immediately">
+                    ${Icons.paste} Paste &amp; Run
+                  </button>
+                  <button class="zes-chip-btn" onclick="Zesium.pasteFromClipboardToTerminal('zes-vm-console-iframe', false)" title="Paste into input box to review before sending">
+                    Paste to Input
+                  </button>
+                  <button class="zes-chip-btn" onclick="Zesium.openScriptRunnerModal('zes-vm-console-iframe')" title="Open Multi-Line Script Runner">
+                    📝 Script
+                  </button>
+                  <div class="zes-cmd-divider"></div>
+                  <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'ctrl-c')" title="Send Ctrl+C (Interrupt)">Ctrl+C</button>
+                  <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'ctrl-l')" title="Send Ctrl+L (Clear Screen)">Ctrl+L</button>
+                  <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'ctrl-d')" title="Send Ctrl+D (EOF)">Ctrl+D</button>
+                  <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'tab')" title="Send Tab (Auto-complete)">Tab ⇥</button>
+                  <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-vm-console-iframe', 'esc')" title="Send Escape">Esc</button>
+                </div>
+              </div>
+
+              <!-- PRESET COMMAND CHIPS ROW -->
+              <div class="zes-quick-chips-row">
+                <span class="zes-quick-chips-label">Quick Cmd:</span>
+                <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-vm-console-iframe', 'apt update && apt upgrade -y')">apt update</button>
+                <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-vm-console-iframe', 'ip a')">ip a</button>
+                <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-vm-console-iframe', 'htop')">htop</button>
+                <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-vm-console-iframe', 'df -h')">df -h</button>
+                <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-vm-console-iframe', 'systemctl status')">systemctl status</button>
+                <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-vm-console-iframe', 'clear')">clear</button>
+              </div>
+
               <div class="zes-terminal-body">
-                <iframe id="zes-vm-console-iframe" src="/?console=${s.type === 'lxc' ? 'lxc' : 'kvm'}&novnc=1&node=${s.node || 'pve'}&vmid=${s.vmid}" class="zes-embedded-iframe" allowfullscreen></iframe>
+                <iframe id="zes-vm-console-iframe"
+                        src="/?console=${s.type === 'lxc' ? 'lxc' : 'kvm'}&${(State.consoleMode === 'xtermjs' || (!State.consoleMode && s.type === 'lxc')) ? 'xtermjs=1' : 'novnc=1'}&node=${s.node || 'pve'}&vmid=${s.vmid}"
+                        class="zes-embedded-iframe"
+                        allowfullscreen></iframe>
               </div>
             </div>
-          ` : State.selectedTab === 'summary' ? `
+          `: State.selectedTab === 'summary' ? `
             <div class="zes-cards-grid">
               <div class="zes-plan-card">
                 <div style="font-size: 12px; color: #a1a1aa;">Assigned vCPU</div>
@@ -2215,6 +2955,22 @@
                 <div style="font-size: 12px; color: #a1a1aa;">Disk Size</div>
                 <div style="font-size: 24px; font-weight: 700; color: #fff; margin: 8px 0;">${s.disk}</div>
                 <div style="font-size: 11px; color: #71717a;">Storage on ${s.node}</div>
+              </div>
+            </div>
+
+            <!-- VM NOTES & DOCUMENTATION -->
+            <div class="zes-notes-box">
+              <div class="zes-notes-header">
+                <div class="zes-notes-title">
+                  ${Icons.server}
+                  <span>Guest Notes &amp; Documentation (VMID ${s.vmid})</span>
+                </div>
+                <button class="zes-action-btn zes-btn-sm" onclick="Zesium.openEditNotesWindow('${s.vmid}', '${s.node}', '${s.type}')">
+                  ✎ Edit Notes
+                </button>
+              </div>
+              <div class="zes-notes-content">
+                ${cfg.description ? cfg.description : '<span style="color: #71717a; font-style: italic;">No notes or documentation added yet. Click &quot;Edit Notes&quot; to save IP addresses, passwords, or configuration remarks.</span>'}
               </div>
             </div>
           ` : State.selectedTab === 'hardware' ? `
@@ -2398,6 +3154,113 @@
                 </tbody>
               </table>
             </div>
+          ` : State.selectedTab === 'firewall' ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Guest packet filtering, ingress/egress firewall rules & security macros</div>
+              <div style="display: flex; gap: 8px;">
+                <button class="zes-btn-primary" onclick="Zesium.openAddFirewallRuleWindow('${s.vmid}', '${s.node}', '${s.type}')">
+                  + Add Firewall Rule
+                </button>
+                <button class="zes-action-btn" onclick="Zesium.fetchFirewallRules()">
+                  ${Icons.refresh} Refresh
+                </button>
+              </div>
+            </div>
+            <div class="zes-table-container">
+              <table class="zes-table">
+                <thead>
+                  <tr>
+                    <th>Direction</th>
+                    <th>Action</th>
+                    <th>Macro / Proto</th>
+                    <th>Port(s)</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Comment</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(State.firewallRules || []).length > 0 ? State.firewallRules.map(r => `
+                    <tr>
+                      <td style="font-weight: 600; color: #ffffff; text-transform: uppercase;">${r.type || 'IN'}</td>
+                      <td><span style="font-size: 11px; padding: 2px 6px; background: ${r.action === 'ACCEPT' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; color: ${r.action === 'ACCEPT' ? '#10b981' : '#ef4444'}; border-radius: 4px; font-weight: 600;">${r.action || 'ACCEPT'}</span></td>
+                      <td style="font-family: monospace;">${r.macro || r.proto || '-'}</td>
+                      <td style="font-family: monospace;">${r.dport || r.sport || '-'}</td>
+                      <td style="font-family: monospace; color: #a1a1aa;">${r.source || 'any'}</td>
+                      <td style="font-family: monospace; color: #a1a1aa;">${r.dest || 'any'}</td>
+                      <td style="color: #71717a; font-size: 12px;">${r.comment || '-'}</td>
+                      <td><span class="zes-status-dot ${r.enable !== 0 ? 'running' : 'stopped'}"></span> ${r.enable !== 0 ? 'Active' : 'Disabled'}</td>
+                    </tr>
+                  `).join('') : `
+                    <tr><td colspan="8" style="text-align: center; padding: 40px; color: #71717a;">No guest firewall rules defined. Click "+ Add Firewall Rule" to create one.</td></tr>
+                  `}
+                </tbody>
+              </table>
+            </div>
+          ` : State.selectedTab === 'tasks' ? `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Audit trail of operations executed on VMID ${s.vmid}</div>
+              <button class="zes-action-btn" onclick="Zesium.fetchVMTasks()">
+                ${Icons.refresh} Refresh Tasks
+              </button>
+            </div>
+            <div class="zes-table-container">
+              <table class="zes-table">
+                <thead>
+                  <tr>
+                    <th>Start Time</th>
+                    <th>User</th>
+                    <th>Task Type</th>
+                    <th>Node</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${(State.vmTasks || []).length > 0 ? State.vmTasks.map(t => `
+                    <tr>
+                      <td style="font-family: monospace; font-size: 12px;">${t.starttime ? new Date(t.starttime * 1000).toLocaleString() : '-'}</td>
+                      <td style="color: #a1a1aa;">${t.user || 'root@pam'}</td>
+                      <td style="font-weight: 600; color: #ffffff;">${t.type}</td>
+                      <td>${t.node}</td>
+                      <td>
+                        <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; ${t.status === 'OK' ? 'background: rgba(16, 185, 129, 0.15); color: #10b981;' : 'background: rgba(239, 68, 68, 0.15); color: #ef4444;'}">
+                          <span class="zes-status-dot ${t.status === 'OK' ? 'running' : 'stopped'}"></span> ${t.status || 'RUNNING'}
+                        </span>
+                      </td>
+                    </tr>
+                  `).join('') : `
+                    <tr><td colspan="5" style="text-align: center; padding: 40px; color: #71717a;">No recorded tasks found for VMID ${s.vmid}.</td></tr>
+                  `}
+                </tbody>
+              </table>
+            </div>
+          ` : State.selectedTab === 'monitor' ? `
+            <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 13px; color: #a1a1aa;">Direct low-level QEMU monitor console CLI for VM ${s.vmid}</div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="zes-chip-btn" onclick="Zesium.sendQemuMonitor('info status')">info status</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendQemuMonitor('info block')">info block</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendQemuMonitor('info balloon')">info balloon</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendQemuMonitor('info cpus')">info cpus</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendQemuMonitor('help')">help</button>
+              </div>
+            </div>
+            <div id="zes-qemu-monitor-log" class="zes-log-viewer" style="height: 400px; margin-bottom: 12px;">
+              ${(State.qemuMonitorLog || [{ type: 'res', text: 'QEMU Monitor Ready. Type a command below or click a preset.' }]).map(l => `
+                <div style="color: ${l.type === 'cmd' ? '#3b82f6' : l.type === 'err' ? '#ef4444' : '#10b981'}; font-weight: ${l.type === 'cmd' ? '700' : '400'};">${l.text}</div>
+              `).join('')}
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <input type="text"
+                     id="zes-qemu-monitor-input"
+                     class="zes-cmd-input"
+                     placeholder="Type QEMU monitor command (e.g. info status, info version, system_reset)..."
+                     onkeydown="if(event.key === 'Enter') Zesium.sendQemuMonitor();" />
+              <button class="zes-action-btn btn-send-cmd" onclick="Zesium.sendQemuMonitor()">
+                Execute ↵
+              </button>
+            </div>
           ` : `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
               <div style="font-size: 13px; color: #a1a1aa;">Full disaster recovery backup archives stored on hypervisor storage pools</div>
@@ -2451,18 +3314,82 @@
               <h1 class="zes-page-title">Node Shell ('${node}')</h1>
               <p class="zes-page-subtitle">Embedded interactive root shell terminal for host administration</p>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="display: inline-flex; gap: 4px; align-items: center; margin-right: 6px;">
+                <button class="zes-mode-pill ${(State.nodeConsoleMode !== 'novnc') ? 'active' : ''}" onclick="Zesium.setNodeConsoleMode('xtermjs')" title="Switch to xterm.js native shell">
+                  xterm.js (Shell)
+                </button>
+                <button class="zes-mode-pill ${(State.nodeConsoleMode === 'novnc') ? 'active' : ''}" onclick="Zesium.setNodeConsoleMode('novnc')" title="Switch to noVNC shell">
+                  noVNC (GUI)
+                </button>
+              </div>
+              <button class="zes-chip-btn" onclick="Zesium.openScriptRunnerModal('zes-node-shell-iframe')" title="Open Multi-Line Script Runner">
+                📝 Script Runner
+              </button>
               <button class="zes-action-btn" onclick="const ifr = document.getElementById('zes-node-shell-iframe'); if (ifr) ifr.src = ifr.src;">
                 ${Icons.restart} Reload Shell
               </button>
-              <button class="zes-action-btn" onclick="window.open('/?console=shell&novnc=1&node=${node}', '_blank', 'width=1100,height=750')">
+              <button class="zes-action-btn" onclick="window.open('/?console=shell&' + ((State.nodeConsoleMode === 'novnc') ? 'novnc=1' : 'xtermjs=1') + '&node=${node}', '_blank', 'width=1100,height=750')">
                 Popout ↗
+              </button>
+              <button class="zes-action-btn" style="border-color: rgba(245, 158, 11, 0.4); color: #f59e0b;" onclick="Zesium.rebootNode('${node}')" title="Reboot Node Host">
+                Reboot Node
+              </button>
+              <button class="zes-action-btn" style="border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.shutdownNode('${node}')" title="Shutdown Node Host">
+                Poweroff Node
               </button>
             </div>
           </div>
 
-          <div class="zes-embedded-terminal-wrapper">
-            <iframe id="zes-node-shell-iframe" src="/?console=shell&novnc=1&node=${node}" class="zes-embedded-iframe" allowfullscreen></iframe>
+          <div id="zes-node-terminal-wrapper" class="zes-embedded-terminal-wrapper">
+            <!-- COMMAND INPUT & CLIPBOARD QUICKBAR -->
+            <div class="zes-terminal-quickbar">
+              <div class="zes-cmd-input-group">
+                <div class="zes-cmd-input-icon">${Icons.keyboard}</div>
+                <input type="text"
+                       id="zes-node-shell-iframe-cmd-input"
+                       class="zes-cmd-input"
+                       placeholder="Type or paste shell command to send to node ${node} (e.g. systemctl status, htop, df -h)..."
+                       onkeydown="if(event.key === 'Enter') { Zesium.sendTerminalCommand('zes-node-shell-iframe'); } else if (event.key === 'ArrowUp') { Zesium.navigateCmdHistory('zes-node-shell-iframe', -1); } else if (event.key === 'ArrowDown') { Zesium.navigateCmdHistory('zes-node-shell-iframe', 1); }" />
+                <button class="zes-action-btn btn-send-cmd" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe')" title="Send Command + Enter">
+                  ${Icons.sendCmd} Send ↵
+                </button>
+              </div>
+              <div class="zes-cmd-buttons-group">
+                <button class="zes-action-btn btn-paste-run" onclick="Zesium.pasteFromClipboardToTerminal('zes-node-shell-iframe', true)" title="Paste from clipboard and run immediately">
+                  ${Icons.paste} Paste &amp; Run
+                </button>
+                <button class="zes-chip-btn" onclick="Zesium.pasteFromClipboardToTerminal('zes-node-shell-iframe', false)" title="Paste into input box to review before sending">
+                  Paste to Input
+                </button>
+                <div class="zes-cmd-divider"></div>
+                <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-node-shell-iframe', 'ctrl-c')" title="Send Ctrl+C (Interrupt)">Ctrl+C</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-node-shell-iframe', 'ctrl-l')" title="Send Ctrl+L (Clear Screen)">Ctrl+L</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-node-shell-iframe', 'ctrl-d')" title="Send Ctrl+D (EOF)">Ctrl+D</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-node-shell-iframe', 'tab')" title="Send Tab (Auto-complete)">Tab ⇥</button>
+                <button class="zes-chip-btn" onclick="Zesium.sendTerminalKey('zes-node-shell-iframe', 'esc')" title="Send Escape">Esc</button>
+                <div class="zes-cmd-divider"></div>
+                <button class="zes-chip-btn" onclick="Zesium.toggleTerminalFullscreen('zes-node-terminal-wrapper')" title="Toggle Fullscreen">
+                  ${Icons.fullscreen}
+                </button>
+              </div>
+            </div>
+
+            <!-- PRESET COMMAND CHIPS ROW -->
+            <div class="zes-quick-chips-row">
+              <span class="zes-quick-chips-label">Quick Cmd:</span>
+              <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe', 'apt update && apt upgrade -y')">apt update</button>
+              <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe', 'ip a')">ip a</button>
+              <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe', 'htop')">htop</button>
+              <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe', 'df -h')">df -h</button>
+              <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe', 'systemctl status pveproxy pvedaemon')">systemctl</button>
+              <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe', 'journalctl -xe -n 30')">journalctl</button>
+              <button class="zes-preset-chip" onclick="Zesium.sendTerminalCommand('zes-node-shell-iframe', 'clear')">clear</button>
+            </div>
+
+            <div class="zes-terminal-body">
+              <iframe id="zes-node-shell-iframe" src="/?console=shell&${(State.nodeConsoleMode === 'novnc') ? 'novnc=1' : 'xtermjs=1'}&node=${node}" class="zes-embedded-iframe" allowfullscreen></iframe>
+            </div>
           </div>
         `;
       } else if (State.currentView === 'node-summary') {
@@ -3263,6 +4190,226 @@
             </table>
           </div>
         `;
+      } else if (State.currentView === 'services') {
+        const hasServices = (State.services || []).length > 0;
+        container.innerHTML = `
+          <div class="zes-page-header">
+            <div>
+              <h1 class="zes-page-title">Node Services ('pve')</h1>
+              <p class="zes-page-subtitle">Hypervisor background daemons, virtualization services, and API proxies</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.fetchServices()">
+                ${Icons.refresh} Refresh Services
+              </button>
+            </div>
+          </div>
+
+          <div class="zes-table-container">
+            <table class="zes-table">
+              <thead>
+                <tr>
+                  <th>Service Name</th>
+                  <th>Description</th>
+                  <th>State</th>
+                  <th style="text-align: right;">Service Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${hasServices ? State.services.map(s => `
+                  <tr>
+                    <td style="font-weight: 700; color: #ffffff; font-family: monospace;">${s.service}</td>
+                    <td style="color: #a1a1aa; font-size: 13px;">${s.name || s.desc || '-'}</td>
+                    <td>
+                      <span class="zes-service-badge ${s.state === 'running' ? 'running' : 'stopped'}">
+                        <span class="zes-status-dot ${s.state === 'running' ? 'running' : 'stopped'}"></span>
+                        ${s.state || 'stopped'}
+                      </span>
+                    </td>
+                    <td style="text-align: right;">
+                      <div style="display: inline-flex; gap: 6px;">
+                        <button class="zes-action-btn zes-btn-sm" onclick="Zesium.serviceAction('${s.service}', 'restart')">
+                          Restart
+                        </button>
+                        ${s.state === 'running' ? `
+                          <button class="zes-action-btn zes-btn-sm" style="border-color: rgba(239, 68, 68, 0.4); color: #ef4444;" onclick="Zesium.serviceAction('${s.service}', 'stop')">
+                            Stop
+                          </button>
+                        ` : `
+                          <button class="zes-action-btn zes-btn-sm btn-start" onclick="Zesium.serviceAction('${s.service}', 'start')">
+                            Start
+                          </button>
+                        `}
+                      </div>
+                    </td>
+                  </tr>
+                `).join('') : `
+                  <tr><td colspan="4" style="text-align: center; padding: 40px; color: #71717a;">Loading system services...</td></tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else if (State.currentView === 'node-firewall') {
+        const rules = State.nodeFirewall || [];
+        container.innerHTML = `
+          <div class="zes-page-header">
+            <div>
+              <h1 class="zes-page-title">Node Firewall ('pve')</h1>
+              <p class="zes-page-subtitle">Host level packet filtering, network security policies, and connection tracking</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="Zesium.openAddFirewallRuleWindow(null, 'pve')">
+                + Add Host Rule
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.fetchNodeFirewall()">
+                ${Icons.refresh} Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="zes-table-container">
+            <table class="zes-table">
+              <thead>
+                <tr>
+                  <th>Direction</th>
+                  <th>Action</th>
+                  <th>Macro / Proto</th>
+                  <th>Port</th>
+                  <th>Source</th>
+                  <th>Destination</th>
+                  <th>Comment</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rules.length > 0 ? rules.map(r => `
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff; text-transform: uppercase;">${r.type || 'IN'}</td>
+                    <td><span style="font-size: 11px; padding: 2px 6px; background: ${r.action === 'ACCEPT' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; color: ${r.action === 'ACCEPT' ? '#10b981' : '#ef4444'}; border-radius: 4px; font-weight: 600;">${r.action || 'ACCEPT'}</span></td>
+                    <td style="font-family: monospace;">${r.macro || r.proto || '-'}</td>
+                    <td style="font-family: monospace;">${r.dport || r.sport || '-'}</td>
+                    <td style="font-family: monospace; color: #a1a1aa;">${r.source || 'any'}</td>
+                    <td style="font-family: monospace; color: #a1a1aa;">${r.dest || 'any'}</td>
+                    <td style="color: #71717a; font-size: 12px;">${r.comment || '-'}</td>
+                    <td><span class="zes-status-dot ${r.enable !== 0 ? 'running' : 'stopped'}"></span> ${r.enable !== 0 ? 'Active' : 'Disabled'}</td>
+                  </tr>
+                `).join('') : `
+                  <tr><td colspan="8" style="text-align: center; padding: 40px; color: #71717a;">No host firewall rules configured. Click "+ Add Host Rule" to create one.</td></tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else if (State.currentView === 'ha') {
+        const ha = State.haStatus || [];
+        const repl = State.replicationJobs || [];
+        container.innerHTML = `
+          <div class="zes-page-header">
+            <div>
+              <h1 class="zes-page-title">High Availability & Replication</h1>
+              <p class="zes-page-subtitle">Automatic failover orchestration, quorum health, and guest storage replication</p>
+            </div>
+            <button class="zes-btn-primary" onclick="Zesium.fetchHA()">
+              ${Icons.refresh} Refresh HA
+            </button>
+          </div>
+
+          <div class="zes-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+            <div class="zes-plan-card">
+              <div style="font-size: 12px; color: #a1a1aa;">HA Manager State</div>
+              <div style="font-size: 20px; font-weight: 700; color: #10b981; margin: 8px 0;">Active / Standby Ready</div>
+              <div style="font-size: 11px; color: #71717a;">Corosync cluster CRM heartbeat</div>
+            </div>
+            <div class="zes-plan-card">
+              <div style="font-size: 12px; color: #a1a1aa;">Quorum Health</div>
+              <div style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 8px 0;">OK (Quorate)</div>
+              <div style="font-size: 11px; color: #10b981;">100% Voting members online</div>
+            </div>
+            <div class="zes-plan-card">
+              <div style="font-size: 12px; color: #a1a1aa;">Monitored Resources</div>
+              <div style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 8px 0;">${ha.length} Registered</div>
+              <div style="font-size: 11px; color: #71717a;">Virtual machines and containers</div>
+            </div>
+          </div>
+
+          <div class="zes-table-container">
+            <div style="padding: 14px 18px; font-weight: 600; color: #ffffff; border-bottom: 1px solid #272732;">
+              Storage Replication Jobs
+            </div>
+            <table class="zes-table">
+              <thead>
+                <tr>
+                  <th>Job ID</th>
+                  <th>Guest VMID</th>
+                  <th>Target Node</th>
+                  <th>Schedule</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${repl.length > 0 ? repl.map(r => `
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">${r.id}</td>
+                    <td>${r.guest || '-'}</td>
+                    <td>${r.target || '-'}</td>
+                    <td style="font-family: monospace;">${r.schedule || '*/15'}</td>
+                    <td><span class="zes-status-dot running"></span> Active</td>
+                  </tr>
+                `).join('') : `
+                  <tr><td colspan="5" style="text-align: center; padding: 40px; color: #71717a;">No active storage replication jobs configured.</td></tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else if (State.currentView === 'backup-jobs') {
+        const jobs = State.backupJobs || [];
+        container.innerHTML = `
+          <div class="zes-page-header">
+            <div>
+              <h1 class="zes-page-title">Cluster Backup Schedules</h1>
+              <p class="zes-page-subtitle">Automated hypervisor scheduled backup jobs (vzdump) for disaster recovery</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="zes-btn-primary" onclick="if(window.Ext) Ext.create('PVE.dc.BackupEdit', {}).show();">
+                + Add Backup Schedule
+              </button>
+              <button class="zes-action-btn" onclick="Zesium.fetchBackupJobs()">
+                ${Icons.refresh} Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="zes-table-container">
+            <table class="zes-table">
+              <thead>
+                <tr>
+                  <th>Job ID / Node</th>
+                  <th>Schedule</th>
+                  <th>Target Storage</th>
+                  <th>Selection</th>
+                  <th>Compression</th>
+                  <th>Mode</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${jobs.length > 0 ? jobs.map(j => `
+                  <tr>
+                    <td style="font-weight: 600; color: #ffffff;">${j.id || j.node || 'All Nodes'}</td>
+                    <td style="font-family: monospace; color: #10b981;">${j.schedule || '0 0 * * *'}</td>
+                    <td>${j.storage || 'local'}</td>
+                    <td>${j.vmid ? 'VMID: ' + j.vmid : (j.all ? 'All Guests' : 'Selected Guests')}</td>
+                    <td><span style="font-size: 11px; padding: 2px 6px; background: #272730; border-radius: 4px;">${j.compress || 'zstd'}</span></td>
+                    <td style="text-transform: capitalize;">${j.mode || 'snapshot'}</td>
+                  </tr>
+                `).join('') : `
+                  <tr><td colspan="6" style="text-align: center; padding: 40px; color: #71717a;">No automated cluster backup schedules found. Click "+ Add Backup Schedule" to configure automated backups.</td></tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+        `;
       }
     },
 
@@ -3554,7 +4701,10 @@
                 ${Icons.network}
                 <span>Network Interfaces</span>
               </a>
-
+              <a class="zes-menu-item" data-view="node-firewall" onclick="Zesium.navigateTo('node-firewall')">
+                ${Icons.firewall}
+                <span>Node Firewall</span>
+              </a>
               <a class="zes-menu-item" data-view="sdn" onclick="Zesium.navigateTo('sdn')">
                 ${Icons.sdn}
                 <span>Software Defined Net</span>
@@ -3568,6 +4718,14 @@
                 ${Icons.cluster}
                 <span>Cluster Status</span>
               </a>
+              <a class="zes-menu-item" data-view="ha" onclick="Zesium.navigateTo('ha')">
+                ${Icons.ha}
+                <span>HA & Replication</span>
+              </a>
+              <a class="zes-menu-item" data-view="backup-jobs" onclick="Zesium.navigateTo('backup-jobs')">
+                ${Icons.backup}
+                <span>Backup Schedules</span>
+              </a>
               <a class="zes-menu-item" data-view="users" onclick="Zesium.navigateTo('users')">
                 ${Icons.users}
                 <span>Users & Permissions</span>
@@ -3580,6 +4738,10 @@
               <a class="zes-menu-item" data-view="node-summary" onclick="Zesium.navigateTo('node-summary')">
                 ${Icons.server}
                 <span>Node Summary ('pve')</span>
+              </a>
+              <a class="zes-menu-item" data-view="services" onclick="Zesium.navigateTo('services')">
+                ${Icons.services}
+                <span>Services Manager</span>
               </a>
               <a class="zes-menu-item" data-view="shell" onclick="Zesium.openNodeShell()">
                 ${Icons.shell}
